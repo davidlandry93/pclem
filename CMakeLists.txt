@@ -1,18 +1,26 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 include(ExternalProject)
 
-
 project (pclem)
+find_package(VTK)
 
-ExternalProject_Add(
-  vtk
+if (NOT VTK_FOUND)
+  ExternalProject_Add(
+    VTK
 
-  PREFIX "vtk"
-  GIT_REPOSITORY "https://gitlab.kitware.com/vtk/vtk.git"
-  GIT_TAG "v7.0.0")
+    PREFIX "vtk"
+    INSTALL_DIR "${PROJECT_BINARY_DIR}/vtk"
+    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/vtk"
+
+    GIT_REPOSITORY "https://gitlab.kitware.com/vtk/vtk.git"
+    GIT_TAG "v7.0.0")
+  find_package(VTK)
+endif()
+
+include_directories(src "${VTK_INCLUDE_DIRS}")
 
 
 file(GLOB SOURCES src/*.cpp)
 
-
 add_executable (run_em ${SOURCES})
+target_link_libraries(run_em ${VTK_LIBRARIES})
