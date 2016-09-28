@@ -1,12 +1,8 @@
 
 #include <iostream>
 
-#include <vtkPointSet.h>
 #include <vtkSmartPointer.h>
-#include <vtkSimplePointsReader.h>
 #include <vtkGenericDataObjectReader.h>
-#include <vtkDataSetAttributes.h>
-#include <vtkDoubleArray.h>
 #include <vtkPolyData.h>
 
 #include "pointcloud.h"

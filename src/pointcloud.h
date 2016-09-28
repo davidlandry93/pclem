@@ -3,6 +3,8 @@
 #include <vector>
 #include <vtkPolyData.h>
 
+#include "boundingbox.h"
+
 namespace pclem {
 
     class PointCloud {
@@ -12,6 +14,7 @@ namespace pclem {
         PointCloud(std::vector<double> data, int n_of_points);
         std::vector<double> data;
         int n_of_points;
+        BoundingBox boundingBox;
     };
 
 }
