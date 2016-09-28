@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project (pclem)
 find_package(VTK)
+find_package(CUDA)
 
 if (NOT VTK_FOUND)
   ExternalProject_Add(
@@ -22,8 +23,11 @@ endif()
 
 include_directories(src "${VTK_INCLUDE_DIRS}")
 
+list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11")
+SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
-file(GLOB SOURCES src/*.cpp)
 
-add_executable (run_em ${SOURCES})
+file(GLOB SOURCES src/*.cpp src/*.cu)
+
+cuda_add_executable(run_em ${SOURCES})
 target_link_libraries(run_em ${VTK_LIBRARIES})
