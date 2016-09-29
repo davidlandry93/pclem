@@ -30,4 +30,4 @@ SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 file(GLOB SOURCES src/*.cpp src/*.cu)
 
 cuda_add_executable(run_em ${SOURCES})
-target_link_libraries(run_em ${VTK_LIBRARIES})
+target_link_libraries(run_em ${VTK_LIBRARIES} ${CUDA_LIBRARIES})

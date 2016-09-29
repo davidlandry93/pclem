@@ -8,18 +8,19 @@
 #include <thrust/execution_policy.h>
 
 #include "pointcloud.h"
+#include "point.h"
 
 using namespace std::chrono;
 
 namespace pclem {
 
-    PointCloud::PointCloud(std::vector<double> data, int npoints) :
-        data(data), n_of_points(npoints) {
+    PointCloud::PointCloud(std::vector<Point> data, int npoints) :
+        data(data), n_points(npoints) {
         updateBoundingBox();
     }
 
     PointCloud::PointCloud(PointCloud&& other) :
-        n_of_points(other.n_of_points), boundingBox(other.boundingBox) {
+        n_points(other.n_points), boundingBox(other.boundingBox) {
         data = std::move(data);
     }
 
@@ -32,14 +33,12 @@ namespace pclem {
         vtkIdType npoints = vtkData->GetNumberOfPoints();
         vtkPoints* points = vtkData->GetPoints();
 
-        auto stl_vec = std::vector<double>(3*npoints);
+        auto stl_vec = std::vector<Point>();
         for(int i=0; i < npoints; i++) {
             double currentPoint[3];
 
             points->GetPoint(i, currentPoint);
-            stl_vec[i] = currentPoint[0];
-            stl_vec[i + npoints] = currentPoint[1];
-            stl_vec[i + 2*npoints] = currentPoint[2];
+            stl_vec.push_back(Point(currentPoint[0], currentPoint[1], currentPoint[2]));
         }
 
         return PointCloud(stl_vec, npoints);
@@ -49,20 +48,40 @@ namespace pclem {
         return boundingBox;
     }
 
-    void PointCloud::updateBoundingBox(){
-        double min[3];
-        double max[3];
-
-        for(int i=0; i < 3; i++) {
-            auto found_max = thrust::max_element(data.begin() + i*n_of_points,
-                                                 data.begin() + (i + 1)*n_of_points);
-            auto found_min = thrust::min_element(data.begin() + i*n_of_points,
-                                                 data.begin() + (i + 1)*n_of_points);
-            max[i] = *found_max;
-            min[i] = *found_min;
+    struct min_op: public thrust::binary_function<Point,Point,Point> {
+        __device__
+        Point operator()(Point lhs, Point rhs) {
+            return Point(thrust::min(lhs.x, rhs.x),
+                         thrust::min(lhs.y, rhs.y),
+                         thrust::min(lhs.z, rhs.z));
         }
+    };
 
-        boundingBox.setMin(Point(min[0], min[1], min[2]));
-        boundingBox.setMax(Point(max[0], max[1], max[2]));
+    struct max_op: public thrust::binary_function<Point,Point,Point> {
+        __device__
+        Point operator()(Point lhs, Point rhs) {
+            return Point(thrust::max(lhs.x, rhs.x),
+                         thrust::max(lhs.y, rhs.y),
+                         thrust::max(lhs.z, rhs.z));
+        }
+    };
+
+    void PointCloud::updateBoundingBox(){
+        min_op min_function;
+        max_op max_function;
+
+        Point min = thrust::reduce(data.begin(), data.end(), Point(0.0,0.0,0.0), min_function);
+        Point max = thrust::reduce(data.begin(), data.end(), Point(0.0,0.0,0.0), max_function);
+
+        // boundingBox.setMin(min);
+        // boundingBox.setMax(max);
+    }
+
+    void PointCloud::likelihoods(const GaussianMixture& mixture, thrust::device_vector<double>& result) {
+
+    }
+
+    int PointCloud::get_n_points() const {
+        return n_points;
     }
 }

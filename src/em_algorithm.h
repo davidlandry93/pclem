@@ -12,9 +12,12 @@ namespace pclem {
     class EmAlgorithm {
     public:
         EmAlgorithm(PointCloud pcl);
+        void expectation();
+        void maximization();
     private:
         PointCloud pcl;
         GaussianMixture mixture;
+        thrust::device_vector<double> likelihoods;
     };
 }
 
