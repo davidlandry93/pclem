@@ -78,7 +78,16 @@ namespace pclem {
     }
 
     void PointCloud::likelihoods(const GaussianMixture& mixture, thrust::device_vector<double>& result) {
+        int n_gaussians = mixture.n_gaussians();
+        auto gaussians = mixture.get_gaussians();
 
+        for(int i=0; i < n_gaussians; i++) {
+            likelihoods_of_distribution(gaussians[i], result.begin() + i*n_gaussians);
+        }
+    }
+
+    void PointCloud::likelihoods_of_distribution(const WeightedGaussian& gaussian, thrust::device_vector<double>::iterator& result) {
+        
     }
 
     int PointCloud::get_n_points() const {
