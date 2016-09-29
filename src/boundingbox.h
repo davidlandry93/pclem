@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "point.cuh"
+#include "point.h"
 
 namespace pclem {
     class BoundingBox {

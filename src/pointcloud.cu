@@ -73,8 +73,8 @@ namespace pclem {
         Point min = thrust::reduce(data.begin(), data.end(), Point(0.0,0.0,0.0), min_function);
         Point max = thrust::reduce(data.begin(), data.end(), Point(0.0,0.0,0.0), max_function);
 
-        // boundingBox.setMin(min);
-        // boundingBox.setMax(max);
+        boundingBox.setMin(min);
+        boundingBox.setMax(max);
     }
 
     void PointCloud::likelihoods(const GaussianMixture& mixture, thrust::device_vector<double>& result) {
