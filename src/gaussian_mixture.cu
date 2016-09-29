@@ -10,8 +10,12 @@ namespace pclem {
         gaussians(gaussians) {
     }
 
-    const thrust::device_vector<WeightedGaussian>& GaussianMixture::get_gaussians() const {
-        return gaussians;
+    thrust::device_vector<WeightedGaussian>::const_iterator GaussianMixture::begin() const {
+        return gaussians.begin();
+    }
+
+    thrust::device_vector<WeightedGaussian>::const_iterator GaussianMixture::end() const {
+        return gaussians.end();
     }
 
     int GaussianMixture::n_gaussians() const {

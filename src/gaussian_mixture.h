@@ -12,8 +12,10 @@ namespace pclem {
     public:
         GaussianMixture();
         GaussianMixture(std::vector<WeightedGaussian> gaussians);
-        const thrust::device_vector<WeightedGaussian>& get_gaussians() const;
+        thrust::device_vector<WeightedGaussian>::const_iterator begin() const;
+        thrust::device_vector<WeightedGaussian>::const_iterator end() const;
         int n_gaussians() const;
+        
     private:
         thrust::device_vector<WeightedGaussian> gaussians;
     };
