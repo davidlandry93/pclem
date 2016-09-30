@@ -88,10 +88,13 @@ namespace pclem {
 
     class gaussian_op : public thrust::unary_function<Point,double> {
     public:
-        gaussian_op(const WeightedGaussian& _g) : g(_g) {}
+        gaussian_op(const WeightedGaussian& _g) : g(_g) {
+            det_sigma = g.get_sigma().det();
+            std::cout << det_sigma;
+        }
         __device__
         double operator()(Point p) {
-            return 0.0;
+            return det_sigma;
         }
 
     private:
@@ -99,7 +102,8 @@ namespace pclem {
         double det_sigma;
     };
 
-    void PointCloud::likelihoods_of_distribution(WeightedGaussian gaussian, thrust::device_vector<double>::iterator result) {
+    void PointCloud::likelihoods_of_distribution(WeightedGaussian gaussian,
+                                                 thrust::device_vector<double>::iterator result) {
         gaussian_op op(gaussian);
 
         thrust::transform(data.begin(), data.end(), result, op);

@@ -6,6 +6,7 @@
 #include <vtkPolyData.h>
 
 #include "pointcloud.h"
+#include "em_algorithm.h"
 
 using namespace pclem;
 
@@ -20,6 +21,9 @@ int main(int argc, char** argv) {
     vtkPolyData* output = reader->GetPolyDataOutput();
 
     PointCloud pcl = PointCloud::from_vtk(output);
+
+    EmAlgorithm em(pcl);
+    em.expectation();
 
     return 0;
 }

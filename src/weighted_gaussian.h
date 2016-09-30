@@ -11,13 +11,8 @@ namespace pclem {
     public:
         WeightedGaussian();
         WeightedGaussian(Point& mu, CovarianceMatrix& sigma);
+        CovarianceMatrix get_sigma();
 
-        struct likelihood : public thrust::unary_function<Point,double> {
-            __host__ __device__
-            double operator()(Point p) {
-                return p.x;
-            }
-        };
 
     private:
         Point mu;

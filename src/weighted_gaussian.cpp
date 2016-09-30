@@ -7,4 +7,9 @@ namespace pclem {
     WeightedGaussian::WeightedGaussian(Point& mu, CovarianceMatrix& sigma) :
         mu(std::move(mu)), sigma(std::move(sigma)) {
     }
+
+    CovarianceMatrix WeightedGaussian::get_sigma() {
+        CovarianceMatrix m(sigma);
+        return m;
+    }
 }

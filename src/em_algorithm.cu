@@ -3,7 +3,7 @@
 #include "covariance_matrix.h"
 
 namespace pclem {
-    EmAlgorithm::EmAlgorithm(PointCloud pcl) :
+    EmAlgorithm::EmAlgorithm(PointCloud& pcl) :
         pcl(std::move(pcl)), mixture() {
 
         std::vector<WeightedGaussian> temp_gaussians;
@@ -23,5 +23,8 @@ namespace pclem {
 
     void EmAlgorithm::expectation() {
         pcl.likelihoods(mixture, likelihoods);
+
+        for(auto likelihood : likelihoods) {
+        }
     }
 }

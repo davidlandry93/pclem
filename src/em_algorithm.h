@@ -11,7 +11,7 @@
 namespace pclem {
     class EmAlgorithm {
     public:
-        EmAlgorithm(PointCloud pcl);
+        EmAlgorithm(PointCloud& pcl);
         void expectation();
         void maximization();
     private:
