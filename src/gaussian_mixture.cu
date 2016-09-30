@@ -3,11 +3,12 @@
 
 
 namespace pclem {
-    GaussianMixture::GaussianMixture() {
+    GaussianMixture::GaussianMixture() :
+        gaussians(std::vector<WeightedGaussian>(0)) {
     }
 
-    GaussianMixture::GaussianMixture(std::vector<WeightedGaussian> gaussians) :
-        gaussians(gaussians) {
+    GaussianMixture::GaussianMixture(std::vector<WeightedGaussian> _gaussians) :
+        gaussians(_gaussians) {
     }
 
     thrust::device_vector<WeightedGaussian>::const_iterator GaussianMixture::begin() const {

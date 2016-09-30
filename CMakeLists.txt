@@ -23,11 +23,12 @@ endif()
 
 include_directories(src "${VTK_INCLUDE_DIRS}")
 
-list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11")
+list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;--relocatable-device-code=true")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
+SET(CUDA_SEPARABLE_COMPILATION ON)
 
 
 file(GLOB SOURCES src/*.cpp src/*.cu)
 
 cuda_add_executable(run_em ${SOURCES})
-target_link_libraries(run_em ${VTK_LIBRARIES} ${CUDA_LIBRARIES})
+target_link_libraries(run_em ${VTK_LIBRARIES} ${CUDA_LIBRARIES} rt cuda cudadevrt)

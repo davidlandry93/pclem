@@ -11,6 +11,9 @@ namespace pclem {
 
         __host__ __device__
         Point(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+
+        __host__ __device__
+        Point(const Point& other) : x(other.x), y(other.y), z(other.z) {}
     };
 }
 

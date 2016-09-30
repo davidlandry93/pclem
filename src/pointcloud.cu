@@ -1,4 +1,5 @@
 
+#include <cstdio>
 #include <chrono>
 #include <limits>
 
@@ -81,6 +82,9 @@ namespace pclem {
         int n_gaussians = mixture.n_gaussians();
         int i = 0;
         for(auto gaussian : mixture) {
+            WeightedGaussian host_gaussian = gaussian;
+            std::cout << "Sigma in mixture" << host_gaussian.get_sigma().det();
+
             likelihoods_of_distribution(gaussian, result.begin() + i*n_gaussians);
             i++;
         }
@@ -88,12 +92,13 @@ namespace pclem {
 
     class gaussian_op : public thrust::unary_function<Point,double> {
     public:
+        __host__
         gaussian_op(const WeightedGaussian& _g) : g(_g) {
             det_sigma = g.get_sigma().det();
-            std::cout << det_sigma;
         }
         __device__
         double operator()(Point p) {
+            //printf("%d", det_sigma);
             return det_sigma;
         }
 
@@ -106,7 +111,7 @@ namespace pclem {
                                                  thrust::device_vector<double>::iterator result) {
         gaussian_op op(gaussian);
 
-        thrust::transform(data.begin(), data.end(), result, op);
+        //thrust::transform(data.begin(), data.end(), result, op);
     }
 
     int PointCloud::get_n_points() const {

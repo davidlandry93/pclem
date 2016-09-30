@@ -13,8 +13,8 @@ namespace pclem {
             sigma.set(1,1,1.0);
             sigma.set(2,2,1.0);
 
-            WeightedGaussian gaussian(corner, sigma);
-            temp_gaussians.push_back(gaussian);
+            //WeightedGaussian gaussian(corner, sigma);
+            //temp_gaussians.push_back(gaussian);
         }
 
         mixture = std::move(GaussianMixture(temp_gaussians));
