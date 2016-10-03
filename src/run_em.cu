@@ -22,7 +22,8 @@ int main(int argc, char** argv) {
 
     PointCloud pcl = PointCloud::from_vtk(output);
 
-    EmAlgorithm em(pcl);
+    auto em = EmAlgorithm::from_pcl(pcl);
+
     em.expectation();
 
     return 0;

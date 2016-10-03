@@ -20,7 +20,7 @@ namespace pclem {
         PointCloud& operator=(PointCloud&& other);
         BoundingBox getBoundingBox();
         void likelihoods(const GaussianMixture& mixture,
-                         thrust::device_vector<double>& result);
+                         thrust::device_vector<double>& result) const;
         void likelihoods_of_distribution(WeightedGaussian gaussian,
                                          thrust::device_vector<double>::iterator result);
         int get_n_points() const;

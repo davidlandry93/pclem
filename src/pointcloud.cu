@@ -78,40 +78,35 @@ namespace pclem {
         boundingBox.setMax(max);
     }
 
-    void PointCloud::likelihoods(const GaussianMixture& mixture, thrust::device_vector<double>& result) {
+    void PointCloud::likelihoods(const GaussianMixture& mixture, thrust::device_vector<double>& result) const {
         int n_gaussians = mixture.n_gaussians();
-        int i = 0;
-        for(auto gaussian : mixture) {
-            WeightedGaussian host_gaussian = gaussian;
-            std::cout << "Sigma in mixture" << host_gaussian.get_sigma().det();
 
-            likelihoods_of_distribution(gaussian, result.begin() + i*n_gaussians);
-            i++;
+        for(int i=0; i < n_gaussians; i++) {
+            WeightedGaussian g = mixture.get_gaussian(i);
+            std::cout << "Got gaussian" << g << std::endl;
         }
     }
 
-    class gaussian_op : public thrust::unary_function<Point,double> {
+    struct gaussian_op : public thrust::unary_function<Point,double> {
     public:
-        __host__
-        gaussian_op(const WeightedGaussian& _g) : g(_g) {
-            det_sigma = g.get_sigma().det();
+        gaussian_op(Point _mu, double _det) : mu(_mu), det_sigma(_det)  {
         }
         __device__
         double operator()(Point p) {
-            //printf("%d", det_sigma);
+            printf("%d", det_sigma);
             return det_sigma;
         }
 
     private:
-        WeightedGaussian g;
+        Point mu;
         double det_sigma;
     };
 
     void PointCloud::likelihoods_of_distribution(WeightedGaussian gaussian,
                                                  thrust::device_vector<double>::iterator result) {
-        gaussian_op op(gaussian);
+        gaussian_op op(Point(1.0,1.0,1.0), 5.0);
 
-        //thrust::transform(data.begin(), data.end(), result, op);
+        thrust::transform(data.begin(), data.end(), result, op);
     }
 
     int PointCloud::get_n_points() const {

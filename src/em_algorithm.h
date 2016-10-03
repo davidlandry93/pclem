@@ -11,10 +11,14 @@
 namespace pclem {
     class EmAlgorithm {
     public:
-        EmAlgorithm(PointCloud& pcl);
+        EmAlgorithm(EmAlgorithm&& other);
+        static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();
         void maximization();
+        EmAlgorithm& operator=(EmAlgorithm&& other);
+        friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
+        EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture, std::vector<double>& likelihoods);
         PointCloud pcl;
         GaussianMixture mixture;
         thrust::device_vector<double> likelihoods;

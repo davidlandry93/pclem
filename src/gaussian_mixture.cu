@@ -8,7 +8,14 @@ namespace pclem {
     }
 
     GaussianMixture::GaussianMixture(std::vector<WeightedGaussian> _gaussians) :
-        gaussians(_gaussians) {
+        gaussians(std::move(_gaussians)) {
+    }
+
+    GaussianMixture::GaussianMixture(GaussianMixture&& other) :
+        gaussians(other.gaussians) {
+
+        std::cout << other.gaussians[0];
+        std::cout << "During construction: " << gaussians[0];
     }
 
     thrust::device_vector<WeightedGaussian>::const_iterator GaussianMixture::begin() const {
@@ -21,5 +28,15 @@ namespace pclem {
 
     int GaussianMixture::n_gaussians() const {
         return gaussians.size();
+    }
+
+
+    GaussianMixture& GaussianMixture::operator=(GaussianMixture&& other) {
+        std::swap(gaussians, other.gaussians);
+        return *this;
+    }
+
+    WeightedGaussian GaussianMixture::get_gaussian(int i) const {
+        return gaussians[i];
     }
 }

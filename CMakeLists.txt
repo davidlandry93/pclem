@@ -23,9 +23,8 @@ endif()
 
 include_directories(src "${VTK_INCLUDE_DIRS}")
 
-list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;--relocatable-device-code=true")
+list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
-SET(CUDA_SEPARABLE_COMPILATION ON)
 
 
 file(GLOB SOURCES src/*.cpp src/*.cu)
