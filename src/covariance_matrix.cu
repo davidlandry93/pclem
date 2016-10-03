@@ -1,5 +1,5 @@
 
-#include "covariance_matrix.h"
+#include "covariance_matrix.cuh"
 
 namespace pclem {
     double CovarianceMatrix::get(int i, int j) const {

@@ -7,7 +7,7 @@
 
 #include <thrust/device_vector.h>
 
-#include "point.h"
+#include "point.cuh"
 #include "boundingbox.h"
 #include "gaussian_mixture.h"
 

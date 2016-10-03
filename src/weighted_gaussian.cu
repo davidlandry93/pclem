@@ -1,5 +1,5 @@
 
-#include "weighted_gaussian.h"
+#include "weighted_gaussian.cuh"
 
 
 namespace pclem {

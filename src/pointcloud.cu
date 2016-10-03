@@ -9,7 +9,7 @@
 #include <thrust/execution_policy.h>
 
 #include "pointcloud.h"
-#include "point.h"
+#include "point.cuh"
 
 using namespace std::chrono;
 
@@ -83,7 +83,6 @@ namespace pclem {
 
         for(int i=0; i < n_gaussians; i++) {
             WeightedGaussian g = mixture.get_gaussian(i);
-            std::cout << "Got gaussian" << g << std::endl;
         }
     }
 

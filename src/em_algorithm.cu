@@ -1,6 +1,6 @@
 
 #include "em_algorithm.h"
-#include "covariance_matrix.h"
+#include "covariance_matrix.cuh"
 
 namespace pclem {
     EmAlgorithm::EmAlgorithm(PointCloud& pcl,
@@ -31,12 +31,7 @@ namespace pclem {
 
         auto likelihoods = std::vector<double>(mixture.n_gaussians()*pcl.get_n_points());
 
-        std::cout << "before return" << mixture.get_gaussian(0) << std::endl;
-
         EmAlgorithm temp_em(pcl, mixture, likelihoods);
-
-        std::cout << "After construction: " << temp_em;
-        std::cout << temp_gaussians[0];
 
         return temp_em;
     }

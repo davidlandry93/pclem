@@ -3,9 +3,9 @@
 
 #include <thrust/device_vector.h>
 
-#include "point.h"
-#include "covariance_matrix.h"
-#include "weighted_gaussian.h"
+#include "point.cuh"
+#include "covariance_matrix.cuh"
+#include "weighted_gaussian.cuh"
 
 namespace pclem {
     class GaussianMixture {

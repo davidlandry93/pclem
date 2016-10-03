@@ -13,9 +13,6 @@ namespace pclem {
 
     GaussianMixture::GaussianMixture(GaussianMixture&& other) :
         gaussians(other.gaussians) {
-
-        std::cout << other.gaussians[0];
-        std::cout << "During construction: " << gaussians[0];
     }
 
     thrust::device_vector<WeightedGaussian>::const_iterator GaussianMixture::begin() const {
