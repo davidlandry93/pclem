@@ -11,6 +11,7 @@
 
 #include <armadillo>
 
+#include "strided_range.h"
 #include "pointcloud.h"
 #include "point.cuh"
 
@@ -88,6 +89,7 @@ namespace pclem {
             WeightedGaussian g = mixture.get_gaussian(i);
 
             likelihoods_of_distribution(mixture.get_gaussian(i), result.begin() + i*n_points);
+            normalize_likelihoods(result, n_gaussians, n_points);
         }
     }
 
@@ -153,6 +155,25 @@ namespace pclem {
         std::cout << std::scientific;
         std::cout << *result << " " << *(result + 1) << std::endl;
         std::cout << "Max: " << *(thrust::max_element(result, result + (data.end() - data.begin()))) << std::endl;
+    }
+
+    struct normalization_op : public thrust::unary_function<double,double> {
+        double operator()(double likelihood) {
+            return 0.0;
+        }
+    };
+
+    void PointCloud::normalize_likelihoods(thrust::device_vector<double>& likelihoods,
+                                           int n_gaussians,
+                                           int n_points) const {
+        typedef thrust::device_vector<double>::iterator Iterator;
+
+        for(int i = 0; i < n_points; i++) {
+            StridedRange<Iterator> range(likelihoods.begin() + i, likelihoods.end(), n_points);
+
+            double sum = thrust::reduce(range.begin(), range.end(), 0.0, thrust::plus<double>());
+            std::cout << sum << std::endl;
+        }
     }
 
     int PointCloud::get_n_points() const {
