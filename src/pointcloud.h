@@ -22,7 +22,7 @@ namespace pclem {
         void likelihoods(const GaussianMixture& mixture,
                          thrust::device_vector<double>& result) const;
         void likelihoods_of_distribution(WeightedGaussian gaussian,
-                                         thrust::device_vector<double>::iterator result);
+                                         thrust::device_vector<double>::iterator result) const;
         int get_n_points() const;
     private:
         thrust::device_vector<Point> data;

@@ -19,9 +19,9 @@ namespace pclem {
         std::vector<WeightedGaussian> temp_gaussians;
         for(Point corner : pcl.getBoundingBox().corners()) {
             CovarianceMatrix sigma = CovarianceMatrix();
-            sigma.set(0,0,1.0);
-            sigma.set(1,1,1.0);
-            sigma.set(2,2,1.0);
+            sigma.set(0,0,10.0);
+            sigma.set(1,1,10.0);
+            sigma.set(2,2,10.0);
 
             WeightedGaussian gaussian(corner, sigma);
             temp_gaussians.push_back(gaussian);
@@ -45,9 +45,6 @@ namespace pclem {
 
     void EmAlgorithm::expectation() {
         pcl.likelihoods(mixture, likelihoods);
-
-        for(auto likelihood : likelihoods) {
-        }
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {

@@ -1,4 +1,5 @@
 
+#include <math.h>
 #include <cstdio>
 #include <chrono>
 #include <limits>
@@ -7,6 +8,8 @@
 #include <thrust/device_vector.h>
 #include <thrust/extrema.h>
 #include <thrust/execution_policy.h>
+
+#include <armadillo>
 
 #include "pointcloud.h"
 #include "point.cuh"
@@ -21,8 +24,8 @@ namespace pclem {
     }
 
     PointCloud::PointCloud(PointCloud&& other) :
-        n_points(other.n_points), boundingBox(other.boundingBox) {
-        data = std::move(data);
+        data(), n_points(other.n_points), boundingBox(other.boundingBox) {
+        std::swap(data,other.data);
     }
 
     PointCloud& PointCloud::operator=(PointCloud&& other) {
@@ -83,29 +86,73 @@ namespace pclem {
 
         for(int i=0; i < n_gaussians; i++) {
             WeightedGaussian g = mixture.get_gaussian(i);
+
+            likelihoods_of_distribution(mixture.get_gaussian(i), result.begin() + i*n_points);
         }
     }
 
     struct gaussian_op : public thrust::unary_function<Point,double> {
     public:
-        gaussian_op(Point _mu, double _det) : mu(_mu), det_sigma(_det)  {
-        }
-        __device__
-        double operator()(Point p) {
-            printf("%d", det_sigma);
-            return det_sigma;
+        gaussian_op(Point _mu, double _det, std::array<double,9> _inv_of_covariance) :
+            mu(_mu),
+            base(1 / sqrt(pow(2*M_PI, 3) * _det)),
+            inv() {
+            for(int i = 0; i < 9; i++) {
+                inv[i] = _inv_of_covariance[i];
+            }
+
+
+            std::cout << _mu;
+            std::cout << _det;
         }
 
-    private:
-        Point mu;
-        double det_sigma;
+
+        // https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Density_function
+        __host__ __device__
+        double operator()(Point x) {
+            Point x_minus_mu = x - mu;
+            double temp_product[3] = {x_minus_mu.z*inv[6] + x_minus_mu.y*inv[3] + x_minus_mu.x*inv[0],
+                                      x_minus_mu.z*inv[7] + x_minus_mu.y*inv[4] + x_minus_mu.x*inv[1],
+                                      x_minus_mu.z*inv[8] + x_minus_mu.y*inv[5] + x_minus_mu.x*inv[2]};
+
+            double scale_product =
+                x_minus_mu.x*temp_product[0] +
+                x_minus_mu.y*temp_product[1] +
+                x_minus_mu.z*temp_product[2];
+
+            return base * exp(-0.5 * scale_product);
+        }
+
+        __const__ Point mu;
+        __const__ double base;
+        double inv[9];
     };
 
     void PointCloud::likelihoods_of_distribution(WeightedGaussian gaussian,
-                                                 thrust::device_vector<double>::iterator result) {
-        gaussian_op op(Point(1.0,1.0,1.0), 5.0);
+                                                 thrust::device_vector<double>::iterator result) const {
+        std::array<double,9> cov_mat = gaussian.get_sigma().as_array();
 
+        arma::mat33 arma_cov_mat(cov_mat.data());
+        double det_of_covariance = arma::det(arma_cov_mat);
+
+        arma::mat33 arma_inv_of_covariance = arma::inv_sympd(arma_cov_mat);
+
+        std::array<double,9> inv_of_covariance;
+        for(auto i = 0; i < 3; i++) {
+            for (auto j=0; j < 3; j++) {
+                inv_of_covariance[i*3+j] = arma_inv_of_covariance(i,j);
+            }
+        }
+
+        gaussian_op op(gaussian.get_mu(), det_of_covariance, inv_of_covariance);
+
+        std::cout << "callin" << std::endl;
         thrust::transform(data.begin(), data.end(), result, op);
+
+        std::cout.precision(17);
+        std::cout << std::scientific;
+        std::cout << *result << " " << *(result + 1) << std::endl;
+        std::cout << "Max: " << *(thrust::max_element(result, result + (data.end() - data.begin()))) << std::endl;
     }
 
     int PointCloud::get_n_points() const {

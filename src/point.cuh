@@ -17,6 +17,11 @@ namespace pclem {
         __host__ __device__
         Point(const Point& other) : x(other.x), y(other.y), z(other.z) {}
 
+        __host__ __device__
+        Point operator-(const Point& other) {
+            return Point(x - other.x, y - other.y, z - other.z);
+        }
+
         double get_x() const { return x; }
         double get_y() const { return y; }
         double get_z() const { return z; }

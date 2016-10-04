@@ -5,8 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project (pclem)
-find_package(VTK)
-find_package(CUDA)
+find_package(VTK REQUIRED)
+find_package(CUDA REQUIRED)
+find_package(Armadillo REQUIRED)
 
 if (NOT VTK_FOUND)
   ExternalProject_Add(
@@ -21,7 +22,7 @@ if (NOT VTK_FOUND)
   find_package(VTK)
 endif()
 
-include_directories(src "${VTK_INCLUDE_DIRS}")
+include_directories(src "${VTK_INCLUDE_DIRS}" "${ARMADILLO_INCLUDE_DIRS}")
 
 list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
@@ -30,4 +31,5 @@ SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 file(GLOB SOURCES src/*.cpp src/*.cu)
 
 cuda_add_executable(run_em ${SOURCES})
-target_link_libraries(run_em ${VTK_LIBRARIES} ${CUDA_LIBRARIES} rt cuda cudadevrt)
+target_link_libraries(run_em ${VTK_LIBRARIES}
+  ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES})
