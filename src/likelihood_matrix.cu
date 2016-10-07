@@ -2,6 +2,7 @@
 #include <thrust/extrema.h>
 #include <armadillo>
 #include "likelihood_matrix.h"
+#include "strided_range.h"
 
 namespace pclem {
     LikelihoodMatrix::LikelihoodMatrix() : likelihoods() {
@@ -30,6 +31,8 @@ namespace pclem {
         for(int i = 0; i < n_gaussians; i++) {
             likelihoods_of_distribution(pcl, mixture.get_gaussian(i), likelihoods.begin() + i*n_points);
         }
+
+        normalize_likelihoods(n_points, likelihoods);
 
         return LikelihoodMatrix(n_points, n_gaussians, likelihoods);
     }
@@ -94,13 +97,23 @@ namespace pclem {
 
         gaussian_op op(distribution.get_mu(), det_of_covariance, inv_of_covariance);
 
-        std::cout << "callin" << std::endl;
         thrust::transform(pcl.begin(), pcl.end(), result, op);
-
-        std::cout.precision(17);
-        std::cout << std::scientific;
-        std::cout << *result << " " << *(result + 1) << std::endl;
-        std::cout << "Max: " << *(thrust::max_element(result, result + (pcl.end() - pcl.begin()))) << std::endl;
     }
 
+    void LikelihoodMatrix::normalize_likelihoods(int n_points,
+                                                 thrust::device_vector<double>& likelihoods) {
+        typedef StridedRange<thrust::device_vector<double>::iterator> strided_iterator;
+
+        for(int i = 0; i < n_points; i++) {
+            std::cout << "Before iterator" << std::endl;
+            strided_iterator iterator(likelihoods.begin(), likelihoods.end(), n_points);
+
+            std::cout << "before sum";
+            double sum_of_posteriors = thrust::reduce(iterator.begin(),
+                                                      iterator.end(),
+                                                      0.0,
+                                                      thrust::plus<double>());
+            std::cout << "Sum of post" << sum_of_posteriors << std::endl;
+        }
+    }
 }

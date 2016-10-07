@@ -17,6 +17,7 @@ namespace pclem {
             const index_type stride;
 
             stride_op(index_type stride) : stride(stride) {}
+
             index_type operator()(const index_type& i) {
                 return i * stride;
             }

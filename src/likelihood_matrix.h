@@ -23,6 +23,7 @@ namespace pclem {
 
         LikelihoodMatrix(int n_points, int n_distributions, thrust::device_vector<double>& likelihoods);
         static void likelihoods_of_distribution(const PointCloud& pcl, const WeightedGaussian& distribution, thrust::device_vector<double>::iterator result);
+        static void normalize_likelihoods(int n_points, thrust::device_vector<double>& likelihoods);
     };
 }
 
