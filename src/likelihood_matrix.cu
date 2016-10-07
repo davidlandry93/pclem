@@ -106,14 +106,12 @@ namespace pclem {
 
         for(int i = 0; i < n_points; i++) {
             std::cout << "Before iterator" << std::endl;
-            strided_iterator iterator(likelihoods.begin(), likelihoods.end(), n_points);
+            strided_iterator iterator(likelihoods.begin() + i, likelihoods.end(), n_points);
 
-            std::cout << "before sum";
-            double sum_of_posteriors = thrust::reduce(iterator.begin(),
-                                                      iterator.end(),
-                                                      0.0,
-                                                      thrust::plus<double>());
-            std::cout << "Sum of post" << sum_of_posteriors << std::endl;
+            for(auto it = iterator.begin(); it != iterator.end(); it++) {
+                std::cout << *it;
+            }
+            std::cout << std::endl;
         }
     }
 }
