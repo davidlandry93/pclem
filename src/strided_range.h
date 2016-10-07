@@ -28,7 +28,7 @@ namespace pclem {
 
         StridedRange(T first, T last, index_type stride)
             : first(first), last(last), stride(stride) {}
-        
+
         strided_iterator begin(void) const {
             return strided_iterator(first, transform_iterator(counting_iterator(0), stride_op(stride)));
         }

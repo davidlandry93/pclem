@@ -7,6 +7,7 @@
 
 #include "pointcloud.h"
 #include "gaussian_mixture.h"
+#include "likelihood_matrix.h"
 
 namespace pclem {
     class EmAlgorithm {
@@ -21,7 +22,7 @@ namespace pclem {
         EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture, std::vector<double>& likelihoods);
         PointCloud pcl;
         GaussianMixture mixture;
-        thrust::device_vector<double> likelihoods;
+        LikelihoodMatrix likelihoods;
     };
 }
 

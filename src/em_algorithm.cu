@@ -8,7 +8,7 @@ namespace pclem {
                              std::vector<double>& likelihoods) :
         pcl(std::move(pcl)),
         mixture(std::move(mixture)),
-        likelihoods(likelihoods) {
+        likelihoods(pcl.get_n_points(), mixture.n_gaussians(), likelihoods) {
     }
 
     EmAlgorithm::EmAlgorithm(EmAlgorithm&& other) :
@@ -44,7 +44,7 @@ namespace pclem {
     }
 
     void EmAlgorithm::expectation() {
-        pcl.likelihoods(mixture, likelihoods);
+        likelihoods = LikelihoodMatrix::build(pcl, mixture);
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {

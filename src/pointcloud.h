@@ -19,9 +19,9 @@ namespace pclem {
         PointCloud(PointCloud&& other);
         PointCloud& operator=(PointCloud&& other);
         BoundingBox getBoundingBox();
-        void likelihoods(const GaussianMixture& mixture,
-                         thrust::device_vector<double>& result) const;
         int get_n_points() const;
+        thrust::device_vector<Point>::const_iterator begin() const;
+        thrust::device_vector<Point>::const_iterator end() const;
     private:
         thrust::device_vector<Point> data;
         int n_points;
@@ -30,8 +30,6 @@ namespace pclem {
         PointCloud(std::vector<Point> data, int n_of_points);
         PointCloud(PointCloud& other);
         void updateBoundingBox();
-        void likelihoods_of_distribution(WeightedGaussian gaussian,
-                                         thrust::device_vector<double>::iterator result) const;
         void normalize_likelihoods(thrust::device_vector<double>& likelihoods, int n_gaussians, int n_points) const;
     };
 
