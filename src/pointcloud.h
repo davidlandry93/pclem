@@ -9,7 +9,6 @@
 
 #include "point.cuh"
 #include "boundingbox.h"
-#include "gaussian_mixture.h"
 
 namespace pclem {
 

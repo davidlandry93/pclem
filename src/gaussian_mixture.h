@@ -6,6 +6,7 @@
 #include "point.cuh"
 #include "covariance_matrix.cuh"
 #include "weighted_gaussian.cuh"
+#include "pointcloud.h"
 
 namespace pclem {
     class GaussianMixture {
@@ -14,7 +15,6 @@ namespace pclem {
         GaussianMixture(std::vector<WeightedGaussian> gaussians);
         GaussianMixture(GaussianMixture&& other);
         GaussianMixture& operator=(GaussianMixture&& other);
-
         thrust::device_vector<WeightedGaussian>::const_iterator begin() const;
         thrust::device_vector<WeightedGaussian>::const_iterator end() const;
         int n_gaussians() const;

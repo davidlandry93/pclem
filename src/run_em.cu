@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
     auto em = EmAlgorithm::from_pcl(pcl);
 
     em.expectation();
+    em.maximization();
 
     return 0;
 }

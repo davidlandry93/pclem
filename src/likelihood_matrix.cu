@@ -1,4 +1,6 @@
 
+#include <thrust/iterator/constant_iterator.h>
+#include <thrust/inner_product.h>
 #include <thrust/extrema.h>
 #include <armadillo>
 #include "likelihood_matrix.h"
@@ -51,9 +53,6 @@ namespace pclem {
             for(int i = 0; i < 9; i++) {
                 inv[i] = _inv_of_covariance[i];
             }
-
-            std::cout << _mu;
-            std::cout << _det;
         }
 
 
@@ -107,7 +106,55 @@ namespace pclem {
         for(int i = 0; i < n_points; i++) {
             strided_iterator iterator(likelihoods.begin() + i, likelihoods.end(), n_points);
 
-            thrust::reduce(iterator.begin(), iterator.end(), 0.0, thrust::plus<double>());
+            double sum_of_likelihoods = thrust::reduce(iterator.begin(), iterator.end(), 0.0, thrust::plus<double>());
+
+            thrust::transform(iterator.begin(), iterator.end(),
+                              thrust::make_constant_iterator(sum_of_likelihoods),
+                              iterator.begin(), thrust::divides<double>());
         }
+    }
+
+    struct point_by_scalar_op : public thrust::binary_function<Point,double,Point> {
+    public:
+        __host__ __device__
+        Point operator()(Point x, double pi) {
+            return Point(x.x * pi, x.y * pi, x.z * pi);
+        }
+    };
+
+    struct sum_of_pts_op : public thrust::binary_function<Point,Point,Point> {
+    public:
+        __host__ __device__
+        Point operator()(Point lhs, Point rhs) {
+            return Point(lhs.x + rhs.x,
+                         lhs.y + rhs.y,
+                         lhs.z + rhs.z);
+        }
+    };
+
+    GaussianMixture LikelihoodMatrix::gaussian_mixture_of_pcl(const PointCloud& pcl) const {
+        std::vector<WeightedGaussian> gaussians;
+        thrust::device_vector<Point> mus(n_distributions);
+
+        for(int i = 0; i < n_distributions; i++) {
+            Point new_mu = thrust::inner_product(pcl.begin(), pcl.end(),
+                                                 likelihoods.begin() + i*n_points,
+                                                 Point(0.0, 0.0, 0.0),
+                                                 sum_of_pts_op(),
+                                                 point_by_scalar_op());
+
+            double sum_of_gammas = thrust::reduce(likelihoods.begin() + i*n_points,
+                                                  likelihoods.begin() + (i+1)*n_points,
+                                                  0.0, thrust::plus<double>());
+
+            new_mu = Point(new_mu.x / sum_of_gammas,
+                           new_mu.y / sum_of_gammas,
+                           new_mu.z / sum_of_gammas);
+
+            std::cout << "New mu: " << new_mu <<
+                "Sum of gammas: " << sum_of_gammas << std::endl;
+        }
+
+        return GaussianMixture(gaussians);
     }
 }

@@ -16,6 +16,7 @@ namespace pclem {
         static LikelihoodMatrix build(const PointCloud& pcl, const GaussianMixture& mixture);
         LikelihoodMatrix& operator=(LikelihoodMatrix&& other);
         void swap(LikelihoodMatrix& other);
+        GaussianMixture gaussian_mixture_of_pcl(const PointCloud& pcl) const;
     private:
         int n_distributions;
         int n_points;

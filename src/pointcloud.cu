@@ -97,19 +97,6 @@ namespace pclem {
         return data.end();
     }
 
-    void PointCloud::normalize_likelihoods(thrust::device_vector<double>& likelihoods,
-                                           int n_gaussians,
-                                           int n_points) const {
-        typedef thrust::device_vector<double>::iterator Iterator;
-
-        for(int i = 0; i < n_points; i++) {
-            StridedRange<Iterator> range(likelihoods.begin() + i, likelihoods.end(), n_points);
-
-            double sum = thrust::reduce(range.begin(), range.end(), 0.0, thrust::plus<double>());
-            std::cout << sum << std::endl;
-        }
-    }
-
     int PointCloud::get_n_points() const {
         return n_points;
     }

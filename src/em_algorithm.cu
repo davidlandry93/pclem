@@ -47,6 +47,10 @@ namespace pclem {
         likelihoods = LikelihoodMatrix::build(pcl, mixture);
     }
 
+    void EmAlgorithm::maximization() {
+        GaussianMixture new_mixture = likelihoods.gaussian_mixture_of_pcl(pcl);
+    }
+
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {
         std::cout << "EM: " << em.mixture.get_gaussian(0);
         return os;
