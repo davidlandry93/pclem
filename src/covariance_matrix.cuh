@@ -5,6 +5,7 @@
 #include <array>
 
 #include "point.cuh"
+#include "raw_covariance_matrix.h"
 
 namespace pclem {
     class CovarianceMatrix {
@@ -17,12 +18,31 @@ namespace pclem {
             values = other.values;
         }
 
+        CovarianceMatrix(double* _values) {
+            for(int i = 0; i < 9; i++) {
+                values[i] = _values[i];
+            }
+        }
+
+        CovarianceMatrix(RawCovarianceMatrix& m);
+
+        static CovarianceMatrix zeros() {
+            double zeros[9] = {0.0};
+            return CovarianceMatrix(zeros);
+        }
+
         __host__ __device__
         Point operator*(const Point& rhs) {
             return Point(
                 values[0]*rhs.x + values[1]*rhs.y + values[2]*rhs.z,
                 values[3]*rhs.x + values[4]*rhs.y + values[5]*rhs.z,
                 values[6]*rhs.x + values[7]*rhs.y + values[8]*rhs.z);
+        }
+
+        void operator+=(const CovarianceMatrix& rhs) {
+            for(int i = 0; i < 9; i++) {
+                values[i] += rhs.values[i];
+            }
         }
 
         double get(int i, int j) const;

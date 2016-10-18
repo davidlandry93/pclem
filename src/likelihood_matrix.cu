@@ -114,6 +114,31 @@ namespace pclem {
         }
     }
 
+
+
+    GaussianMixture LikelihoodMatrix::gaussian_mixture_of_pcl(const PointCloud& pcl) const {
+        std::vector<WeightedGaussian> gaussians;
+        thrust::device_vector<Point> mus(n_distributions);
+
+        for(int i = 0; i < n_distributions; i++) {
+            double sum_of_gammas = thrust::reduce(likelihoods.begin() + i*n_points,
+                                                  likelihoods.begin() + (i+1)*n_points,
+                                                  0.0, thrust::plus<double>());
+
+            Point new_mu = compute_mu(pcl, likelihoods.begin() + i*n_points, sum_of_gammas);
+            CovarianceMatrix new_sigma = compute_sigma(pcl,
+                                                       likelihoods.begin() + i*n_points,
+                                                       sum_of_gammas,
+                                                       new_mu);
+
+            double new_weight = sum_of_gammas / n_points;
+
+            gaussians.push_back(WeightedGaussian(new_mu, new_sigma, new_weight));
+        }
+
+        return GaussianMixture(gaussians);
+    }
+
     struct point_by_scalar_op : public thrust::binary_function<Point,double,Point> {
     public:
         __host__ __device__
@@ -132,29 +157,71 @@ namespace pclem {
         }
     };
 
-    GaussianMixture LikelihoodMatrix::gaussian_mixture_of_pcl(const PointCloud& pcl) const {
-        std::vector<WeightedGaussian> gaussians;
-        thrust::device_vector<Point> mus(n_distributions);
+    Point LikelihoodMatrix::compute_mu(const PointCloud& pcl, thrust::device_vector<double>::const_iterator likelihoods, double sum_of_gammas) const {
+        Point new_mu = thrust::inner_product(pcl.begin(), pcl.end(),
+                                             likelihoods,
+                                             Point(0.0, 0.0, 0.0),
+                                             sum_of_pts_op(),
+                                             point_by_scalar_op());
 
-        for(int i = 0; i < n_distributions; i++) {
-            Point new_mu = thrust::inner_product(pcl.begin(), pcl.end(),
-                                                 likelihoods.begin() + i*n_points,
-                                                 Point(0.0, 0.0, 0.0),
-                                                 sum_of_pts_op(),
-                                                 point_by_scalar_op());
+        new_mu = Point(new_mu.x / sum_of_gammas,
+                       new_mu.y / sum_of_gammas,
+                       new_mu.z / sum_of_gammas);
 
-            double sum_of_gammas = thrust::reduce(likelihoods.begin() + i*n_points,
-                                                  likelihoods.begin() + (i+1)*n_points,
-                                                  0.0, thrust::plus<double>());
+        
 
-            new_mu = Point(new_mu.x / sum_of_gammas,
-                           new_mu.y / sum_of_gammas,
-                           new_mu.z / sum_of_gammas);
+        return new_mu;
+    }
 
-            std::cout << "New mu: " << new_mu <<
-                "Sum of gammas: " << sum_of_gammas << std::endl;
+    struct sum_of_cov_matrix_op : public thrust::binary_function<RawCovarianceMatrix, RawCovarianceMatrix, RawCovarianceMatrix> {
+    public:
+        __host__ __device__
+        RawCovarianceMatrix operator()(RawCovarianceMatrix lhs, RawCovarianceMatrix rhs) {
+            return lhs + rhs;
         }
+    };
 
-        return GaussianMixture(gaussians);
+    struct point_to_cov_op : public thrust::binary_function<Point,double,RawCovarianceMatrix> {
+    public:
+        __host__ __device__
+        RawCovarianceMatrix operator()(Point& p, double gamma) {
+            RawCovarianceMatrix r;
+
+            r.v00 = p.x * p.x * gamma;
+            r.v11 = p.y * p.y * gamma;
+            r.v22 = p.z * p.z * gamma;
+
+            r.v10 = r.v01 = p.x * p.y * gamma;
+            r.v20 = r.v02 = p.x * p.z * gamma;
+            r.v21 = r.v12 = p.y * p.z * gamma;
+
+            return r;
+        }
+    };
+
+    CovarianceMatrix LikelihoodMatrix::compute_sigma(const PointCloud& pcl,
+                                                        thrust::device_vector<double>::const_iterator likelihoods,
+                                                        double sum_of_gammas,
+                                                        const Point& new_mu) const {
+        RawCovarianceMatrix init = RawCovarianceMatrix::zeros();
+        RawCovarianceMatrix new_sigma = thrust::inner_product(pcl.begin(), pcl.end(),
+                                                              likelihoods,
+                                                              init,
+                                                              sum_of_cov_matrix_op(),
+                                                              point_to_cov_op());
+
+        RawCovarianceMatrix base_sigma;
+
+        base_sigma.v00 = new_mu.x * new_mu.x;
+        base_sigma.v11 = new_mu.y * new_mu.y;
+        base_sigma.v22 = new_mu.z * new_mu.z;
+
+        base_sigma.v01 = base_sigma.v10 = new_mu.x * new_mu.y;
+        base_sigma.v02 = base_sigma.v20 = new_mu.x * new_mu.z;
+        base_sigma.v21 = base_sigma.v12 = new_mu.z * new_mu.y;
+
+        new_sigma = new_sigma / sum_of_gammas - base_sigma;
+
+        return CovarianceMatrix(new_sigma);
     }
 }

@@ -2,6 +2,18 @@
 #include "covariance_matrix.cuh"
 
 namespace pclem {
+    CovarianceMatrix::CovarianceMatrix(RawCovarianceMatrix& m) {
+        values[0] = m.v00;
+        values[1] = m.v01;
+        values[2] = m.v02;
+        values[3] = m.v10;
+        values[4] = m.v11;
+        values[5] = m.v12;
+        values[6] = m.v20;
+        values[7] = m.v21;
+        values[8] = m.v22;
+    }
+
     double CovarianceMatrix::get(int i, int j) const {
         return values[i*3 + j];
     }

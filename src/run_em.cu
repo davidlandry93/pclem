@@ -26,6 +26,12 @@ int main(int argc, char** argv) {
 
     em.expectation();
     em.maximization();
+    std::cout << em;
+
+    em.expectation();
+    em.maximization();
+    std::cout << em;
+
 
     return 0;
 }

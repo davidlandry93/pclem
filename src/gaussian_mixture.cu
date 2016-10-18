@@ -36,4 +36,14 @@ namespace pclem {
     WeightedGaussian GaussianMixture::get_gaussian(int i) const {
         return gaussians[i];
     }
+
+    std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture) {
+        for(auto gaussian : mixture) {
+            os << gaussian;
+            os << "=====" << std::endl;
+        }
+        os << std::endl;
+
+        return os;
+    }
 }

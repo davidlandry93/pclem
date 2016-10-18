@@ -10,8 +10,8 @@ namespace pclem {
     class WeightedGaussian {
     public:
         __host__ __device__
-        WeightedGaussian() : mu(), sigma() {}
-        WeightedGaussian(Point& mu, CovarianceMatrix& sigma);
+        WeightedGaussian() : mu(), sigma(), weight(0.0) {}
+        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight);
 
         __host__ __device__
         WeightedGaussian(const WeightedGaussian& other) :
@@ -25,6 +25,7 @@ namespace pclem {
     private:
         Point mu;
         CovarianceMatrix sigma;
+        double weight;
     };
 }
 

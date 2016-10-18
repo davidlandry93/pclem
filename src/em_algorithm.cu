@@ -17,13 +17,14 @@ namespace pclem {
 
     EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
         std::vector<WeightedGaussian> temp_gaussians;
+        double initial_weight_of_gaussian = 1.0 / 8.0;
         for(Point corner : pcl.getBoundingBox().corners()) {
             CovarianceMatrix sigma = CovarianceMatrix();
             sigma.set(0,0,10.0);
             sigma.set(1,1,10.0);
             sigma.set(2,2,10.0);
 
-            WeightedGaussian gaussian(corner, sigma);
+            WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian);
             temp_gaussians.push_back(gaussian);
         }
 
@@ -49,10 +50,11 @@ namespace pclem {
 
     void EmAlgorithm::maximization() {
         GaussianMixture new_mixture = likelihoods.gaussian_mixture_of_pcl(pcl);
+        mixture = std::move(new_mixture);
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {
-        std::cout << "EM: " << em.mixture.get_gaussian(0);
+        std::cout << "EM: " << em.mixture;
         return os;
     }
 }
