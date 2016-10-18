@@ -14,10 +14,11 @@ namespace pclem {
         typedef typename thrust::iterator_difference<T>::type index_type;
 
         struct stride_op : public thrust::unary_function<index_type, index_type> {
-            const index_type stride;
+            index_type stride;
 
             stride_op(index_type stride) : stride(stride) {}
 
+            __host__ __device__
             index_type operator()(const index_type& i) {
                 return i * stride;
             }

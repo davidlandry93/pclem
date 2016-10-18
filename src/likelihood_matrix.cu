@@ -105,15 +105,9 @@ namespace pclem {
         typedef StridedRange<thrust::device_vector<double>::iterator> strided_iterator;
 
         for(int i = 0; i < n_points; i++) {
-            std::cout << "Before iterator" << std::endl;
             strided_iterator iterator(likelihoods.begin() + i, likelihoods.end(), n_points);
 
-            for(auto it = iterator.begin(); it != iterator.end(); it++) {
-                std::cout << *it;
-            }
-            std::cout << std::endl;
-
-            thrust::reduce(likelihoods.begin(), likelihoods.end(), 0.0, thrust::plus<double>());
+            thrust::reduce(iterator.begin(), iterator.end(), 0.0, thrust::plus<double>());
         }
     }
 }
