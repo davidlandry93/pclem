@@ -112,6 +112,8 @@ namespace pclem {
                 std::cout << *it;
             }
             std::cout << std::endl;
+
+            thrust::reduce(likelihoods.begin(), likelihoods.end(), 0.0, thrust::plus<double>());
         }
     }
 }
