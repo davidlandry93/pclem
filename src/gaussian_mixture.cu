@@ -27,7 +27,6 @@ namespace pclem {
         return gaussians.size();
     }
 
-
     GaussianMixture& GaussianMixture::operator=(GaussianMixture&& other) {
         std::swap(gaussians, other.gaussians);
         return *this;

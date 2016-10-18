@@ -46,9 +46,9 @@ namespace pclem {
 
     struct gaussian_op : public thrust::unary_function<Point,double> {
     public:
-        gaussian_op(Point _mu, double _det, std::array<double,9> _inv_of_covariance) :
+        gaussian_op(Point _mu, double _weight, double _det, std::array<double,9> _inv_of_covariance) :
             mu(_mu),
-            base(1 / sqrt(pow(2*M_PI, 3) * _det)),
+            base(_weight / sqrt(pow(2*M_PI, 3) * _det)),
             inv() {
             for(int i = 0; i < 9; i++) {
                 inv[i] = _inv_of_covariance[i];
@@ -85,7 +85,7 @@ namespace pclem {
         arma::mat33 arma_cov_mat(cov_mat.data());
         double det_of_covariance = arma::det(arma_cov_mat);
 
-        arma::mat33 arma_inv_of_covariance = arma::inv_sympd(arma_cov_mat);
+        arma::mat33 arma_inv_of_covariance = arma::inv(arma_cov_mat);
 
         std::array<double,9> inv_of_covariance;
         for(auto i = 0; i < 3; i++) {
@@ -94,7 +94,7 @@ namespace pclem {
             }
         }
 
-        gaussian_op op(distribution.get_mu(), det_of_covariance, inv_of_covariance);
+        gaussian_op op(distribution.get_mu(), distribution.get_weight(), det_of_covariance, inv_of_covariance);
 
         thrust::transform(pcl.begin(), pcl.end(), result, op);
     }
@@ -167,8 +167,6 @@ namespace pclem {
         new_mu = Point(new_mu.x / sum_of_gammas,
                        new_mu.y / sum_of_gammas,
                        new_mu.z / sum_of_gammas);
-
-        
 
         return new_mu;
     }

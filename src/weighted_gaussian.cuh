@@ -19,6 +19,7 @@ namespace pclem {
 
         Point get_mu() const;
         CovarianceMatrix get_sigma() const;
+        double get_weight() const;
 
         friend std::ostream &operator<<(std::ostream &os, WeightedGaussian const &g);
 
