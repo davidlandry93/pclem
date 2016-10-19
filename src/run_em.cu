@@ -28,12 +28,9 @@ int main(int argc, char** argv) {
     auto em = EmAlgorithm::from_pcl(pcl);
 
     std::cout << em;
-    for(int i=0; i < 100; i++) {
+    for(int i=0; i < 10; i++) {
         em.expectation();
         em.maximization();
-        if(i % 10 == 0) {
-            std::cout << em;
-        }
 
         std::cout << i << ". LOG LIKELIHOOD: " << em.log_likelihood() << std::endl;
     }

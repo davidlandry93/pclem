@@ -259,14 +259,12 @@ namespace pclem {
 
         __host__ __device__
         double operator()(Point p, double gamma) {
-            double lik = likelihood_of_point(p);
-
             // To preserve numerical stability, if gamma is very
             // small, we ignore the likelihood of this point.
             if(gamma < 1e-50) {
                 return 0.0;
             } else {
-                return gamma * (log_pi_ij + log(lik));
+                return gamma * (log_pi_ij + log(likelihood_of_point(p)));
             }
         }
 
