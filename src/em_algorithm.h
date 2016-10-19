@@ -16,6 +16,7 @@ namespace pclem {
         static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();
         void maximization();
+        double log_likelihood();
         EmAlgorithm& operator=(EmAlgorithm&& other);
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:

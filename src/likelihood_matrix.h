@@ -14,9 +14,10 @@ namespace pclem {
         LikelihoodMatrix(int n_points, int n_distributions, std::vector<double>& likelihoods);
         LikelihoodMatrix(LikelihoodMatrix&& other);
         static LikelihoodMatrix build(const PointCloud& pcl, const GaussianMixture& mixture);
+        GaussianMixture gaussian_mixture_of_pcl(const PointCloud& pcl) const;
+        double log_likelihood(const PointCloud& pcl, const GaussianMixture& mixture) const;
         LikelihoodMatrix& operator=(LikelihoodMatrix&& other);
         void swap(LikelihoodMatrix& other);
-        GaussianMixture gaussian_mixture_of_pcl(const PointCloud& pcl) const;
     private:
         int n_distributions;
         int n_points;
@@ -32,6 +33,9 @@ namespace pclem {
         CovarianceMatrix compute_sigma(const PointCloud& pcl,
                                        thrust::device_vector<double>::const_iterator likelihoods,
                                        double sum_of_gammas, const Point& new_mu) const;
+
+        double log_likelihood_of_distribution(const PointCloud& pcl, const WeightedGaussian& distribution,
+                                              thrust::device_vector<double>::const_iterator likelihoods) const;
     };
 }
 

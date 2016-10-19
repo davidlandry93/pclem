@@ -1,4 +1,5 @@
 
+#include <armadillo>
 #include "covariance_matrix.cuh"
 
 namespace pclem {
@@ -31,6 +32,20 @@ namespace pclem {
     std::array<double,9> CovarianceMatrix::as_array() const {
         auto m = values;
         return m;
+    }
+
+    std::array<double,9> CovarianceMatrix::inverse() const {
+        arma::mat33 arma_cov_mat(values.data());
+        arma::mat33 arma_inv_of_cov = arma::inv(arma_cov_mat);
+
+        std::array<double,9> inverse;
+        for(auto i = 0; i < 3; i++) {
+            for(auto j = 0; j < 3; j++) {
+                inverse[i*3 + j] = arma_inv_of_cov(i,j);
+            }
+        }
+
+        return inverse;
     }
 
     std::ostream& operator<<(std::ostream& os, const CovarianceMatrix& m) {

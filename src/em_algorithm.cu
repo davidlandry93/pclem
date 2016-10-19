@@ -58,4 +58,8 @@ namespace pclem {
         os << "===EM===" << std::endl << em.mixture;
         return os;
     }
+
+    double EmAlgorithm::log_likelihood() {
+        return likelihoods.log_likelihood(pcl, mixture);
+    }
 }

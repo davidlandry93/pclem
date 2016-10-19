@@ -1,4 +1,7 @@
 
+#include <math.h>
+#include <array>
+
 #include <thrust/iterator/constant_iterator.h>
 #include <thrust/inner_product.h>
 #include <thrust/extrema.h>
@@ -224,5 +227,78 @@ namespace pclem {
         new_sigma = new_sigma / sum_of_gammas - base_sigma;
 
         return CovarianceMatrix(new_sigma);
+    }
+
+
+    double LikelihoodMatrix::log_likelihood(const PointCloud& pcl, const GaussianMixture& mixture) const {
+        double log_likelihood = 0.0;
+        for(auto i = 0; i < n_distributions; i++) {
+            double to_add = log_likelihood_of_distribution(pcl, mixture.get_gaussian(i),
+                                                           likelihoods.begin() + i*n_points);
+
+            std::cout << to_add << " ";
+
+            log_likelihood += to_add;
+        }
+        return log_likelihood;
+    }
+
+    struct log_likelihood_op : public thrust::binary_function<Point, double, double> {
+    public:
+        log_likelihood_op(const WeightedGaussian& distribution) :
+            log_pi_ij(log(distribution.get_weight())),
+            base(1.0 / sqrt(pow(2*M_PI, 3) * distribution.get_sigma().det())),
+            mu(distribution.get_mu()),
+            inv() {
+            std::array<double,9> inv_of_sigma = distribution.get_sigma().inverse();
+
+            for(int i =0; i < 9; i++) {
+                inv[i] = inv_of_sigma[i];
+            }
+        }
+
+        __host__ __device__
+        double operator()(Point p, double gamma) {
+            double lik = likelihood_of_point(p);
+
+            // To preserve numerical stability, if gamma is very
+            // small, we ignore the likelihood of this point.
+            if(gamma < 1e-50) {
+                return 0.0;
+            } else {
+                return gamma * (log_pi_ij + log(lik));
+            }
+        }
+
+    private:
+        __host__ __device__
+        double likelihood_of_point(Point p) {
+            Point x_minus_mu = p - mu;
+
+            double temp_product[3] = {x_minus_mu.z*inv[6] + x_minus_mu.y*inv[3] + x_minus_mu.x*inv[0],
+                                      x_minus_mu.z*inv[7] + x_minus_mu.y*inv[4] + x_minus_mu.x*inv[1],
+                                      x_minus_mu.z*inv[8] + x_minus_mu.y*inv[5] + x_minus_mu.x*inv[2]};
+
+            double scale_product = x_minus_mu.x * temp_product[0] +
+                x_minus_mu.y * temp_product[1] +
+                x_minus_mu.z * temp_product[2];
+
+            return base * exp(-0.5 * scale_product);
+        }
+
+
+        const double log_pi_ij;
+        const double base;
+        const Point mu;
+        double inv[9];
+    };
+
+
+    double LikelihoodMatrix::log_likelihood_of_distribution(const PointCloud& pcl, const WeightedGaussian& distribution,
+                                          thrust::device_vector<double>::const_iterator likelihoods) const {
+        return thrust::inner_product(pcl.begin(), pcl.end(),
+                                     likelihoods, 0.0,
+                                     thrust::plus<double>(),
+                                     log_likelihood_op(distribution));
     }
 }
