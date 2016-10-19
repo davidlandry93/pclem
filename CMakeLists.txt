@@ -25,7 +25,7 @@ endif()
 
 include_directories(src "${VTK_INCLUDE_DIRS}" "${ARMADILLO_INCLUDE_DIRS}")
 
-list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11")
+list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;-D_MWAITXINTRIN_H_INCLUDED;-D_FORCE_INLINES")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 
