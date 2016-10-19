@@ -4,6 +4,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkPolyData.h>
+#include <glog/logging.h>
 
 #include "pointcloud.h"
 #include "em_algorithm.h"
@@ -11,7 +12,9 @@
 using namespace pclem;
 
 int main(int argc, char** argv) {
-    std::cout << "Hello world" << std::endl;
+    google::InitGoogleLogging(argv[0]);
+
+    LOG(INFO) << "Hello world";
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader =
         vtkSmartPointer<vtkGenericDataObjectReader>::New();
@@ -25,14 +28,11 @@ int main(int argc, char** argv) {
     auto em = EmAlgorithm::from_pcl(pcl);
 
     std::cout << em;
-    em.expectation();
-    em.maximization();
-    std::cout << em;
-
-    em.expectation();
-    em.maximization();
-    std::cout << em;
-
+    for(int i=0; i < 10; i++) {
+        em.expectation();
+        em.maximization();
+        std::cout << em;
+    }
 
     return 0;
 }

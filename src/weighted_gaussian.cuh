@@ -15,7 +15,7 @@ namespace pclem {
 
         __host__ __device__
         WeightedGaussian(const WeightedGaussian& other) :
-            mu(other.mu), sigma(other.sigma) {}
+            mu(other.mu), sigma(other.sigma), weight(other.weight) {}
 
         Point get_mu() const;
         CovarianceMatrix get_sigma() const;

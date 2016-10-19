@@ -23,13 +23,15 @@ namespace pclem {
         thrust::device_vector<double> likelihoods;
 
         LikelihoodMatrix(int n_points, int n_distributions, thrust::device_vector<double>& likelihoods);
-        static void likelihoods_of_distribution(const PointCloud& pcl, const WeightedGaussian& distribution, thrust::device_vector<double>::iterator result);
+        static void likelihoods_of_distribution(const PointCloud& pcl, const WeightedGaussian& distribution,
+                                                thrust::device_vector<double>::iterator result);
         static void normalize_likelihoods(int n_points, thrust::device_vector<double>& likelihoods);
         Point compute_mu(const PointCloud& pcl,
                          thrust::device_vector<double>::const_iterator likelihoods,
                          double sum_of_gammas) const;
         CovarianceMatrix compute_sigma(const PointCloud& pcl,
-                                          thrust::device_vector<double>::const_iterator likelihoods, double sum_of_gammas, const Point& new_mu) const;
+                                       thrust::device_vector<double>::const_iterator likelihoods,
+                                       double sum_of_gammas, const Point& new_mu) const;
     };
 }
 

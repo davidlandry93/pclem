@@ -1,4 +1,6 @@
 
+#include <glog/logging.h>
+
 #include "em_algorithm.h"
 #include "covariance_matrix.cuh"
 
@@ -53,7 +55,7 @@ namespace pclem {
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {
-        std::cout << "EM: " << em.mixture;
+        os << "===EM===" << std::endl << em.mixture;
         return os;
     }
 }

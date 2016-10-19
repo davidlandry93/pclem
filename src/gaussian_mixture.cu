@@ -38,8 +38,7 @@ namespace pclem {
 
     std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture) {
         for(auto gaussian : mixture) {
-            os << gaussian;
-            os << "=====" << std::endl;
+            os << gaussian << std::endl;
         }
         os << std::endl;
 

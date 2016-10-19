@@ -8,6 +8,7 @@ project (pclem)
 find_package(VTK REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(Armadillo REQUIRED)
+find_package(glog REQUIRED)
 
 if (NOT VTK_FOUND)
   ExternalProject_Add(
@@ -32,4 +33,4 @@ file(GLOB SOURCES src/*.cpp src/*.cu)
 
 cuda_add_executable(run_em ${SOURCES})
 target_link_libraries(run_em ${VTK_LIBRARIES}
-  ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES})
+  ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)

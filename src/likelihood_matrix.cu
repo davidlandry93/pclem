@@ -106,7 +106,8 @@ namespace pclem {
         for(int i = 0; i < n_points; i++) {
             strided_iterator iterator(likelihoods.begin() + i, likelihoods.end(), n_points);
 
-            double sum_of_likelihoods = thrust::reduce(iterator.begin(), iterator.end(), 0.0, thrust::plus<double>());
+            double sum_of_likelihoods = thrust::reduce(iterator.begin(), iterator.end(),
+                                                       0.0, thrust::plus<double>());
 
             thrust::transform(iterator.begin(), iterator.end(),
                               thrust::make_constant_iterator(sum_of_likelihoods),
@@ -157,7 +158,9 @@ namespace pclem {
         }
     };
 
-    Point LikelihoodMatrix::compute_mu(const PointCloud& pcl, thrust::device_vector<double>::const_iterator likelihoods, double sum_of_gammas) const {
+    Point LikelihoodMatrix::compute_mu(const PointCloud& pcl,
+                                       thrust::device_vector<double>::const_iterator likelihoods,
+                                       double sum_of_gammas) const {
         Point new_mu = thrust::inner_product(pcl.begin(), pcl.end(),
                                              likelihoods,
                                              Point(0.0, 0.0, 0.0),

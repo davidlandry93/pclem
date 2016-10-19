@@ -38,7 +38,7 @@ namespace pclem {
         for(auto value : m.as_array()) {
             os << value << ",";
         }
-        os << "]" << std::endl;
+        os << "]";
 
         return os;
     }
