@@ -47,11 +47,15 @@ namespace pclem {
     }
 
     void EmAlgorithm::expectation() {
+        VLOG(10) << "Computing expectation...";
         likelihoods = LikelihoodMatrix::build(pcl, mixture);
+        VLOG(10) << "Done.";
     }
 
     void EmAlgorithm::maximization() {
+        VLOG(10) << "Computing maximization...";
         mixture = likelihoods.gaussian_mixture_of_pcl(pcl);
+        VLOG(10) << "Done.";
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {

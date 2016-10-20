@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <chrono>
 #include <limits>
+#include <glog/logging.h>
 
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
@@ -35,6 +36,8 @@ namespace pclem {
     }
 
     PointCloud PointCloud::from_vtk(vtkPolyData* vtkData) {
+        VLOG(2) << "Building point cloud...";
+
         vtkIdType npoints = vtkData->GetNumberOfPoints();
         vtkPoints* points = vtkData->GetPoints();
 
@@ -46,6 +49,7 @@ namespace pclem {
             stl_vec.push_back(Point(currentPoint[0], currentPoint[1], currentPoint[2]));
         }
 
+        VLOG(2) << "Done.";
         return PointCloud(stl_vec, npoints);
     }
 

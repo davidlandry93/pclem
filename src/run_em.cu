@@ -16,10 +16,12 @@ int main(int argc, char** argv) {
 
     LOG(INFO) << "Hello world";
 
+    VLOG(10) << "Reading point cloud...";
     vtkSmartPointer<vtkGenericDataObjectReader> reader =
         vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName("res/foret.vtk");
     reader->Update();
+    VLOG(10) << "Done.";
 
     vtkPolyData* output = reader->GetPolyDataOutput();
 
