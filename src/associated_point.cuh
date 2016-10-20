@@ -10,6 +10,9 @@ namespace pclem {
 
         double likelihoods[N_DISTRIBUTIONS_PER_MIXTURE];
 
+        __host__ __device__
+        AssociatedPoint() : Point(), likelihoods{0.0} {}
+
         AssociatedPoint(double _x, double _y, double _z) :
             Point(_x,_y,_z), likelihoods{0.0} {}
 

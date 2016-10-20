@@ -10,6 +10,8 @@
 #include "point.cuh"
 #include "associated_point.cuh"
 #include "boundingbox.h"
+#include "weighted_gaussian.cuh"
+#include "gaussian_mixture.h"
 
 namespace pclem {
 
@@ -20,17 +22,23 @@ namespace pclem {
         PointCloud& operator=(PointCloud&& other);
         BoundingBox getBoundingBox();
         int get_n_points() const;
-        thrust::device_vector<Point>::const_iterator begin() const;
-        thrust::device_vector<Point>::const_iterator end() const;
+        thrust::device_vector<AssociatedPoint>::const_iterator begin() const;
+        thrust::device_vector<AssociatedPoint>::const_iterator end() const;
+        void compute_associations(const GaussianMixture& mixture);
+        void normalize_associations();
+        GaussianMixture create_mixture() const;
     private:
-        thrust::device_vector<Point> data;
+        thrust::device_vector<AssociatedPoint> data;
         int n_points;
         BoundingBox boundingBox;
 
-        PointCloud(std::vector<Point> data, int n_of_points);
+        PointCloud(std::vector<AssociatedPoint> data);
         PointCloud(PointCloud& other);
         void updateBoundingBox();
         void normalize_likelihoods(thrust::device_vector<double>& likelihoods, int n_gaussians, int n_points) const;
+        void compute_associations_of_distribution(int index_of_distribution, const WeightedGaussian& distribution);
+        WeightedGaussian create_distribution_of_mixture(int index, double sum_of_gammas) const;
+        CovarianceMatrix compute_sigma(int index, const Point& mu, double sum_of_gammas) const;
     };
 
 }

@@ -7,7 +7,6 @@
 #include "point.cuh"
 #include "covariance_matrix.cuh"
 #include "weighted_gaussian.cuh"
-#include "pointcloud.h"
 #include "raw_covariance_matrix.h"
 
 namespace pclem {

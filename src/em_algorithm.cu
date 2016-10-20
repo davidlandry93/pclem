@@ -51,13 +51,16 @@ namespace pclem {
 
     void EmAlgorithm::expectation() {
         VLOG(10) << "Computing expectation...";
-        likelihoods = LikelihoodMatrix::build(pcl, mixture);
+
+        pcl.compute_associations(mixture);
+        pcl.normalize_associations();
+
         VLOG(10) << "Done.";
     }
 
     void EmAlgorithm::maximization() {
         VLOG(10) << "Computing maximization...";
-        mixture = likelihoods.gaussian_mixture_of_pcl(pcl);
+        mixture = pcl.create_mixture();
         VLOG(10) << "Done.";
     }
 
