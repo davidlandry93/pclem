@@ -1,4 +1,5 @@
 
+#include <glog/logging.h>
 #include <armadillo>
 #include "covariance_matrix.cuh"
 
@@ -35,7 +36,16 @@ namespace pclem {
     }
 
     std::array<double,9> CovarianceMatrix::inverse() const {
+        VLOG(10) << "Inverting matrix...";
+
         arma::mat33 arma_cov_mat(values.data());
+
+        std::cout << "Matrix to invert: ";
+        for(int i = 0; i < 9; i++) {
+            std::cout << values[i] << " ";
+        }
+        std::cout <<std::endl;
+
         arma::mat33 arma_inv_of_cov = arma::inv(arma_cov_mat);
 
         std::array<double,9> inverse;
@@ -45,6 +55,7 @@ namespace pclem {
             }
         }
 
+        VLOG(10) << "Done inverting matrix.";
         return inverse;
     }
 

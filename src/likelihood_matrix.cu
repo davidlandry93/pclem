@@ -1,6 +1,7 @@
 
 #include <math.h>
 #include <array>
+#include <glog/logging.h>
 
 #include <thrust/iterator/constant_iterator.h>
 #include <thrust/inner_product.h>
@@ -37,7 +38,7 @@ namespace pclem {
             likelihoods_of_distribution(pcl, mixture.get_gaussian(i), likelihoods.begin() + i*n_points);
         }
 
-        normalize_likelihoods(n_points, likelihoods);
+        //normalize_likelihoods(n_points, likelihoods);
 
         return LikelihoodMatrix(n_points, n_gaussians, likelihoods);
     }
@@ -83,27 +84,19 @@ namespace pclem {
     void LikelihoodMatrix::likelihoods_of_distribution(const PointCloud& pcl,
                                                        const WeightedGaussian& distribution,
                                                        thrust::device_vector<double>::iterator result) {
-        std::array<double,9> cov_mat = distribution.get_sigma().as_array();
+        VLOG(10) << "Computing likelihoods...";
+        std::array<double,9> inv_cov_mat = distribution.get_sigma().inverse();
 
-        arma::mat33 arma_cov_mat(cov_mat.data());
-        double det_of_covariance = arma::det(arma_cov_mat);
-
-        arma::mat33 arma_inv_of_covariance = arma::inv(arma_cov_mat);
-
-        std::array<double,9> inv_of_covariance;
-        for(auto i = 0; i < 3; i++) {
-            for (auto j=0; j < 3; j++) {
-                inv_of_covariance[i*3+j] = arma_inv_of_covariance(i,j);
-            }
-        }
-
-        gaussian_op op(distribution.get_mu(), distribution.get_weight(), det_of_covariance, inv_of_covariance);
+        gaussian_op op(distribution.get_mu(), distribution.get_weight(), distribution.get_sigma().det(), inv_cov_mat);
 
         thrust::transform(pcl.begin(), pcl.end(), result, op);
+        VLOG(10) << "Done computing likelihoods.";
     }
 
     void LikelihoodMatrix::normalize_likelihoods(int n_points,
                                                  thrust::device_vector<double>& likelihoods) {
+        VLOG(10) << "Normalizing likelihoods...";
+
         typedef StridedRange<thrust::device_vector<double>::iterator> strided_iterator;
 
         for(int i = 0; i < n_points; i++) {
@@ -116,6 +109,8 @@ namespace pclem {
                               thrust::make_constant_iterator(sum_of_likelihoods),
                               iterator.begin(), thrust::divides<double>());
         }
+
+        VLOG(10) << "Done.";
     }
 
 
@@ -137,7 +132,12 @@ namespace pclem {
 
             double new_weight = sum_of_gammas / n_points;
 
-            gaussians.push_back(WeightedGaussian(new_mu, new_sigma, new_weight));
+            WeightedGaussian to_add(new_mu, new_sigma, new_weight);
+
+            std::cout << "Added gaussian " << i << ": " << std::endl
+                      << to_add;
+
+            gaussians.push_back(to_add);
         }
 
         return GaussianMixture(gaussians);
@@ -231,6 +231,8 @@ namespace pclem {
 
 
     double LikelihoodMatrix::log_likelihood(const PointCloud& pcl, const GaussianMixture& mixture) const {
+        VLOG(10) << "Computing log likelihood...";
+
         double log_likelihood = 0.0;
         for(auto i = 0; i < n_distributions; i++) {
             double to_add = log_likelihood_of_distribution(pcl, mixture.get_gaussian(i),
@@ -240,6 +242,8 @@ namespace pclem {
 
             log_likelihood += to_add;
         }
+
+        VLOG(10) << "Done computing log likelihood.";
         return log_likelihood;
     }
 
@@ -259,13 +263,7 @@ namespace pclem {
 
         __host__ __device__
         double operator()(Point p, double gamma) {
-            // To preserve numerical stability, if gamma is very
-            // small, we ignore the likelihood of this point.
-            if(gamma < 1e-50) {
-                return 0.0;
-            } else {
-                return gamma * (log_pi_ij + log(likelihood_of_point(p)));
-            }
+            return gamma * (log_pi_ij + log(likelihood_of_point(p)));
         }
 
     private:
