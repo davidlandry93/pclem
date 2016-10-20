@@ -1,8 +1,8 @@
 
 #include <glog/logging.h>
 
-#include "em_algorithm.h"
 #include "covariance_matrix.cuh"
+#include "em_algorithm.h"
 
 namespace pclem {
     EmAlgorithm::EmAlgorithm(PointCloud& pcl,
@@ -19,8 +19,11 @@ namespace pclem {
 
     EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
         std::vector<WeightedGaussian> temp_gaussians;
-        double initial_weight_of_gaussian = 1.0 / 8.0;
-        for(Point corner : pcl.getBoundingBox().corners()) {
+
+        auto corners = pcl.getBoundingBox().corners();
+        double initial_weight_of_gaussian = 1.0 / corners.size();
+
+        for(Point corner : corners) {
             CovarianceMatrix sigma = CovarianceMatrix();
             sigma.set(0,0,10.0);
             sigma.set(1,1,10.0);

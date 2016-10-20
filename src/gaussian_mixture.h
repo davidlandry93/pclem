@@ -23,10 +23,8 @@ namespace pclem {
         WeightedGaussian get_gaussian(int i) const; 
         friend std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture);
 
-
     private:
         thrust::device_vector<WeightedGaussian> gaussians;
-
     };
 }
 

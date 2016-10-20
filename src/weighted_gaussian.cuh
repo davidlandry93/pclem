@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "covariance_matrix.cuh"
 #include "point.cuh"
+#include "covariance_matrix.cuh"
 
 namespace pclem {
     class WeightedGaussian {

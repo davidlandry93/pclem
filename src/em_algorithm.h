@@ -12,6 +12,8 @@
 namespace pclem {
     class EmAlgorithm {
     public:
+        static const int N_DISTRIBUTIONS_PER_MIXTURE = 8;
+
         EmAlgorithm(EmAlgorithm&& other);
         static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();

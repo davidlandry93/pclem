@@ -8,6 +8,7 @@
 #include <thrust/device_vector.h>
 
 #include "point.cuh"
+#include "associated_point.cuh"
 #include "boundingbox.h"
 
 namespace pclem {

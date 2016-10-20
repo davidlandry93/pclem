@@ -4,7 +4,10 @@
 #include <vector>
 #include <thrust/device_vector.h>
 
+#include "point.cuh"
+#include "covariance_matrix.cuh"
 #include "pointcloud.h"
+#include "weighted_gaussian.cuh"
 #include "gaussian_mixture.h"
 
 namespace pclem {

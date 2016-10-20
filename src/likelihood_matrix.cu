@@ -38,7 +38,7 @@ namespace pclem {
             likelihoods_of_distribution(pcl, mixture.get_gaussian(i), likelihoods.begin() + i*n_points);
         }
 
-        //normalize_likelihoods(n_points, likelihoods);
+        normalize_likelihoods(n_points, likelihoods);
 
         return LikelihoodMatrix(n_points, n_gaussians, likelihoods);
     }
