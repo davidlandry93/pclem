@@ -199,11 +199,6 @@ namespace pclem {
         AssociatedPoint sums;
         sums = thrust::reduce(data.begin(), data.end(), AssociatedPoint(), sums_of_gammas_op());
 
-        std::cout << "SUMS OF GAMMAS";
-        for(int i = 0; i < 8; i++) {
-            std::cout << sums.likelihoods[i] << std::endl;
-        }
-
         std::vector<WeightedGaussian> gaussians;
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             gaussians.push_back(create_distribution_of_mixture(i, sums.likelihoods[i]));
@@ -307,9 +302,15 @@ namespace pclem {
     double PointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         double log_likelihood = 0.0;
 
-        for(int i=0; AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-            log_likelihood += log_likelihood_of_distribution(i, mixture.get_gaussian(i));
+        std::cout << "Log likelihood of distributions: ";
+        for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
+            double likelihood_of_distribution = log_likelihood_of_distribution(i, mixture.get_gaussian(i));
+
+            std::cout << likelihood_of_distribution << " ";
+
+            log_likelihood += likelihood_of_distribution;
         }
+        std::cout << std::endl;
 
         return log_likelihood;
     }
@@ -318,17 +319,28 @@ namespace pclem {
         __const__ double log_pi_ij;
         __const__ double base;
         __const__ Point mu;
+        __const__ int index_of_distribution;
         double inv_of_cov[9];
 
-        log_likelihood_op(const WeightedGaussian& distribution) :
+        log_likelihood_op(int index_of_distribution, const WeightedGaussian& distribution) :
             log_pi_ij(distribution.get_weight()),
             base(1.0 / sqrt(pow(2*M_PI, 3) * distribution.get_sigma().det())),
             mu(distribution.get_mu()),
+            index_of_distribution(index_of_distribution),
             inv_of_cov {0.0} {
             std::array<double,9> inv_of_sigma = distribution.get_sigma().inverse();
 
             for(int i=0; i < 9; i++) {
                 inv_of_cov[i] = inv_of_sigma[i];
+            }
+        }
+
+        __host__ __device__
+        double operator()(AssociatedPoint p) {
+            if(p.likelihoods[index_of_distribution] < 1e-70) {
+                return 0.0;
+            } else {
+                return p.likelihoods[index_of_distribution] * (log_pi_ij + log(likelihood_of_point(p)));
             }
         }
 

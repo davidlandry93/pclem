@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <limits>
+#include <cmath>
 
 #include <vtkSmartPointer.h>
 #include <vtkGenericDataObjectReader.h>
@@ -30,12 +32,19 @@ int main(int argc, char** argv) {
     auto em = EmAlgorithm::from_pcl(pcl);
 
     std::cout << em;
-    for(int i=0; i < 1; i++) {
+    double previous_likelihood = 0.0;
+    double delta = std::numeric_limits<double>::infinity();
+    while (delta > 0.0001){
         em.expectation();
         em.maximization();
 
-        std::cout << i << ". LOG LIKELIHOOD: " << em.log_likelihood() << std::endl;
+        double new_likelihood = em.log_likelihood();
+        delta = std::abs(new_likelihood - previous_likelihood);
+        std::cout << ". LOG LIKELIHOOD: " << new_likelihood << " Delta: " << delta << std::endl;
+
+        previous_likelihood = new_likelihood;
     }
+    std::cout << em;
 
     return 0;
 }

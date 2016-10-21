@@ -70,6 +70,6 @@ namespace pclem {
     }
 
     double EmAlgorithm::log_likelihood() {
-        return likelihoods.log_likelihood(pcl, mixture);
+        return pcl.log_likelihood_of_mixture(mixture);
     }
 }

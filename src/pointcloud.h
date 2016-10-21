@@ -40,7 +40,7 @@ namespace pclem {
         void compute_associations_of_distribution(int index_of_distribution, const WeightedGaussian& distribution);
         WeightedGaussian create_distribution_of_mixture(int index, double sum_of_gammas) const;
         CovarianceMatrix compute_sigma(int index, const Point& mu, double sum_of_gammas) const;
-        double log_likelihood_of_distribution(const WeightedGaussian& distribution) const;
+        double log_likelihood_of_distribution(int index_of_distribution, const WeightedGaussian& distribution) const;
     };
 
 }
