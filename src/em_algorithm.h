@@ -8,6 +8,7 @@
 #include "pointcloud.h"
 #include "gaussian_mixture.h"
 #include "likelihood_matrix.h"
+#include "visualization.h"
 
 namespace pclem {
     class EmAlgorithm {
@@ -21,6 +22,7 @@ namespace pclem {
         double log_likelihood();
         EmAlgorithm& operator=(EmAlgorithm&& other);
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
+        void insert_in_visualization(Visualization& vis) const;
     private:
         EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture, std::vector<double>& likelihoods);
         PointCloud pcl;

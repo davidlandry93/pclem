@@ -366,4 +366,10 @@ namespace pclem {
                                         log_likelihood_op(index_of_distribution, distribution),
                                         0.0, thrust::plus<double>());
     }
+
+    void PointCloud::insert_in_visualization(Visualization& vis) const  {
+        for(Point point : data) {
+            vis.insert_point(point);
+        }
+    }
 }

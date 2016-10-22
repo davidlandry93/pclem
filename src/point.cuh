@@ -25,7 +25,7 @@ namespace pclem {
         __host__ __device__
         Point operator+(const Point& other) {
             return Point(x + other.x, y + other.y, z + other.z);
-        }
+        }http://stackoverflow.com/questions/7591204/how-to-display-point-cloud-in-vtk-in-different-colors
 
         double get_x() const { return x; }
         double get_y() const { return y; }

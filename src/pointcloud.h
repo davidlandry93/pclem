@@ -12,6 +12,7 @@
 #include "boundingbox.h"
 #include "weighted_gaussian.cuh"
 #include "gaussian_mixture.h"
+#include "visualization.h"
 
 namespace pclem {
 
@@ -28,6 +29,8 @@ namespace pclem {
         void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
+        void insert_in_visualization(Visualization& vis) const;
+
     private:
         thrust::device_vector<AssociatedPoint> data;
         int n_points;

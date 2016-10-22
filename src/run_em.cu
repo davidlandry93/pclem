@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     std::cout << em;
     double previous_likelihood = 0.0;
     double delta = std::numeric_limits<double>::infinity();
-    while (delta > 0.0001){
+    while (delta > 0.01){
         em.expectation();
         em.maximization();
 
@@ -45,6 +45,10 @@ int main(int argc, char** argv) {
         previous_likelihood = new_likelihood;
     }
     std::cout << em;
+
+    Visualization v;
+    em.insert_in_visualization(v);
+    v.visualize();
 
     return 0;
 }

@@ -72,4 +72,8 @@ namespace pclem {
     double EmAlgorithm::log_likelihood() {
         return pcl.log_likelihood_of_mixture(mixture);
     }
+
+    void EmAlgorithm::insert_in_visualization(Visualization& v) const {
+        pcl.insert_in_visualization(v);
+    }
 }
