@@ -368,8 +368,12 @@ namespace pclem {
     }
 
     void PointCloud::insert_in_visualization(Visualization& vis) const  {
+        VLOG(10) << "Inserting points in visualization...";
+
         for(Point point : data) {
             vis.insert_point(point);
         }
+
+        VLOG(10) << "Done inserting points in visualization.";
     }
 }

@@ -74,6 +74,10 @@ namespace pclem {
     }
 
     void EmAlgorithm::insert_in_visualization(Visualization& v) const {
+        VLOG(10) << "Inserting EM in visualization...";
+
         pcl.insert_in_visualization(v);
+
+        VLOG(10) << "Done inserting EM in visualization.";
     }
 }

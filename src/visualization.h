@@ -5,9 +5,6 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkPoints.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
 
 #include "point.cuh"
 #include "ellipsoid.h"
@@ -21,6 +18,7 @@ namespace pclem {
         void visualize();
     private:
         vtkSmartPointer<vtkPoints> points;
+        vtkSmartPointer<vtkPolyData> polydata;
     };
 }
 
