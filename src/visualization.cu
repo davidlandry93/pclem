@@ -1,5 +1,6 @@
-#define vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
-#define vtkRenderingVolume_AUTOINIT 1(vtkRenderingVolumeOpenGL)
+#include <vtkAutoInit.h>
+VTK_MODULE_INIT(vtkRenderingOpengl)
+VTK_MODULE_INIT(vtkInteractionStyle)
 
 #include <iostream>
 
@@ -42,8 +43,10 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
 
+        double viewport[4] = {-50.0, -50.0, 50.0, 50.0};
         auto renderer = vtkSmartPointer<vtkRenderer>::New();
         renderer->SetBackground(1,.5,1);
+        renderer->SetViewport(viewport);
 
         auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
         renderWindow->AddRenderer(renderer);

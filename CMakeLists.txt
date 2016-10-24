@@ -23,7 +23,8 @@ if (NOT VTK_FOUND)
   find_package(VTK)
 endif()
 
-include_directories(src "${VTK_INCLUDE_DIRS}" "${ARMADILLO_INCLUDE_DIRS}")
+include(${VTK_USE_FILE})
+include_directories(src "${ARMADILLO_INCLUDE_DIRS}")
 
 list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;-D_MWAITXINTRIN_H_INCLUDED;-D_FORCE_INLINES")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
@@ -31,6 +32,20 @@ SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 file(GLOB SOURCES src/*.cpp src/*.cu)
 
-cuda_add_executable(run_em ${SOURCES})
-target_link_libraries(run_em ${VTK_LIBRARIES}
-  ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
+cuda_add_library(pclem
+  src/associated_point.cuh
+  src/boundingbox.cu
+  src/covariance_matrix.cuh
+  src/covariance_matrix.cu
+  src/em_algorithm.cu
+  src/gaussian_mixture.cu
+  src/likelihood_matrix.cu
+  src/pointcloud.cu
+  src/point.cuh
+  src/weighted_gaussian.cu
+  src/weighted_gaussian.cuh)
+target_link_libraries(pclem ${VTK_LIBRARIES}
+  ${CUDA_LIBRARIES} ${ARMADILLO_LIBARIRES} glog::glog)
+
+add_executable(run_em src/run_em.cpp src/raw_point_cloud.cpp)
+target_link_libraries(run_em pclem)
