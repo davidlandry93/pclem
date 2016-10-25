@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include <vtkPolyData.h>
 
 #include <thrust/device_vector.h>
 
@@ -17,7 +16,6 @@ namespace pclem {
 
     class PointCloud {
     public:
-        static PointCloud from_vtk(vtkPolyData* vtkData);
         PointCloud(PointCloud&& other);
         PointCloud& operator=(PointCloud&& other);
         BoundingBox getBoundingBox();

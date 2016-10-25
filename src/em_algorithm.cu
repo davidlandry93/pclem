@@ -6,16 +6,12 @@
 
 namespace pclem {
     EmAlgorithm::EmAlgorithm(PointCloud& pcl,
-                             GaussianMixture& mixture,
-                             std::vector<double>& likelihoods) :
+                             GaussianMixture& mixture) :
         pcl(std::move(pcl)),
-        mixture(std::move(mixture)),
-        likelihoods(pcl.get_n_points(), mixture.n_gaussians(), likelihoods) {
-    }
+        mixture(std::move(mixture)) {}
 
     EmAlgorithm::EmAlgorithm(EmAlgorithm&& other) :
-        pcl(std::move(other.pcl)), mixture(std::move(other.mixture)),
-        likelihoods(std::move(other.likelihoods)) {}
+        pcl(std::move(other.pcl)), mixture(std::move(other.mixture)) {}
 
     EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
         std::vector<WeightedGaussian> temp_gaussians;
@@ -35,9 +31,7 @@ namespace pclem {
 
         GaussianMixture mixture(temp_gaussians);
 
-        auto likelihoods = std::vector<double>(mixture.n_gaussians()*pcl.get_n_points());
-
-        EmAlgorithm temp_em(pcl, mixture, likelihoods);
+        EmAlgorithm temp_em(pcl, mixture);
 
         return temp_em;
     }
@@ -45,7 +39,6 @@ namespace pclem {
     EmAlgorithm& EmAlgorithm::operator=(EmAlgorithm&& other) {
         std::swap(pcl, other.pcl);
         std::swap(mixture, other.mixture);
-        std::swap(likelihoods, other.likelihoods);
         return *this;
     }
 

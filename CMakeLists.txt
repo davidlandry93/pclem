@@ -5,32 +5,24 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project (pclem)
-find_package(VTK REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(glog REQUIRED)
 
-if (NOT VTK_FOUND)
-  ExternalProject_Add(
-    VTK
-
-    PREFIX "vtk"
-    INSTALL_DIR "${PROJECT_BINARY_DIR}/vtk"
-    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/vtk"
-
-    GIT_REPOSITORY "https://gitlab.kitware.com/vtk/vtk.git"
-    GIT_TAG "v7.0.0")
-  find_package(VTK)
-endif()
-
-include_directories(src "${VTK_INCLUDE_DIRS}" "${ARMADILLO_INCLUDE_DIRS}")
+include_directories(src "${ARMADILLO_INCLUDE_DIRS}")
 
 list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;-D_MWAITXINTRIN_H_INCLUDED;-D_FORCE_INLINES")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
-
 file(GLOB SOURCES src/*.cpp src/*.cu)
 
-cuda_add_executable(run_em ${SOURCES})
-target_link_libraries(run_em ${VTK_LIBRARIES}
+cuda_add_library(pclem ${SOURCES})
+target_link_libraries(pclem
   ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
+
+FILE(GLOB headers "src/*.h")
+INSTALL(FILES ${headers} DESTINATION include/pclem)
+INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
+INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)
+INSTALL(FILES pclem-config.cmake DESTINATION lib/pclem)
+export(PACKAGE pclem)

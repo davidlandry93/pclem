@@ -36,24 +36,6 @@ namespace pclem {
         return *this;
     }
 
-    PointCloud PointCloud::from_vtk(vtkPolyData* vtkData) {
-        VLOG(2) << "Building point cloud...";
-
-        vtkIdType npoints = vtkData->GetNumberOfPoints();
-        vtkPoints* points = vtkData->GetPoints();
-
-        auto stl_vec = std::vector<AssociatedPoint>();
-        for(int i=0; i < npoints; i++) {
-            double currentPoint[3];
-
-            points->GetPoint(i, currentPoint);
-            stl_vec.push_back(AssociatedPoint(currentPoint[0], currentPoint[1], currentPoint[2]));
-        }
-
-        VLOG(2) << "Done.";
-        return PointCloud(stl_vec);
-    }
-
     BoundingBox PointCloud::getBoundingBox() {
         return boundingBox;
     }
