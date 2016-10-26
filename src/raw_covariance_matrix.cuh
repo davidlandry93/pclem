@@ -1,6 +1,11 @@
 #ifndef RAW_COVARIANCE_MATRIX_H
 #define RAW_COVARIANCE_MATRIX_H
 
+#include "covariance_matrix.h"
+
+namespace pclem{
+
+
 struct RawCovarianceMatrix {
 public:
     double v00, v01, v02,
@@ -103,6 +108,13 @@ public:
 
         return r;
     }
+
+    CovarianceMatrix to_host() const {
+        std::array<double,9> values = {{v00, v01, v02, v10, v11, v12, v20, v21, v22}};
+        return CovarianceMatrix(values);
+    }
 };
+
+}
 
 #endif

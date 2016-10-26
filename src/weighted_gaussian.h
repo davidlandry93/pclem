@@ -4,17 +4,14 @@
 #include <iostream>
 
 #include "point.h"
-#include "covariance_matrix.cuh"
+#include "covariance_matrix.h"
 
 namespace pclem {
     class WeightedGaussian {
     public:
-        WeightedGaussian() : mu(), sigma(), weight(0.0) {}
-        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight) :
-            mu(mu), sigma(sigma), weight(weight) {}
-
-        WeightedGaussian(const WeightedGaussian& other) :
-            mu(other.mu), sigma(other.sigma), weight(other.weight) {}
+        WeightedGaussian();
+        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight);
+        WeightedGaussian(const WeightedGaussian& other);
 
         Point get_mu() const;
         CovarianceMatrix get_sigma() const;

@@ -1,13 +1,27 @@
+#ifndef WEIGHTED_GAUSSIANS_H
+#define WEIGHTED_GAUSSIANS_H
 
-#include <memory>
+#include <vector>
+#include <iostream>
 
-#include "private_gaussian_mixture.h"
+#include "weighted_gaussian.h"
 
 namespace pclem {
     class GaussianMixture {
     public:
         GaussianMixture();
+        GaussianMixture(std::vector<WeightedGaussian> gaussians);
+        GaussianMixture(GaussianMixture&& other);
+        GaussianMixture& operator=(GaussianMixture&& other);
+        std::vector<WeightedGaussian>::const_iterator begin() const;
+        std::vector<WeightedGaussian>::const_iterator end() const;
+        int n_gaussians() const;
+        WeightedGaussian get_gaussian(int i) const; 
+        friend std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture);
+
     private:
-        std::unique_ptr<PrivateGaussianMixture> mixture;
+        std::vector<WeightedGaussian> gaussians;
     };
 }
+
+#endif

@@ -14,7 +14,7 @@
 
 #include "strided_range.h"
 #include "device_pointcloud.h"
-#include "raw_covariance_matrix.h"
+#include "raw_covariance_matrix.cuh"
 
 namespace pclem {
     DevicePointCloud::DevicePointCloud(): data(), boundingBox() {
@@ -75,11 +75,13 @@ namespace pclem {
         return data.size();
     }
 
-    void DevicePointCloud::add_points(std::vector<AssociatedPoint> points) {
-        data.insert(std::end(data), std::begin(points), std::end(points));
+    void DevicePointCloud::add_points(std::vector<Point> points) {
+        for(Point point : points) {
+            data.push_back(AssociatedPoint(point));
+        }
     }
 
-    void DevicePointCloud::compute_associations(const PrivateGaussianMixture& mixture) {
+    void DevicePointCloud::compute_associations(const GaussianMixture& mixture) {
         VLOG(10) << "Computing point/distribution associations...";
 
         for(int i = 0; i < mixture.n_gaussians(); i++) {
@@ -174,7 +176,7 @@ namespace pclem {
         }
     };
 
-    PrivateGaussianMixture DevicePointCloud::create_mixture() const {
+    GaussianMixture DevicePointCloud::create_mixture() const {
         // We store the sum of gammas of every distribution in an empty, meaningless AssociatedPoint.
         AssociatedPoint sums;
         sums = thrust::reduce(data.begin(), data.end(), AssociatedPoint(), sums_of_gammas_op());
@@ -184,7 +186,7 @@ namespace pclem {
             gaussians.push_back(create_distribution_of_mixture(i, sums.likelihoods[i]));
         }
 
-        return PrivateGaussianMixture(gaussians);
+        return GaussianMixture(gaussians);
     }
 
     struct weight_point_op : public thrust::unary_function<AssociatedPoint,DevicePoint> {
@@ -280,10 +282,10 @@ namespace pclem {
         base_sigma.v21 = base_sigma.v12 = mu.z * mu.y;
 
         sigma = sigma / sum_of_gammas - base_sigma;
-        return CovarianceMatrix(sigma);
+        return base_sigma.to_host();
     }
 
-    double DevicePointCloud::log_likelihood_of_mixture(const PrivateGaussianMixture& mixture) const {
+    double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         double log_likelihood = 0.0;
 
         std::cout << "Log likelihood of distributions: ";

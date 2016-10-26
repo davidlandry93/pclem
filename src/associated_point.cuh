@@ -1,6 +1,7 @@
 #ifndef ASSOCIATED_POINT_H
 #define ASSOCIATED_POINT_H
 
+#include "point.h"
 #include "device_point.cuh"
 
 namespace pclem {
@@ -15,6 +16,8 @@ namespace pclem {
 
         AssociatedPoint(double _x, double _y, double _z) :
             DevicePoint(_x,_y,_z), likelihoods{0.0} {}
+
+        AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z) {}
 
         friend std::ostream& operator<<(std::ostream& os, const AssociatedPoint& p) {
             os << "(" << p.x << p.y << p.z << "). Associations: [";

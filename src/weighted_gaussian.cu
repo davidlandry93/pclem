@@ -1,8 +1,16 @@
 
-#include "weighted_gaussian.cuh"
+#include "weighted_gaussian.h"
 
 
 namespace pclem {
+    WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight(0) {}
+
+    WeightedGaussian::WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight) :
+        mu(mu), sigma(sigma), weight(weight) {}
+
+    WeightedGaussian::WeightedGaussian(const WeightedGaussian& other) :
+        mu(other.mu), sigma(other.sigma), weight(other.weight) {}
+
     CovarianceMatrix WeightedGaussian::get_sigma() const {
         CovarianceMatrix m(sigma);
         return m;

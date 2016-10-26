@@ -1,19 +1,30 @@
 
 #include <glog/logging.h>
 #include <armadillo>
-#include "covariance_matrix.cuh"
+#include "covariance_matrix.h"
 
 namespace pclem {
-    CovarianceMatrix::CovarianceMatrix(RawCovarianceMatrix& m) {
-        values[0] = m.v00;
-        values[1] = m.v01;
-        values[2] = m.v02;
-        values[3] = m.v10;
-        values[4] = m.v11;
-        values[5] = m.v12;
-        values[6] = m.v20;
-        values[7] = m.v21;
-        values[8] = m.v22;
+    CovarianceMatrix::CovarianceMatrix() : values {{1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0}} {}
+
+    CovarianceMatrix::CovarianceMatrix(const CovarianceMatrix& other) {
+        values = other.values;
+    }
+
+    CovarianceMatrix::CovarianceMatrix(std::array<double,9> _values) {
+        for(int i = 0; i < 9; i++) {
+            values[i] = _values[i];
+        }
+    }
+
+    CovarianceMatrix CovarianceMatrix::zeros() {
+        std::array<double,9> zeros = {0.0};
+        return CovarianceMatrix(zeros);
+    }
+
+    void CovarianceMatrix::operator+=(const CovarianceMatrix& rhs) {
+        for(int i = 0; i < 9; i++) {
+            values[i] += rhs.values[i];
+        }
     }
 
     double CovarianceMatrix::get(int i, int j) const {

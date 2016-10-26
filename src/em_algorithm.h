@@ -5,23 +5,23 @@
 
 #include <thrust/device_vector.h>
 
-#include "private_gaussian_mixture.h"
+#include "pointcloud.h"
+#include "gaussian_mixture.h"
 
 namespace pclem {
-    class DevicePointCloud;
     class EmAlgorithm {
     public:
         EmAlgorithm(EmAlgorithm&& other);
-        static EmAlgorithm from_pcl(DevicePointCloud& pcl);
+        static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();
         void maximization();
         double log_likelihood();
         EmAlgorithm& operator=(EmAlgorithm&& other);
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
-        EmAlgorithm(DevicePointCloud& pcl, PrivateGaussianMixture& mixture);
-        DevicePointCloud pcl;
-        PrivateGaussianMixture mixture;
+        EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture);
+        PointCloud pcl;
+        GaussianMixture mixture;
     };
 }
 

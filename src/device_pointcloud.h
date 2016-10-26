@@ -8,8 +8,8 @@
 
 #include "point.h"
 #include "boundingbox.h"
-#include "weighted_gaussian.cuh"
-#include "private_gaussian_mixture.h"
+#include "weighted_gaussian.h"
+#include "gaussian_mixture.h"
 #include "associated_point.cuh"
 
 namespace pclem {
@@ -21,11 +21,11 @@ namespace pclem {
         DevicePointCloud& operator=(DevicePointCloud&& other);
         BoundingBox getBoundingBox();
         int get_n_points() const;
-        void compute_associations(const PrivateGaussianMixture& mixture);
+        void compute_associations(const GaussianMixture& mixture);
         void normalize_associations();
-        PrivateGaussianMixture create_mixture() const;
-        double log_likelihood_of_mixture(const PrivateGaussianMixture& mixture) const;
-        void add_points(std::vector<AssociatedPoint> points);
+        GaussianMixture create_mixture() const;
+        double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
+        void add_points(std::vector<Point> points);
     private:
         thrust::device_vector<AssociatedPoint> data;
         BoundingBox boundingBox;
