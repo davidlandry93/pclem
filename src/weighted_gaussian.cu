@@ -3,10 +3,6 @@
 
 
 namespace pclem {
-    WeightedGaussian::WeightedGaussian(Point& _mu, CovarianceMatrix& _sigma, double _weight) :
-        mu(_mu), sigma(_sigma), weight(_weight) {
-    }
-
     CovarianceMatrix WeightedGaussian::get_sigma() const {
         CovarianceMatrix m(sigma);
         return m;

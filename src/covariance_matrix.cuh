@@ -4,7 +4,7 @@
 #include <iostream>
 #include <array>
 
-#include "point.cuh"
+#include "device_point.cuh"
 #include "raw_covariance_matrix.h"
 
 namespace pclem {
@@ -32,8 +32,8 @@ namespace pclem {
         }
 
         __host__ __device__
-        Point operator*(const Point& rhs) {
-            return Point(
+        DevicePoint operator*(const DevicePoint& rhs) {
+            return DevicePoint(
                 values[0]*rhs.x + values[1]*rhs.y + values[2]*rhs.z,
                 values[3]*rhs.x + values[4]*rhs.y + values[5]*rhs.z,
                 values[6]*rhs.x + values[7]*rhs.y + values[8]*rhs.z);

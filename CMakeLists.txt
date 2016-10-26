@@ -20,8 +20,8 @@ cuda_add_library(pclem ${SOURCES})
 target_link_libraries(pclem
   ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
 
-FILE(GLOB headers "src/*.h")
-INSTALL(FILES ${headers} DESTINATION include/pclem)
+set(PUBLIC_HEADERS src/pointcloud.h src/em_algorithm.h src/gaussian_mixture.h)
+INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pclem)
 INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
 INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)
 INSTALL(FILES pclem-config.cmake DESTINATION lib/pclem)

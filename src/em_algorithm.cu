@@ -1,19 +1,20 @@
 
 #include <glog/logging.h>
 
+#include "device_pointcloud.h"
 #include "covariance_matrix.cuh"
 #include "em_algorithm.h"
 
 namespace pclem {
-    EmAlgorithm::EmAlgorithm(PointCloud& pcl,
-                             GaussianMixture& mixture) :
+    EmAlgorithm::EmAlgorithm(DevicePointCloud& pcl,
+                             PrivateGaussianMixture& mixture) :
         pcl(std::move(pcl)),
         mixture(std::move(mixture)) {}
 
     EmAlgorithm::EmAlgorithm(EmAlgorithm&& other) :
         pcl(std::move(other.pcl)), mixture(std::move(other.mixture)) {}
 
-    EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
+    EmAlgorithm EmAlgorithm::from_pcl(DevicePointCloud& pcl) {
         std::vector<WeightedGaussian> temp_gaussians;
 
         auto corners = pcl.getBoundingBox().corners();
@@ -29,7 +30,7 @@ namespace pclem {
             temp_gaussians.push_back(gaussian);
         }
 
-        GaussianMixture mixture(temp_gaussians);
+        PrivateGaussianMixture mixture(temp_gaussians);
 
         EmAlgorithm temp_em(pcl, mixture);
 

@@ -3,17 +3,16 @@
 
 #include <iostream>
 
-#include "point.cuh"
+#include "point.h"
 #include "covariance_matrix.cuh"
 
 namespace pclem {
     class WeightedGaussian {
     public:
-        __host__ __device__
         WeightedGaussian() : mu(), sigma(), weight(0.0) {}
-        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight);
+        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight) :
+            mu(mu), sigma(sigma), weight(weight) {}
 
-        __host__ __device__
         WeightedGaussian(const WeightedGaussian& other) :
             mu(other.mu), sigma(other.sigma), weight(other.weight) {}
 
