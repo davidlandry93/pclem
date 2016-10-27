@@ -79,6 +79,7 @@ namespace pclem {
         for(Point point : points) {
             data.push_back(AssociatedPoint(point));
         }
+        updateBoundingBox();
     }
 
     void DevicePointCloud::compute_associations(const GaussianMixture& mixture) {
@@ -159,6 +160,8 @@ namespace pclem {
         VLOG(10) << "Normalizing associations for every point...";
 
         thrust::transform(data.begin(), data.end(), data.begin(), normalization_op());
+
+        LOG(INFO) << "Weights of point 0: " << data[0];
 
         VLOG(10) << "Done normalizing associations";
     }

@@ -27,6 +27,7 @@ namespace pclem {
             sigma.set(2,2,10.0);
 
             WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian);
+            std::cout << "Adding gaussian: " << gaussian;
             temp_gaussians.push_back(gaussian);
         }
 
