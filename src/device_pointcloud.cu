@@ -284,22 +284,22 @@ namespace pclem {
         base_sigma.v02 = base_sigma.v20 = mu.x * mu.z;
         base_sigma.v21 = base_sigma.v12 = mu.z * mu.y;
 
-        sigma = sigma / sum_of_gammas - base_sigma;
-        return base_sigma.to_host();
+        sigma = (sigma / sum_of_gammas) - base_sigma;
+        return sigma.to_host();
     }
 
     double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         double log_likelihood = 0.0;
 
-        std::cout << "Log likelihood of distributions: ";
+        // std::cout << "Log likelihood of distributions: ";
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             double likelihood_of_distribution = log_likelihood_of_distribution(i, mixture.get_gaussian(i));
 
-            std::cout << likelihood_of_distribution << " ";
+            // std::cout << likelihood_of_distribution << " ";
 
             log_likelihood += likelihood_of_distribution;
         }
-        std::cout << std::endl;
+        // std::cout << std::endl;
 
         return log_likelihood;
     }
@@ -326,7 +326,7 @@ namespace pclem {
 
         __host__ __device__
         double operator()(AssociatedPoint p) {
-            if(p.likelihoods[index_of_distribution] < 1e-70) {
+            if(p.likelihoods[index_of_distribution] < 1e-30) {
                 return 0.0;
             } else {
                 return p.likelihoods[index_of_distribution] * (log_pi_ij + log(likelihood_of_point(p)));

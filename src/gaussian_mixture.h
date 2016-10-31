@@ -13,6 +13,7 @@ namespace pclem {
         GaussianMixture(std::vector<WeightedGaussian> gaussians);
         GaussianMixture(GaussianMixture&& other);
         GaussianMixture& operator=(GaussianMixture&& other);
+        GaussianMixture(const GaussianMixture& other);
         std::vector<WeightedGaussian>::const_iterator begin() const;
         std::vector<WeightedGaussian>::const_iterator end() const;
         int n_gaussians() const;
