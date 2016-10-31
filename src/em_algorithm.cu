@@ -27,7 +27,7 @@ namespace pclem {
             sigma.set(2,2,10.0);
 
             WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian);
-            std::cout << "Adding gaussian: " << gaussian;
+            VLOG(4) << "Adding gaussian: " << gaussian;
             temp_gaussians.push_back(gaussian);
         }
 
@@ -57,6 +57,10 @@ namespace pclem {
         VLOG(10) << "Computing maximization...";
         mixture = pcl.create_mixture();
         VLOG(10) << "Done.";
+    }
+
+    GaussianMixture EmAlgorithm::get_mixture() const {
+        return mixture;
     }
 
     std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em) {

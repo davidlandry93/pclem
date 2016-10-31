@@ -15,6 +15,10 @@ namespace pclem {
         gaussians(other.gaussians) {
     }
 
+    GaussianMixture::GaussianMixture(const GaussianMixture& other) :
+        gaussians(other.gaussians) {
+    }
+
     std::vector<WeightedGaussian>::const_iterator GaussianMixture::begin() const {
         return gaussians.begin();
     }

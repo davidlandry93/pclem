@@ -17,6 +17,7 @@ namespace pclem {
         void maximization();
         double log_likelihood();
         EmAlgorithm& operator=(EmAlgorithm&& other);
+        GaussianMixture get_mixture() const;
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
         EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture);
