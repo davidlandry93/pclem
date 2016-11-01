@@ -3,8 +3,6 @@
 
 #include <memory>
 
-#include <thrust/device_vector.h>
-
 #include "pointcloud.h"
 #include "gaussian_mixture.h"
 

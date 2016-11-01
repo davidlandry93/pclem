@@ -17,6 +17,7 @@ namespace pclem {
     class DevicePointCloud {
     public:
         DevicePointCloud();
+        DevicePointCloud(DevicePointCloud& other);
         DevicePointCloud(DevicePointCloud&& other);
         DevicePointCloud& operator=(DevicePointCloud&& other);
         BoundingBox getBoundingBox();
@@ -31,7 +32,6 @@ namespace pclem {
         BoundingBox boundingBox;
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
-        DevicePointCloud(DevicePointCloud& other);
         void updateBoundingBox();
         void normalize_likelihoods(thrust::device_vector<double>& likelihoods, int n_gaussians, int n_points) const;
         void compute_associations_of_distribution(int index_of_distribution, const WeightedGaussian& distribution);

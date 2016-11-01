@@ -14,6 +14,7 @@ namespace pclem {
     public:
         PointCloud();
         ~PointCloud();
+        PointCloud(PointCloud& other);
         PointCloud(PointCloud&& other);
         PointCloud& operator=(PointCloud&& other);
         void operator=(const PointCloud& other) = delete;
@@ -26,7 +27,6 @@ namespace pclem {
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
 
     private:
-        PointCloud(PointCloud& other);
         DevicePointCloud* device_pcl;
     };
 }

@@ -25,6 +25,9 @@ namespace pclem {
         updateBoundingBox();
     }
 
+    DevicePointCloud::DevicePointCloud(DevicePointCloud& other) :
+        data(other.data), boundingBox(other.boundingBox){}
+
     DevicePointCloud::DevicePointCloud(DevicePointCloud&& other) :
         data(), boundingBox(other.boundingBox) {
         std::swap(data,other.data);

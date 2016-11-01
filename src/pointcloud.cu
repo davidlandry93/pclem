@@ -12,9 +12,13 @@ namespace pclem {
         }
     }
 
-    PointCloud::PointCloud(PointCloud& other) {
-        device_pcl = other.device_pcl;
-        other.device_pcl = NULL;
+    PointCloud::PointCloud(PointCloud& other)
+    {
+        if(other.device_pcl == NULL) {
+            device_pcl = new DevicePointCloud();
+        } else {
+            device_pcl = new DevicePointCloud(*other.device_pcl);
+        }
     }
 
     PointCloud::PointCloud(PointCloud&& other) {
