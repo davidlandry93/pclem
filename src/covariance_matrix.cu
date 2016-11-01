@@ -63,6 +63,27 @@ namespace pclem {
         return inverse;
     }
 
+    std::array<double,3> CovarianceMatrix::eigenvalues() const {
+        VLOG(10) << "Extracting eigenvalues...";
+
+        arma::mat33 arma_cov_mat(values.data());
+        arma::cx_vec eigvals;
+
+        arma::eig_gen(eigvals, arma_cov_mat);
+
+        std::array<double,3> eigvals_array;
+
+        for(int i=0; i < 3; i++) {
+            eigvals_array[i] = eigvals[i].real();
+
+            if(std::abs(eigvals[i].imag()) > 1e-300) {
+                LOG(WARNING) << "Imaginary part was found during eigenvalue extraction";
+            }
+        }
+
+        return eigvals_array;
+    }
+
     std::ostream& operator<<(std::ostream& os, const CovarianceMatrix& m) {
         os << "[";
         for(auto value : m.as_array()) {
