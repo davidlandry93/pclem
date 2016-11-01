@@ -56,4 +56,8 @@ namespace pclem {
         return device_pcl->log_likelihood_of_mixture(mixture);
     }
 
+    std::vector<Point> PointCloud::copy_of_points() const {
+        return device_pcl->copy_of_points();
+    }
+
 }

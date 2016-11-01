@@ -358,4 +358,14 @@ namespace pclem {
                                         log_likelihood_op(index_of_distribution, distribution),
                                         0.0, thrust::plus<double>());
     }
+
+    std::vector<Point> DevicePointCloud::copy_of_points() const {
+        std::vector<Point> copy;
+
+        for(AssociatedPoint point : data) {
+            copy.push_back(Point(point.x, point.y, point.z));
+        }
+
+        return copy;
+    }
 }

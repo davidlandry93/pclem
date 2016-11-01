@@ -26,6 +26,8 @@ namespace pclem {
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
 
+        std::vector<Point> copy_of_points() const;
+
     private:
         DevicePointCloud* device_pcl;
     };
