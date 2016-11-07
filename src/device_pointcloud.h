@@ -11,6 +11,7 @@
 #include "weighted_gaussian.h"
 #include "gaussian_mixture.h"
 #include "associated_point.cuh"
+#include "hierarchical_gaussian_mixture.h"
 
 namespace pclem {
 
@@ -28,6 +29,7 @@ namespace pclem {
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
         void add_points(std::vector<Point> points);
         std::vector<Point> copy_of_points() const;
+        HierarchicalGaussianMixture create_hgmm() const;
 
     private:
         thrust::device_vector<AssociatedPoint> data;

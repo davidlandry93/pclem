@@ -1,4 +1,6 @@
 
+#include "thrust/device_vector.h"
+
 #include "associated_point.cuh"
 #include "pointcloud.h"
 #include "device_pointcloud.h"
@@ -58,6 +60,10 @@ namespace pclem {
 
     std::vector<Point> PointCloud::copy_of_points() const {
         return device_pcl->copy_of_points();
+    }
+
+    HierarchicalGaussianMixture PointCloud::create_hgmm() const {
+        return device_pcl->create_hgmm();
     }
 
 }

@@ -7,6 +7,7 @@
 #include "point.h"
 #include "boundingbox.h"
 #include "gaussian_mixture.h"
+#include "hierarchical_gaussian_mixture.h"
 
 namespace pclem {
     class DevicePointCloud;
@@ -25,6 +26,7 @@ namespace pclem {
         void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
+        HierarchicalGaussianMixture create_hgmm() const;
 
         std::vector<Point> copy_of_points() const;
 

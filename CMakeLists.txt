@@ -20,7 +20,16 @@ cuda_add_library(pclem ${SOURCES})
 target_link_libraries(pclem
   ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
 
-set(PUBLIC_HEADERS src/pointcloud.h src/em_algorithm.h src/gaussian_mixture.h src/point.h src/weighted_gaussian.h src/covariance_matrix.h src/boundingbox.h src/vector3.h)
+set(PUBLIC_HEADERS
+  src/boundingbox.h
+  src/covariance_matrix.h
+  src/em_algorithm.h
+  src/gaussian_mixture.h
+  src/hierarchical_gaussian_mixture.h
+  src/point.h
+  src/pointcloud.h
+  src/vector3.h
+  src/weighted_gaussian.h)
 INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pclem)
 INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
 INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)

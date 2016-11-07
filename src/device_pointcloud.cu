@@ -15,6 +15,7 @@
 #include "strided_range.h"
 #include "device_pointcloud.h"
 #include "raw_covariance_matrix.cuh"
+#include "device_hierarchical_gaussian_mixture.h"
 
 namespace pclem {
     DevicePointCloud::DevicePointCloud(): data(), boundingBox() {
@@ -358,14 +359,19 @@ namespace pclem {
                                         log_likelihood_op(index_of_distribution, distribution),
                                         0.0, thrust::plus<double>());
     }
-
-    std::vector<Point> DevicePointCloud::copy_of_points() const {
-        std::vector<Point> copy;
+std::vector<Point> DevicePointCloud::copy_of_points() const {std::vector<Point> copy;
 
         for(AssociatedPoint point : data) {
             copy.push_back(Point(point.x, point.y, point.z));
         }
 
         return copy;
+    }
+
+
+    HierarchicalGaussianMixture DevicePointCloud::create_hgmm() const {
+        std::shared_ptr<DeviceHierarchicalGaussianMixture> created_mixture(new DeviceHierarchicalGaussianMixture());
+
+        return HierarchicalGaussianMixutre(created_mixture);
     }
 }
