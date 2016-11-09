@@ -10,9 +10,10 @@ namespace pclem {
     public:
         BoundingBox();
         BoundingBox(Point min, Point max);
+        BoundingBox(const BoundingBox& other);
         void setMin(Point min);
         void setMax(Point max);
-        std::vector<Point> corners();
+        std::vector<Point> corners() const;
 
     private:
         Point min;

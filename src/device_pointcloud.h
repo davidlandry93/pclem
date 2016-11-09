@@ -11,6 +11,7 @@
 #include "weighted_gaussian.h"
 #include "gaussian_mixture.h"
 #include "associated_point.cuh"
+#include "device_hierarchical_gaussian_mixture.h"
 #include "hierarchical_gaussian_mixture.h"
 
 namespace pclem {
@@ -21,7 +22,7 @@ namespace pclem {
         DevicePointCloud(DevicePointCloud& other);
         DevicePointCloud(DevicePointCloud&& other);
         DevicePointCloud& operator=(DevicePointCloud&& other);
-        BoundingBox getBoundingBox();
+        BoundingBox getBoundingBox() const;
         int get_n_points() const;
         void compute_associations(const GaussianMixture& mixture);
         void normalize_associations();
@@ -29,7 +30,7 @@ namespace pclem {
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
         void add_points(std::vector<Point> points);
         std::vector<Point> copy_of_points() const;
-        HierarchicalGaussianMixture create_hgmm() const;
+        HierarchicalGaussianMixture create_hgmm();
 
     private:
         thrust::device_vector<AssociatedPoint> data;

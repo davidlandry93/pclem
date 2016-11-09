@@ -4,6 +4,7 @@
 #include "device_pointcloud.h"
 #include "covariance_matrix.h"
 #include "em_algorithm.h"
+#include "gaussian_mixture_factory.h"
 
 namespace pclem {
     EmAlgorithm::EmAlgorithm(PointCloud& pcl,
@@ -15,23 +16,8 @@ namespace pclem {
         pcl(std::move(other.pcl)), mixture(std::move(other.mixture)) {}
 
     EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
-        std::vector<WeightedGaussian> temp_gaussians;
-
-        auto corners = pcl.getBoundingBox().corners();
-        double initial_weight_of_gaussian = 1.0 / corners.size();
-
-        for(Point corner : corners) {
-            CovarianceMatrix sigma = CovarianceMatrix();
-            sigma.set(0,0,10.0);
-            sigma.set(1,1,10.0);
-            sigma.set(2,2,10.0);
-
-            WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian);
-            VLOG(4) << "Adding gaussian: " << gaussian;
-            temp_gaussians.push_back(gaussian);
-        }
-
-        GaussianMixture mixture(temp_gaussians);
+        GaussianMixtureFactory gm_factory;
+        GaussianMixture mixture = gm_factory.from_pcl_corners(pcl);
 
         EmAlgorithm temp_em(pcl, mixture);
 
