@@ -20,7 +20,7 @@ namespace pclem {
         PointCloud& operator=(PointCloud&& other);
         void operator=(const PointCloud& other) = delete;
 
-        void add_points(const std::vector<Point>& points);
+        void set_points(const std::vector<Point>& points);
         BoundingBox getBoundingBox() const;
         void compute_associations(const GaussianMixture& mixture);
         void normalize_associations();

@@ -19,26 +19,17 @@
 #include "device_hierarchical_gaussian_mixture.h"
 
 namespace pclem {
-    DevicePointCloud::DevicePointCloud(): data(), boundingBox() {
-    }
-
-    DevicePointCloud::DevicePointCloud(std::vector<AssociatedPoint> data) :
-        data(data) {
-        updateBoundingBox();
-    }
+    DevicePointCloud::DevicePointCloud() :
+        ptr_to_points(new thrust::device_vector<AssociatedPoint>()),
+        pts_begin(ptr_to_points->begin()),
+        pts_end(ptr_to_points->end()),
+        boundingBox() {}
 
     DevicePointCloud::DevicePointCloud(DevicePointCloud& other) :
-        data(other.data), boundingBox(other.boundingBox){}
-
-    DevicePointCloud::DevicePointCloud(DevicePointCloud&& other) :
-        data(), boundingBox(other.boundingBox) {
-        std::swap(data,other.data);
-    }
-
-    DevicePointCloud& DevicePointCloud::operator=(DevicePointCloud&& other) {
-        std::swap(data, other.data);
-        return *this;
-    }
+        ptr_to_points(other.ptr_to_points),
+        pts_begin(other.pts_begin),
+        pts_end(other.pts_end),
+        boundingBox(other.boundingBox){}
 
     BoundingBox DevicePointCloud::getBoundingBox() const {
         return BoundingBox(boundingBox);
@@ -66,8 +57,8 @@ namespace pclem {
         min_op min_function;
         max_op max_function;
 
-        DevicePoint min = thrust::reduce(data.begin(), data.end(), DevicePoint(0.0,0.0,0.0), min_function);
-        DevicePoint max = thrust::reduce(data.begin(), data.end(), DevicePoint(0.0,0.0,0.0), max_function);
+        DevicePoint min = thrust::reduce(pts_begin, pts_end, DevicePoint(0.0,0.0,0.0), min_function);
+        DevicePoint max = thrust::reduce(pts_begin, pts_end, DevicePoint(0.0,0.0,0.0), max_function);
 
         Point host_min = min.to_host();
         Point host_max = max.to_host();
@@ -77,14 +68,23 @@ namespace pclem {
     }
 
     int DevicePointCloud::get_n_points() const {
-        return data.size();
+        return pts_end - pts_begin;
     }
 
-    void DevicePointCloud::add_points(std::vector<Point> points) {
-        for(Point point : points) {
-            data.push_back(AssociatedPoint(point));
-        }
+    void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points) {
+        ptr_to_points = points;
+        pts_begin = points->begin();
+        pts_end = points->end();
+
         updateBoundingBox();
+    }
+
+    void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points,
+                                      const PointIterator& begin,
+                                      const PointIterator& end) {
+        ptr_to_points = points;
+        pts_begin = begin;
+        pts_end = end;
     }
 
     void DevicePointCloud::compute_associations(const GaussianMixture& mixture) {
@@ -142,7 +142,7 @@ namespace pclem {
     void DevicePointCloud::compute_associations_of_distribution(int index_of_distribution, const WeightedGaussian& distribution) {
         gaussian_op op(index_of_distribution, distribution);
 
-        thrust::transform(data.begin(), data.end(), data.begin(), op);
+        thrust::transform(pts_begin, pts_end, pts_begin, op);
     }
 
     struct normalization_op : public thrust::unary_function<AssociatedPoint, AssociatedPoint> {
@@ -164,9 +164,7 @@ namespace pclem {
     void DevicePointCloud::normalize_associations() {
         VLOG(10) << "Normalizing associations for every point...";
 
-        thrust::transform(data.begin(), data.end(), data.begin(), normalization_op());
-
-        LOG(INFO) << "Weights of point 0: " << data[0];
+        thrust::transform(pts_begin, pts_end, pts_begin, normalization_op());
 
         VLOG(10) << "Done normalizing associations";
     }
@@ -187,11 +185,9 @@ namespace pclem {
     GaussianMixture DevicePointCloud::create_mixture() const {
         // We store the sum of gammas of every distribution in an empty, meaningless AssociatedPoint.
         AssociatedPoint sums;
-        sums = thrust::reduce(data.begin(), data.end(), AssociatedPoint(), sums_of_gammas_op());
+        sums = thrust::reduce(pts_begin, pts_end, AssociatedPoint(), sums_of_gammas_op());
 
         std::vector<WeightedGaussian> gaussians;
-
-        std::cout << "TOTOTOT: " << AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE;
 
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             gaussians.push_back(create_distribution_of_mixture(i, sums.likelihoods[i]));
@@ -223,7 +219,7 @@ namespace pclem {
     WeightedGaussian DevicePointCloud::create_distribution_of_mixture(int index_of_distribution, double sum_of_gammas) const {
         VLOG(10) << "Creating distribution " << index_of_distribution << " of mixture...";
 
-        DevicePoint new_mu = thrust::transform_reduce(data.begin(), data.end(),
+        DevicePoint new_mu = thrust::transform_reduce(pts_begin, pts_end,
                                                       weight_point_op(index_of_distribution),
                                                       DevicePoint(0.0, 0.0, 0.0),
                                                       sum_of_points_op());
@@ -278,7 +274,7 @@ namespace pclem {
     CovarianceMatrix DevicePointCloud::compute_sigma(int index_of_distribution, const Point& mu, double sum_of_gammas) const {
         RawCovarianceMatrix init = RawCovarianceMatrix::zeros();
 
-        RawCovarianceMatrix sigma = thrust::transform_reduce(data.begin(), data.end(),
+        RawCovarianceMatrix sigma = thrust::transform_reduce(pts_begin, pts_end,
                                                              point_to_cov_op(index_of_distribution),
                                                              init, sum_of_cov_op());
 
@@ -359,16 +355,18 @@ namespace pclem {
     };
 
     double DevicePointCloud::log_likelihood_of_distribution(int index_of_distribution, const WeightedGaussian& distribution) const  {
-        return thrust::transform_reduce(data.begin(), data.end(),
+        return thrust::transform_reduce(pts_begin, pts_end,
                                         log_likelihood_op(index_of_distribution, distribution),
                                         0.0, thrust::plus<double>());
     }
 
     std::vector<Point> DevicePointCloud::copy_of_points() const {
+        thrust::host_vector<AssociatedPoint> host_pts = *ptr_to_points;
         std::vector<Point> copy;
 
-        for(AssociatedPoint point : data) {
-            copy.push_back(Point(point.x, point.y, point.z));
+        for(AssociatedPoint point : host_pts) {
+            Point vanilla_point = point.to_host();
+            copy.push_back(vanilla_point);
         }
 
         return copy;
@@ -378,12 +376,10 @@ namespace pclem {
         VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
 
-        DeviceHierarchicalGaussianMixture* d = new DeviceHierarchicalGaussianMixture(data, gmm_factory.from_pcl_corners(*this));
-        std::shared_ptr<DeviceHierarchicalGaussianMixture> created_mixture(d);
-
-        created_mixture->create_children();
+        std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this)));
+        hierarchical_mixture->create_children();
 
         VLOG(10) << "Done creating hgmm.";
-        return HierarchicalGaussianMixture(created_mixture);
+        return HierarchicalGaussianMixture(hierarchical_mixture);
     }
 }

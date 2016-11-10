@@ -34,8 +34,14 @@ namespace pclem {
         return *this;
     }
 
-    void PointCloud::add_points(const std::vector<Point>& points) {
-        device_pcl->add_points(points);
+    void PointCloud::set_points(const std::vector<Point>& points) {
+        std::shared_ptr<thrust::device_vector<AssociatedPoint>> device_vector;
+
+        for(Point point : points) {
+            device_vector->push_back(AssociatedPoint(point));
+        }
+
+        device_pcl->set_points(device_vector);
     }
 
     BoundingBox PointCloud::getBoundingBox() const {

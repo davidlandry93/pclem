@@ -19,6 +19,10 @@ namespace pclem {
 
         AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z) {}
 
+        Point to_host() const {
+            return Point(x,y,z);
+        }
+
         friend std::ostream& operator<<(std::ostream& os, const AssociatedPoint& p) {
             os << "(" << p.x << p.y << p.z << "). Associations: [";
             for(int i = 0; i < N_DISTRIBUTIONS_PER_MIXTURE; i++) {

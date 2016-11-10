@@ -18,22 +18,27 @@ namespace pclem {
 
     class DevicePointCloud {
     public:
+        typedef thrust::device_vector<AssociatedPoint>::iterator PointIterator;
+
         DevicePointCloud();
         DevicePointCloud(DevicePointCloud& other);
-        DevicePointCloud(DevicePointCloud&& other);
-        DevicePointCloud& operator=(DevicePointCloud&& other);
         BoundingBox getBoundingBox() const;
         int get_n_points() const;
         void compute_associations(const GaussianMixture& mixture);
         void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
-        void add_points(std::vector<Point> points);
+        void set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points);
+        void set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points,
+                        const thrust::device_vector<AssociatedPoint>::iterator& begin,
+                        const thrust::device_vector<AssociatedPoint>::iterator& end);
         std::vector<Point> copy_of_points() const;
         HierarchicalGaussianMixture create_hgmm();
 
     private:
-        thrust::device_vector<AssociatedPoint> data;
+        std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
+        PointIterator pts_begin;
+        PointIterator pts_end;
         BoundingBox boundingBox;
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
