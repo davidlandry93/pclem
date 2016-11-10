@@ -7,11 +7,8 @@
 #include "device_hierarchical_gaussian_mixture.h"
 
 namespace pclem {
-    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(thrust::device_vector<AssociatedPoint>& points, GaussianMixture mixture)
-        : pcl_begin(points.begin()),
-          pcl_end(points.end()),
-          mixture(std::move(mixture)),
-          children() {}
+    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture)
+        : pcl(pcl), mixture(mixture), children() {}
 
     struct is_most_associated_op : public thrust::unary_function<AssociatedPoint,bool> {
     public:
@@ -22,8 +19,7 @@ namespace pclem {
         bool operator()(AssociatedPoint p) {
             bool is_most_associated = true;
             for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                if(p.likelihoods[i] > p.likelihoods[index_of_distribution] &&
-                   i != index_of_distribution) {
+                if(p.likelihoods[i] > p.likelihoods[index_of_distribution]) {
                     is_most_associated = false;
                 }
             }
@@ -36,13 +32,13 @@ namespace pclem {
     void DeviceHierarchicalGaussianMixture::create_children() {
         VLOG(10) << "Creating children of hierarchical gaussian mixture...";
 
-        thrust::device_vector<AssociatedPoint>::iterator first_unsorted = pcl_begin;
+        thrust::device_vector<AssociatedPoint>::iterator first_unsorted = pcl.begin();
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             is_most_associated_op op(i);
-            thrust::device_vector<AssociatedPoint>::iterator sub_pcl_begin = first_unsorted;
+            DevicePointCloud::PointIterator sub_pcl_begin = first_unsorted;
 
-            thrust::partition(first_unsorted, pcl_end, op);
-            first_unsorted = thrust::find_if_not(first_unsorted, pcl_end, op);
+            thrust::partition(first_unsorted, pcl.end(), op);
+            first_unsorted = thrust::find_if_not(first_unsorted, pcl.end(), op);
 
             std::cout << first_unsorted - sub_pcl_begin << " ";
         }

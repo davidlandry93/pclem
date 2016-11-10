@@ -1,5 +1,6 @@
 
-#include "thrust/device_vector.h"
+#include <glog/logging.h>
+#include <thrust/device_vector.h>
 
 #include "associated_point.cuh"
 #include "pointcloud.h"
@@ -35,13 +36,18 @@ namespace pclem {
     }
 
     void PointCloud::set_points(const std::vector<Point>& points) {
-        std::shared_ptr<thrust::device_vector<AssociatedPoint>> device_vector;
+        VLOG(10) << "Setting points...";
+
+        std::shared_ptr<thrust::device_vector<AssociatedPoint>> device_vector(new thrust::device_vector<AssociatedPoint>());
 
         for(Point point : points) {
-            device_vector->push_back(AssociatedPoint(point));
+            AssociatedPoint device_point(point);
+            device_vector->push_back(device_point);
         }
 
         device_pcl->set_points(device_vector);
+
+        VLOG(10) << "Done setting points.";
     }
 
     BoundingBox PointCloud::getBoundingBox() const {

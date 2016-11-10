@@ -25,7 +25,7 @@ namespace pclem {
         pts_end(ptr_to_points->end()),
         boundingBox() {}
 
-    DevicePointCloud::DevicePointCloud(DevicePointCloud& other) :
+    DevicePointCloud::DevicePointCloud(const DevicePointCloud& other) :
         ptr_to_points(other.ptr_to_points),
         pts_begin(other.pts_begin),
         pts_end(other.pts_end),
@@ -72,11 +72,15 @@ namespace pclem {
     }
 
     void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points) {
+        VLOG(10) << "Setting new data source...";
+
         ptr_to_points = points;
         pts_begin = points->begin();
         pts_end = points->end();
 
         updateBoundingBox();
+
+        VLOG(10) << "Done setting data source.";
     }
 
     void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points,
@@ -361,12 +365,11 @@ namespace pclem {
     }
 
     std::vector<Point> DevicePointCloud::copy_of_points() const {
-        thrust::host_vector<AssociatedPoint> host_pts = *ptr_to_points;
         std::vector<Point> copy;
 
-        for(AssociatedPoint point : host_pts) {
-            Point vanilla_point = point.to_host();
-            copy.push_back(vanilla_point);
+        for(auto it = pts_begin; it != pts_end; it++) {
+            AssociatedPoint device_point(*it);
+            copy.push_back(device_point.to_host());
         }
 
         return copy;
@@ -381,5 +384,13 @@ namespace pclem {
 
         VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(hierarchical_mixture);
+    }
+
+    DevicePointCloud::PointIterator DevicePointCloud::begin() {
+        return pts_begin;
+    }
+
+    DevicePointCloud::PointIterator DevicePointCloud::end() {
+        return pts_end;
     }
 }

@@ -4,11 +4,11 @@
 #include <thrust/device_vector.h>
 
 #include "associated_point.cuh"
-#include "pointcloud.h"
 #include "gaussian_mixture.h"
+#include "device_pointcloud.h"
 
 namespace pclem {
-    class DeviceHierarchicalGaussianMixture{
+    class DeviceHierarchicalGaussianMixture {
     public:
         DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture);
         void create_children();

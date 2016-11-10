@@ -14,9 +14,11 @@ namespace pclem {
         __host__ __device__
         AssociatedPoint() : DevicePoint(), likelihoods{0.0} {}
 
+        __host__ __device__
         AssociatedPoint(double _x, double _y, double _z) :
             DevicePoint(_x,_y,_z), likelihoods{0.0} {}
 
+        __host__ __device__
         AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z) {}
 
         Point to_host() const {
