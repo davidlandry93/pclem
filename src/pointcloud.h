@@ -17,6 +17,7 @@ namespace pclem {
         ~PointCloud();
         PointCloud(PointCloud& other);
         PointCloud(PointCloud&& other);
+        PointCloud(DevicePointCloud* pcl_ptr);
         PointCloud& operator=(PointCloud&& other);
         void operator=(const PointCloud& other) = delete;
 

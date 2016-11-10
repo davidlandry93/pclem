@@ -5,6 +5,7 @@
 
 #include "associated_point.cuh"
 #include "device_hierarchical_gaussian_mixture.h"
+#include "pointcloud.h"
 
 namespace pclem {
     DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture)

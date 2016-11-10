@@ -29,6 +29,9 @@ namespace pclem {
         other.device_pcl = NULL;
     }
 
+    PointCloud::PointCloud(DevicePointCloud* pcl_ptr)
+        : device_pcl(pcl_ptr) {}
+
     PointCloud& PointCloud::operator=(PointCloud&& other) {
         device_pcl = other.device_pcl;
         other.device_pcl = NULL;

@@ -13,6 +13,7 @@ namespace pclem {
         static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();
         void maximization();
+        void run(double epsilon);
         double log_likelihood();
         EmAlgorithm& operator=(EmAlgorithm&& other);
         GaussianMixture get_mixture() const;

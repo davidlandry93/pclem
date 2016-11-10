@@ -45,6 +45,26 @@ namespace pclem {
         VLOG(10) << "Done.";
     }
 
+    void EmAlgorithm::run(double epsilon) {
+        VLOG(10) << "Running expectation maximization...";
+
+        double previous_likelihood = 0.0;
+        double delta = std::numeric_limits<double>::infinity();
+
+        while(delta > epsilon) {
+            expectation();
+            maximization();
+
+            double new_likelihood = log_likelihood();
+            delta = std::abs(new_likelihood - previous_likelihood);
+            LOG(INFO) << "Log likelihood: " << new_likelihood;
+
+            previous_likelihood = new_likelihood;
+        }
+        
+        VLOG(10) << "Done running expectation maximization...";
+    }
+
     GaussianMixture EmAlgorithm::get_mixture() const {
         return mixture;
     }

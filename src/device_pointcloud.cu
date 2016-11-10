@@ -12,11 +12,11 @@
 
 #include <armadillo>
 
-#include "strided_range.h"
 #include "device_pointcloud.h"
 #include "raw_covariance_matrix.cuh"
 #include "gaussian_mixture_factory.h"
 #include "device_hierarchical_gaussian_mixture.h"
+#include "em_algorithm.h"
 
 namespace pclem {
     DevicePointCloud::DevicePointCloud() :
@@ -378,6 +378,10 @@ namespace pclem {
     HierarchicalGaussianMixture DevicePointCloud::create_hgmm() {
         VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
+
+        PointCloud vanilla_pcl(new DevicePointCloud(*this));
+        EmAlgorithm em_algorithm = EmAlgorithm::from_pcl(vanilla_pcl);
+        em_algorithm.run(0.0001);
 
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this)));
         hierarchical_mixture->create_children();
