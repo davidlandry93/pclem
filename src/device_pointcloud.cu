@@ -177,7 +177,7 @@ namespace pclem {
         __host__ __device__
         AssociatedPoint operator()(AssociatedPoint lhs, AssociatedPoint rhs) {
             AssociatedPoint sum;
-            for(int i=0; i < 8; i++) {
+            for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
                 sum.likelihoods[i] = lhs.likelihoods[i] + rhs.likelihoods[i];
             }
             return sum;
@@ -190,6 +190,9 @@ namespace pclem {
         sums = thrust::reduce(data.begin(), data.end(), AssociatedPoint(), sums_of_gammas_op());
 
         std::vector<WeightedGaussian> gaussians;
+
+        std::cout << "TOTOTOT: " << AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE;
+
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             gaussians.push_back(create_distribution_of_mixture(i, sums.likelihoods[i]));
         }
@@ -372,12 +375,15 @@ namespace pclem {
     }
 
     HierarchicalGaussianMixture DevicePointCloud::create_hgmm() {
+        VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
-        std::shared_ptr<DeviceHierarchicalGaussianMixture> created_mixture(
-            new DeviceHierarchicalGaussianMixture(data));
+
+        DeviceHierarchicalGaussianMixture* d = new DeviceHierarchicalGaussianMixture(data, gmm_factory.from_pcl_corners(*this));
+        std::shared_ptr<DeviceHierarchicalGaussianMixture> created_mixture(d);
 
         created_mixture->create_children();
 
+        VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(created_mixture);
     }
 }

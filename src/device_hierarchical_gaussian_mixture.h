@@ -10,7 +10,7 @@
 namespace pclem {
     class DeviceHierarchicalGaussianMixture{
     public:
-        DeviceHierarchicalGaussianMixture(thrust::device_vector<AssociatedPoint>& points);
+        DeviceHierarchicalGaussianMixture(thrust::device_vector<AssociatedPoint>& points, GaussianMixture mixture);
         void create_children();
     private:
         thrust::device_vector<AssociatedPoint>::iterator pcl_begin;
