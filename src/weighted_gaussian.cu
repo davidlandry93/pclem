@@ -5,7 +5,7 @@
 namespace pclem {
     WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight(0) {}
 
-    WeightedGaussian::WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight) :
+    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight) :
         mu(mu), sigma(sigma), weight(weight) {}
 
     WeightedGaussian::WeightedGaussian(const WeightedGaussian& other) :

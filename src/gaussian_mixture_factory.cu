@@ -1,10 +1,19 @@
 
+#include <cstdlib>
+#include <ctime>
 #include <glog/logging.h>
 
 #include "point.h"
 #include "gaussian_mixture_factory.h"
 
 namespace pclem {
+    bool GaussianMixtureFactory::random_seeded = false;
+
+    GaussianMixtureFactory::GaussianMixtureFactory() {
+        if(!random_seeded) {
+            srand(static_cast <unsigned> (time(0)));
+        }
+    }
 
     GaussianMixture GaussianMixtureFactory::from_pcl_corners(const PointCloud& pcl) const {
         return from_pcl_corners(pcl.getBoundingBox());
@@ -34,5 +43,25 @@ namespace pclem {
         return mixture;
     }
 
+    GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const CovarianceMatrix& cov, int n_of_distributions, double delta) const {
 
+        std::vector<WeightedGaussian> temp_gaussians;
+
+        for(int i = 0; i < n_of_distributions; i++) {
+            WeightedGaussian gaussian(
+                Point(point.x + random_number(-delta, delta),
+                      point.y + random_number(-delta, delta),
+                      point.z + random_number(-delta, delta)),
+                cov,
+                1.0 / n_of_distributions);
+
+            temp_gaussians.push_back(gaussian);
+        }
+
+        return GaussianMixture(temp_gaussians);
+    }
+
+    double GaussianMixtureFactory::random_number(double min, double max) {
+        return min + static_cast<double> (rand()) / static_cast<double> (RAND_MAX/(max-min));
+    }
 }

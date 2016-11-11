@@ -35,6 +35,7 @@ namespace pclem {
         HierarchicalGaussianMixture create_hgmm();
         PointIterator begin();
         PointIterator end();
+        std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
 
     private:
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;

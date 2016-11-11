@@ -299,15 +299,13 @@ namespace pclem {
     double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         double log_likelihood = 0.0;
 
-        // std::cout << "Log likelihood of distributions: ";
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             double likelihood_of_distribution = log_likelihood_of_distribution(i, mixture.get_gaussian(i));
 
-            // std::cout << likelihood_of_distribution << " ";
+            VLOG(2) << likelihood_of_distribution;
 
             log_likelihood += likelihood_of_distribution;
         }
-        // std::cout << std::endl;
 
         return log_likelihood;
     }
@@ -383,6 +381,8 @@ namespace pclem {
         EmAlgorithm em_algorithm = EmAlgorithm::from_pcl(vanilla_pcl);
         em_algorithm.run(0.0001);
 
+        std::cout << em_algorithm;
+
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this)));
         hierarchical_mixture->create_children();
 
@@ -396,5 +396,9 @@ namespace pclem {
 
     DevicePointCloud::PointIterator DevicePointCloud::end() {
         return pts_end;
+    }
+
+    std::shared_ptr<thrust::device_vector<AssociatedPoint>> DevicePointCloud::get_data() const {
+        return ptr_to_points;
     }
 }

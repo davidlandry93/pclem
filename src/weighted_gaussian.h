@@ -10,7 +10,7 @@ namespace pclem {
     class WeightedGaussian {
     public:
         WeightedGaussian();
-        WeightedGaussian(Point& mu, CovarianceMatrix& sigma, double weight);
+        WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight);
         WeightedGaussian(const WeightedGaussian& other);
 
         Point get_mu() const;
