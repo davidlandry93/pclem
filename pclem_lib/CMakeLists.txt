@@ -35,3 +35,9 @@ INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
 INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)
 INSTALL(FILES pclem-config.cmake DESTINATION lib/pclem)
 export(PACKAGE pclem)
+
+option(tests "Build tests." OFF) # Turn on with -Dtests=ON
+
+if(tests)
+  add_subdirectory(test)
+endif(tests)
