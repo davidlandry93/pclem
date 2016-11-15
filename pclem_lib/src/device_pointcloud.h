@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include <thrust/device_vector.h>
 
@@ -18,6 +19,9 @@ namespace pclem {
     class DevicePointCloud {
     public:
         typedef thrust::device_vector<AssociatedPoint>::iterator PointIterator;
+
+        template<typename T>
+        using PointCloudOperation = std::function<T(const PointIterator&, const PointIterator&)>;
 
         DevicePointCloud();
         DevicePointCloud(const DevicePointCloud& other);
@@ -36,6 +40,9 @@ namespace pclem {
         PointIterator begin();
         PointIterator end();
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
+
+        template<typename T>
+        T execute_pointcloud_operation(PointCloudOperation<T> op) const;
 
     private:
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
