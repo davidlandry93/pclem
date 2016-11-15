@@ -1,4 +1,6 @@
 
+#include <limits>
+
 #include "bounding_box_creation_operation.h"
 
 namespace pclem {
@@ -24,9 +26,11 @@ namespace pclem {
                                                          const DevicePointCloud::PointIterator& end) {
         min_op min_function;
         max_op max_function;
+        double pos_inf = std::numeric_limits<double>::infinity();
+        double neg_inf = -1*std::numeric_limits<double>::infinity();
 
-        DevicePoint min = thrust::reduce(begin, end, DevicePoint(0.0,0.0,0.0), min_function);
-        DevicePoint max = thrust::reduce(begin, end, DevicePoint(0.0,0.0,0.0), max_function);
+        DevicePoint min = thrust::reduce(begin, end, DevicePoint(pos_inf, pos_inf, pos_inf), min_function);
+        DevicePoint max = thrust::reduce(begin, end, DevicePoint(neg_inf, neg_inf, neg_inf), max_function);
 
         Point host_min = min.to_host();
         Point host_max = max.to_host();
