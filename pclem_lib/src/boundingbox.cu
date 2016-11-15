@@ -35,4 +35,12 @@ namespace pclem {
 
         return corners;
     }
+
+
+    BoundingBox& BoundingBox::operator=(const BoundingBox& other) {
+        min = other.min;
+        max = other.max;
+
+        return *this;
+    }
 }

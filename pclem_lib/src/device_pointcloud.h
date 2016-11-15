@@ -52,11 +52,6 @@ namespace pclem {
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
         void updateBoundingBox();
-        void normalize_likelihoods(thrust::device_vector<double>& likelihoods, int n_gaussians, int n_points) const;
-        void compute_associations_of_distribution(int index_of_distribution, const WeightedGaussian& distribution);
-        WeightedGaussian create_distribution_of_mixture(int index, double sum_of_gammas) const;
-        CovarianceMatrix compute_sigma(int index, const Point& mu, double sum_of_gammas) const;
-        double log_likelihood_of_distribution(int index_of_distribution, const WeightedGaussian& distribution) const;
     };
 
 }
