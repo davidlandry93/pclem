@@ -8,7 +8,7 @@
 #include <vtkCellArray.h>
 #include <vtkRenderer.h>
 
-#include <pclem/point.h>
+#include "point.h"
 #include "ellipsoid.h"
 
 namespace pclem {

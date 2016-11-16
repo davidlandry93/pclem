@@ -5,15 +5,8 @@
 
 #include <glog/logging.h>
 
-#include <pclem/em_algorithm.h>
-#include <pclem/pointcloud.h>
-
-#include <pclem/hierarchical_gaussian_mixture.h>
-
 #include "visualizable_point_cloud.h"
-#include "visualizable_gaussian_mixture.h"
 #include "vtk_pointcloud_reader.h"
-#include "visualization.h"
 
 using namespace pclem;
 

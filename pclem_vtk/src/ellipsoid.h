@@ -2,7 +2,7 @@
 #define ELLIPSOID_H
 
 #include <iostream>
-#include <pclem/vector3.h>
+#include "vector3.h"
 
 namespace pclem {
     class Ellipsoid {

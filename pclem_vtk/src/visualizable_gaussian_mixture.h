@@ -1,7 +1,7 @@
 #ifndef VISUALIZABLE_GAUSSIAN_MIXTURE_H
 #define VISUALIZABLE_GAUSSIAN_MIXTURE_H
 
-#include <pclem/gaussian_mixture.h>
+#include "gaussian_mixture.h"
 
 #include "visualization.h"
 

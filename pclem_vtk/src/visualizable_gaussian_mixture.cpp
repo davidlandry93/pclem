@@ -2,9 +2,9 @@
 #include <math.h>
 #include <cmath>
 
-#include <pclem/vector3.h>
-#include <pclem/covariance_matrix.h>
-#include <pclem/weighted_gaussian.h>
+#include "vector3.h"
+#include "covariance_matrix.h"
+#include "weighted_gaussian.h"
 
 #include "ellipsoid.h"
 #include "visualizable_gaussian_mixture.h"

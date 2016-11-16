@@ -6,7 +6,7 @@
 #include <vtkPolyData.h>
 #include <glog/logging.h>
 
-#include <pclem/point.h>
+#include "point.h"
 
 #include "vtk_pointcloud_reader.h"
 

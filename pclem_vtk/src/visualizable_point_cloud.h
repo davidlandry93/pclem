@@ -1,7 +1,7 @@
 #ifndef VISUALIZABLE_POINTCLOUD_H
 #define VISUALIZABLE_POINTCLOUD_H
 
-#include <pclem/pointcloud.h>
+#include "pointcloud.h"
 
 #include "visualization.h"
 

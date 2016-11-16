@@ -9,16 +9,19 @@ find_package(CUDA REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(glog REQUIRED)
 
-include_directories(src "${ARMADILLO_INCLUDE_DIRS}")
+include_directories(src include "${ARMADILLO_INCLUDE_DIRS}")
 
 list(APPEND CUDA_NVCC_FLAGS "-arch=sm_30;-std=c++11;-D_MWAITXINTRIN_H_INCLUDED;-D_FORCE_INLINES")
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
-file(GLOB SOURCES src/*.cpp src/*.cu)
+file(GLOB SOURCES src/*.cpp src/*.cu src/*.h)
 
 cuda_add_library(pclem ${SOURCES})
 target_link_libraries(pclem
   ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+  CACHE INTERNAL  "${PROJECT_NAME}: Include Directories" FORCE)
 
 set(PUBLIC_HEADERS
   src/boundingbox.h
@@ -36,8 +39,13 @@ INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)
 INSTALL(FILES pclem-config.cmake DESTINATION lib/pclem)
 export(PACKAGE pclem)
 
-option(tests "Build tests." OFF) # Turn on with -Dtests=ON
+option(tests "Build tests." ON) # Turn off with -Dtests=OFF
 
 if(tests)
-  add_subdirectory(test)
+  enable_testing()
+  find_package(GTest)
+
+  file(GLOB TEST_FILES test/*.cpp)
+  add_executable(tests ${TEST_FILES})
+  target_link_libraries(tests pclem ${GTEST_BOTH_LIBRARIES})
 endif(tests)
