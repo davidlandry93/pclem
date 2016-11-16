@@ -32,7 +32,13 @@ namespace pclem {
     }
 
     void DevicePointCloud::updateBoundingBox(){
-        boundingBox = execute_pointcloud_operation(BoundingBoxCreationOperation());
+        VLOG(10) << "Updating bounding box...";
+
+        BoundingBoxCreationOperation op;
+
+        boundingBox = execute_pointcloud_operation(op);
+
+        VLOG(10) << "Done updating bounding box.";
     }
 
     int DevicePointCloud::get_n_points() const {

@@ -1,6 +1,8 @@
 
 #include <limits>
 
+#include <glog/logging.h>
+
 #include "bounding_box_creation_operation.h"
 
 namespace pclem {
@@ -24,6 +26,8 @@ namespace pclem {
 
     BoundingBox BoundingBoxCreationOperation::operator()(const DevicePointCloud::PointIterator& begin,
                                                          const DevicePointCloud::PointIterator& end) const {
+        VLOG(10) << "Executing BoundingBoxCreationOperation...";
+
         min_op min_function;
         max_op max_function;
         double pos_inf = std::numeric_limits<double>::infinity();
@@ -37,6 +41,7 @@ namespace pclem {
 
         BoundingBox bounding_box(host_min, host_max);
 
+        VLOG(10) << "Done executing BoundingBoxCreationOperation...";
         return bounding_box;
     }
 }

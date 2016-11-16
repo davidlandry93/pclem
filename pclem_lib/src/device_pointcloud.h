@@ -42,7 +42,7 @@ namespace pclem {
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
 
         template<typename T>
-        T execute_pointcloud_operation(const PointCloudOperation<T>& op) const {
+        T execute_pointcloud_operation(PointCloudOperation<T> op) const {
             return op(pts_begin, pts_end);
         }
 

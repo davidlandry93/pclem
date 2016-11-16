@@ -8,7 +8,6 @@ namespace pclem {
     class BoundingBoxCreationOperation : public DevicePointCloud::PointCloudOperation<BoundingBox> {
     public:
         BoundingBox operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
-
     };
 }
 
