@@ -18,7 +18,7 @@ namespace pclem {
         VLOG(10) << "Creating children of hierarchical gaussian mixture...";
         SortByBestAssociationOperation op;
 
-        std::vector<int> boundaries = pcl.execute_pointcloud_operation(op);
+        std::vector<DevicePointCloud::PointIterator> boundaries = pcl.execute_pointcloud_operation(op);
 
         //children.push_back(create_one_child(sub_pcl_begin, first_unsorted, mixture.get_gaussian(i)));
 

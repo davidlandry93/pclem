@@ -5,9 +5,9 @@
 #include "device_pointcloud.h"
 
 namespace pclem {
-    class SortByBestAssociationOperation : public DevicePointCloud::PointCloudOperation<std::vector<int>> {
+    class SortByBestAssociationOperation : public DevicePointCloud::PointCloudOperation<std::vector<DevicePointCloud::PointIterator>> {
     public:
-        std::vector<int> operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
+        std::vector<DevicePointCloud::PointIterator> operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
     private:
     };
 }

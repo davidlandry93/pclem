@@ -25,20 +25,20 @@ namespace pclem {
         __const__ int index_of_distribution;
     };
 
-    std::vector<int> SortByBestAssociationOperation::operator()(const DevicePointCloud::PointIterator& begin,
-                                                                const DevicePointCloud::PointIterator& end) const {
+    std::vector<DevicePointCloud::PointIterator> SortByBestAssociationOperation::operator()(const DevicePointCloud::PointIterator& begin,
+                                                                                            const DevicePointCloud::PointIterator& end) const {
 
-        std::vector<int> boundaries;
+        std::vector<DevicePointCloud::PointIterator> boundaries;
         thrust::device_vector<AssociatedPoint>::iterator first_unsorted = begin;
 
-        boundaries.push_back(first_unsorted - begin);
+        boundaries.push_back(begin);
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             is_most_associated_op op(i);
 
             thrust::partition(first_unsorted, end, op);
             first_unsorted = thrust::find_if_not(first_unsorted, end, op);
 
-            boundaries.push_back(first_unsorted - begin);
+            boundaries.push_back(first_unsorted);
         }
 
         return boundaries;
