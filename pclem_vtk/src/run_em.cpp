@@ -17,11 +17,8 @@ int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
 
     VisualizablePointCloud pcl = VtkPointCloudReader::read("res/foret.vtk");
-    VisualizablePointCloud copy_of_pcl(pcl);
 
-    auto hgmm = pcl.create_hgmm();
-
-    auto em = EmAlgorithm::from_pcl(copy_of_pcl);
+    auto em = EmAlgorithm::from_pcl(pcl);
 
     std::cout << em;
 

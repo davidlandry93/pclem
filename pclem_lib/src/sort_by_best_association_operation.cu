@@ -26,7 +26,7 @@ namespace pclem {
     };
 
     std::vector<int> SortByBestAssociationOperation::operator()(const DevicePointCloud::PointIterator& begin,
-                                                                const DevicePointCloud::PointIterator& end) {
+                                                                const DevicePointCloud::PointIterator& end) const {
 
         std::vector<int> boundaries;
         thrust::device_vector<AssociatedPoint>::iterator first_unsorted = begin;

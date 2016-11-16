@@ -7,7 +7,7 @@
 namespace pclem {
     class SortByBestAssociationOperation : public DevicePointCloud::PointCloudOperation<std::vector<int>> {
     public:
-        std::vector<int> operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end);
+        std::vector<int> operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
     private:
     };
 }

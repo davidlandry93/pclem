@@ -119,18 +119,18 @@ namespace pclem {
         return ptr_to_points;
     }
 
-    template<typename T>
-    T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) {
-        return op(pts_begin, pts_end);
-    }
+    // template<typename T>
+    // T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) {
+    //     return op(pts_begin, pts_end);
+    // }
 
-    template<typename T>
-    T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) const {
-        return op(pts_begin, pts_end);
-    }
+    // template<typename T>
+    // T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) const {
+    //     return op(pts_begin, pts_end);
+    // }
 
-    template<>
-    std::vector<int> DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<std::vector<int>>& op) const {
-        return op(pts_begin, pts_end);
-    }
+    // template<>
+    // std::vector<int> DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<std::vector<int>>& op) const {
+    //     return op(pts_begin, pts_end);
+    // }
 }
