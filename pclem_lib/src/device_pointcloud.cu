@@ -100,10 +100,8 @@ namespace pclem {
         EmAlgorithm em_algorithm = EmAlgorithm::from_pcl(vanilla_pcl);
         em_algorithm.run(0.0001);
 
-        std::cout << em_algorithm;
-
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this)));
-        hierarchical_mixture->create_children();
+        hierarchical_mixture->expand_n_levels(3);
 
         VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(hierarchical_mixture);
@@ -122,7 +120,17 @@ namespace pclem {
     }
 
     template<typename T>
-    T DevicePointCloud::execute_pointcloud_operation(DevicePointCloud::PointCloudOperation<T> op) const {
+    T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) {
+        return op(pts_begin, pts_end);
+    }
+
+    template<typename T>
+    T DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<T>& op) const {
+        return op(pts_begin, pts_end);
+    }
+
+    template<>
+    std::vector<int> DevicePointCloud::execute_pointcloud_operation(const DevicePointCloud::PointCloudOperation<std::vector<int>>& op) const {
         return op(pts_begin, pts_end);
     }
 }

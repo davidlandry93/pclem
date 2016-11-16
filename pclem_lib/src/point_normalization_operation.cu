@@ -18,7 +18,7 @@ namespace pclem {
         }
     };
 
-    void PointNormalizationOperation::operator()(DevicePointCloud::PointIterator begin, DevicePointCloud::PointIterator end) {
+    void PointNormalizationOperation::operator()(DevicePointCloud::PointIterator begin, DevicePointCloud::PointIterator end) const {
         thrust::transform(begin, end, begin, normalization_op());
     }
 }

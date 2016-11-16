@@ -12,10 +12,12 @@ namespace pclem {
     public:
         DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture);
         void create_children();
-        void expand_children();
+        void expand_n_levels(int n_levels);
+        void run_em();
 
     private:
         const double UNIFORM_DISTRIBUTION_SIZE = 0.5;
+        const double EM_CONVERGENCE_THRESHOLD = 0.001;
 
         DevicePointCloud pcl;
         GaussianMixture mixture;

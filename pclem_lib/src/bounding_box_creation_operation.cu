@@ -23,7 +23,7 @@ namespace pclem {
     };
 
     BoundingBox BoundingBoxCreationOperation::operator()(const DevicePointCloud::PointIterator& begin,
-                                                         const DevicePointCloud::PointIterator& end) {
+                                                         const DevicePointCloud::PointIterator& end) const {
         min_op min_function;
         max_op max_function;
         double pos_inf = std::numeric_limits<double>::infinity();
