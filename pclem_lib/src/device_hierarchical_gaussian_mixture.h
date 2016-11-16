@@ -11,7 +11,7 @@ namespace pclem {
     class DeviceHierarchicalGaussianMixture {
     public:
         DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture);
-        void create_children();
+        void create_children(std::vector<DeviceHierarchicalGaussianMixture*>& to_expand);
         void expand_n_levels(int n_levels);
         void run_em();
 

@@ -57,7 +57,7 @@ namespace pclem {
     WeightedGaussian MixtureCreationOperation::create_distribution_of_mixture(const DevicePointCloud::PointIterator& begin,
                                                                               const DevicePointCloud::PointIterator& end,
                                                                               int index_of_distribution, double sum_of_gammas) const {
-        VLOG(10) << "Creating distribution " << index_of_distribution << " of mixture...";
+        VLOG(11) << "Creating distribution " << index_of_distribution << " of mixture...";
 
         DevicePoint new_mu = thrust::transform_reduce(begin, end,
                                                       weight_point_op(index_of_distribution),
@@ -68,13 +68,13 @@ namespace pclem {
                              new_mu.y / sum_of_gammas,
                              new_mu.z / sum_of_gammas);
 
-        VLOG(1) << "New mu: " << new_mu;
+        VLOG(11) << "New mu: " << new_mu;
 
         CovarianceMatrix new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
 
         double new_weight = sum_of_gammas / (end - begin);
 
-        VLOG(10) << "Done creating distribution " << index_of_distribution << " of mixture.";
+        VLOG(11) << "Done creating distribution " << index_of_distribution << " of mixture.";
 
         Point pub_new_mu = new_mu.to_host();
         WeightedGaussian to_return = WeightedGaussian(pub_new_mu, new_sigma, new_weight);

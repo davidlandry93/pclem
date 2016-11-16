@@ -14,10 +14,9 @@ namespace pclem {
     class PointCloud {
     public:
         PointCloud();
-        ~PointCloud();
         PointCloud(PointCloud& other);
         PointCloud(PointCloud&& other);
-        PointCloud(DevicePointCloud* pcl_ptr);
+        PointCloud(const std::shared_ptr<DevicePointCloud>& pcl_ptr);
         PointCloud& operator=(PointCloud&& other);
         void operator=(const PointCloud& other) = delete;
 
@@ -32,7 +31,7 @@ namespace pclem {
         std::vector<Point> copy_of_points() const;
 
     private:
-        DevicePointCloud* device_pcl;
+        std::shared_ptr<DevicePointCloud> device_pcl;
     };
 }
 

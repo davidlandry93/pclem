@@ -47,7 +47,7 @@ namespace pclem {
     }
 
     std::array<double,9> CovarianceMatrix::inverse() const {
-        VLOG(10) << "Inverting matrix...";
+        VLOG(11) << "Inverting matrix...";
 
         arma::mat33 arma_cov_mat(values.data());
         arma::mat33 arma_inv_of_cov = arma::inv(arma_cov_mat);
@@ -59,7 +59,7 @@ namespace pclem {
             }
         }
 
-        VLOG(10) << "Done inverting matrix.";
+        VLOG(11) << "Done inverting matrix.";
         return inverse;
     }
 

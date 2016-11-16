@@ -1,4 +1,5 @@
 
+#include <memory>
 #include <glog/logging.h>
 #include <thrust/partition.h>
 #include <thrust/find.h>
@@ -14,7 +15,7 @@ namespace pclem {
     DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture)
         : pcl(pcl), mixture(mixture), children() {}
 
-    void DeviceHierarchicalGaussianMixture::create_children() {
+    void DeviceHierarchicalGaussianMixture::create_children(std::vector<DeviceHierarchicalGaussianMixture*>& to_expand) {
         VLOG(10) << "Creating children of hierarchical gaussian mixture...";
         SortByBestAssociationOperation op;
 
@@ -26,11 +27,27 @@ namespace pclem {
     }
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
-        
+        VLOG(10) << "Expanding hierarchy of n levels...";
+
+        run_em();
+        std::cout << "Done with em";
+
+        int n_nodes_to_create = std::pow(AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE, n_levels);
+        std::vector<DeviceHierarchicalGaussianMixture*> to_expand;
+        std::cout << "Adding root to queue";
+        to_expand.push_back(this);
+
+        while(n_nodes_to_create > 0) {
+
+            n_nodes_to_create -= AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE;
+        }
+
+        VLOG(10) << "Done expanding hierarchy of n levels.";
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
-        PointCloud vanilla_pcl(&pcl);
+        auto ptr = std::shared_ptr<DevicePointCloud>(new DevicePointCloud(pcl));
+        PointCloud vanilla_pcl(ptr);
 
         auto em = EmAlgorithm::from_pcl(vanilla_pcl);
         em.run(EM_CONVERGENCE_THRESHOLD);

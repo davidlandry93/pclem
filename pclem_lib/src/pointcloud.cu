@@ -9,18 +9,12 @@
 namespace pclem {
     PointCloud::PointCloud() : device_pcl(new DevicePointCloud()) {}
 
-    PointCloud::~PointCloud() {
-        if(device_pcl != NULL) {
-            delete device_pcl;
-        }
-    }
-
     PointCloud::PointCloud(PointCloud& other)
     {
         if(other.device_pcl == NULL) {
-            device_pcl = new DevicePointCloud();
+            device_pcl = std::shared_ptr<DevicePointCloud>(new DevicePointCloud());
         } else {
-            device_pcl = new DevicePointCloud(*other.device_pcl);
+            device_pcl = std::shared_ptr<DevicePointCloud>(new DevicePointCloud(*other.device_pcl));
         }
     }
 
@@ -29,7 +23,7 @@ namespace pclem {
         other.device_pcl = NULL;
     }
 
-    PointCloud::PointCloud(DevicePointCloud* pcl_ptr)
+    PointCloud::PointCloud(const std::shared_ptr<DevicePointCloud>& pcl_ptr)
         : device_pcl(pcl_ptr) {}
 
     PointCloud& PointCloud::operator=(PointCloud&& other) {
