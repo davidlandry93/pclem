@@ -20,6 +20,8 @@ namespace pclem {
         GaussianMixture get_mixture() const;
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
+        const int MIN_N_ITERATIONS = 10;
+
         PointCloud pcl;
         GaussianMixture mixture;
     };
