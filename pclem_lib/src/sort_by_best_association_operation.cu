@@ -1,4 +1,5 @@
 
+#include <glog/logging.h>
 #include <thrust/partition.h>
 
 #include "associated_point.cuh"
@@ -25,22 +26,25 @@ namespace pclem {
         __const__ int index_of_distribution;
     };
 
-    std::vector<DevicePointCloud::PointIterator> SortByBestAssociationOperation::operator()(const DevicePointCloud::PointIterator& begin,
-                                                                                            const DevicePointCloud::PointIterator& end) const {
+    std::vector<int> SortByBestAssociationOperation::operator()(const DevicePointCloud::PointIterator& begin,
+                                                                const DevicePointCloud::PointIterator& end) const {
 
-        std::vector<DevicePointCloud::PointIterator> boundaries;
-        thrust::device_vector<AssociatedPoint>::iterator first_unsorted = begin;
+        VLOG(10) << "Sorting by best association...";
 
-        boundaries.push_back(begin);
+        std::vector<int> boundaries;
+        DevicePointCloud::PointIterator first_unsorted = begin;
+
+        boundaries.push_back(begin - begin);
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             is_most_associated_op op(i);
 
             thrust::partition(first_unsorted, end, op);
             first_unsorted = thrust::find_if_not(first_unsorted, end, op);
 
-            boundaries.push_back(first_unsorted);
+            boundaries.push_back(first_unsorted - begin);
         }
 
+        VLOG(10) << "Done sorting by best association...";
         return boundaries;
     }
 

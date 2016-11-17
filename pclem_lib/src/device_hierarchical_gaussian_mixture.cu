@@ -45,17 +45,19 @@ namespace pclem {
 
         auto em = EmAlgorithm::from_pcl(vanilla_pcl);
         em.run(EM_CONVERGENCE_THRESHOLD);
+
+        mixture = em.get_mixture();
     }
 
     void DeviceHierarchicalGaussianMixture::create_children(std::deque<DeviceHierarchicalGaussianMixture*>& to_expand) {
         VLOG(10) << "Creating children of hierarchical gaussian mixture...";
 
         SortByBestAssociationOperation op;
-        std::vector<DevicePointCloud::PointIterator> boundaries = pcl.execute_pointcloud_operation(op);
+        auto boundaries = pcl.execute_pointcloud_operation(op);
 
         for(int i=0; i < boundaries.size() - 1; i++) {
             DevicePointCloud child_pcl;
-            child_pcl.set_points(pcl.get_data(), boundaries[i], boundaries[i+1]);
+            child_pcl.set_points(pcl.get_data(), pcl.begin() + boundaries[i], pcl.begin() + boundaries[i+1]);
 
             children.push_back(create_one_child(child_pcl, mixture.get_gaussian(i)));
             to_expand.push_back(&children.back());
@@ -66,6 +68,8 @@ namespace pclem {
 
     DeviceHierarchicalGaussianMixture DeviceHierarchicalGaussianMixture::create_one_child(const DevicePointCloud& child_pcl,
                                                                                           const WeightedGaussian& parent_distribution) const {
+        VLOG(10) << "Creating child of hierarchical gaussian mixture...";
+
         GaussianMixtureFactory gmm_factory;
 
         GaussianMixture child_mixture = gmm_factory.around_point(parent_distribution.get_mu(),
@@ -73,11 +77,10 @@ namespace pclem {
                                                                  AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
                                                                  UNIFORM_DISTRIBUTION_SIZE);
 
-        std::cout << "ChildMixture: " << child_mixture;
-
         DeviceHierarchicalGaussianMixture child(child_pcl, child_mixture);
         child.run_em();
 
+        VLOG(10) << "Don creating child of hierarchical gaussian mixture.";
         return child;
     }
 }
