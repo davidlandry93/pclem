@@ -63,8 +63,12 @@ namespace pclem {
             DevicePointCloud child_pcl;
             child_pcl.set_points(pcl.get_data(), pcl.begin() + boundaries[i], pcl.begin() + boundaries[i+1]);
 
-            children.push_back(create_one_child(child_pcl, mixture.get_gaussian(i)));
-            to_expand.push_back(&children.back());
+            WeightedGaussian current_gaussian = mixture.get_gaussian(i);
+
+            if(current_gaussian.get_weight() > MIN_WEIGHT_TO_PROCREATE) {
+                children.push_back(create_one_child(child_pcl, current_gaussian));
+                to_expand.push_back(&children.back());
+            }
         }
 
         VLOG(10) << "Done creating children";

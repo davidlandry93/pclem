@@ -19,6 +19,7 @@ namespace pclem {
     private:
         const double UNIFORM_DISTRIBUTION_SIZE = 0.5;
         const double EM_CONVERGENCE_THRESHOLD = 0.001;
+        const double MIN_WEIGHT_TO_PROCREATE = 0.01;
 
         DevicePointCloud pcl;
         GaussianMixture mixture;

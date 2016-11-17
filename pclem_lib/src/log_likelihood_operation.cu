@@ -37,6 +37,8 @@ namespace pclem {
             mu(distribution.get_mu()),
             index_of_distribution(index_of_distribution),
             inv_of_cov {0.0} {
+
+            VLOG(12) << "To inverse: " << distribution.get_sigma();
             std::array<double,9> inv_of_sigma = distribution.get_sigma().inverse();
 
             for(int i=0; i < 9; i++) {
