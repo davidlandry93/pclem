@@ -40,13 +40,17 @@ namespace pclem {
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
+        VLOG(10) << "Running em of DeviceHierarchicalGaussianMixture...";
+
         auto ptr = std::shared_ptr<DevicePointCloud>(new DevicePointCloud(pcl));
         PointCloud vanilla_pcl(ptr);
 
-        auto em = EmAlgorithm::from_pcl(vanilla_pcl);
+        EmAlgorithm em(vanilla_pcl, mixture);
         em.run(EM_CONVERGENCE_THRESHOLD);
 
         mixture = em.get_mixture();
+
+        VLOG(10) << "Done running em of DeviceHierarchicalGaussianMixture";
     }
 
     void DeviceHierarchicalGaussianMixture::create_children(std::deque<DeviceHierarchicalGaussianMixture*>& to_expand) {

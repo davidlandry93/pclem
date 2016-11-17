@@ -49,8 +49,6 @@ namespace pclem {
         std::vector<WeightedGaussian> temp_gaussians;
 
         for(int i = 0; i < n_of_distributions; i++) {
-            std::cout << "Received cov: " << cov;
-
             WeightedGaussian gaussian(
                 Point(point.x + random_number(-delta, delta),
                       point.y + random_number(-delta, delta),

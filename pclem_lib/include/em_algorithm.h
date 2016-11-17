@@ -9,6 +9,7 @@
 namespace pclem {
     class EmAlgorithm {
     public:
+        EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture);
         EmAlgorithm(EmAlgorithm&& other);
         static EmAlgorithm from_pcl(PointCloud& pcl);
         void expectation();
@@ -19,7 +20,6 @@ namespace pclem {
         GaussianMixture get_mixture() const;
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
-        EmAlgorithm(PointCloud& pcl, GaussianMixture& mixture);
         PointCloud pcl;
         GaussianMixture mixture;
     };
