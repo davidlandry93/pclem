@@ -10,9 +10,7 @@ namespace pclem {
     class GaussianMixture {
     public:
         GaussianMixture();
-        GaussianMixture(std::vector<WeightedGaussian> gaussians);
-        GaussianMixture(GaussianMixture&& other);
-        GaussianMixture& operator=(GaussianMixture&& other);
+        GaussianMixture(const std::vector<WeightedGaussian>& gaussians);
         GaussianMixture(const GaussianMixture& other);
         std::vector<WeightedGaussian>::const_iterator begin() const;
         std::vector<WeightedGaussian>::const_iterator end() const;

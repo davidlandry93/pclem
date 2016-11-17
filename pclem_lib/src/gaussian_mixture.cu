@@ -4,15 +4,11 @@
 
 namespace pclem {
     GaussianMixture::GaussianMixture() :
-        gaussians(std::vector<WeightedGaussian>(0)) {
+        gaussians() {
     }
 
-    GaussianMixture::GaussianMixture(std::vector<WeightedGaussian> _gaussians) :
-        gaussians(std::move(_gaussians)) {
-    }
-
-    GaussianMixture::GaussianMixture(GaussianMixture&& other) :
-        gaussians(other.gaussians) {
+    GaussianMixture::GaussianMixture(const std::vector<WeightedGaussian>& _gaussians) :
+        gaussians(_gaussians) {
     }
 
     GaussianMixture::GaussianMixture(const GaussianMixture& other) :
@@ -31,16 +27,12 @@ namespace pclem {
         return gaussians.size();
     }
 
-    GaussianMixture& GaussianMixture::operator=(GaussianMixture&& other) {
-        std::swap(gaussians, other.gaussians);
-        return *this;
-    }
-
     WeightedGaussian GaussianMixture::get_gaussian(int i) const {
         return gaussians[i];
     }
 
     std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture) {
+        os << "Mixture: ";
         for(auto gaussian : mixture) {
             os << gaussian << std::endl;
         }

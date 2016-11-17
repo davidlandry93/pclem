@@ -44,6 +44,7 @@ namespace pclem {
     }
 
     GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const CovarianceMatrix& cov, int n_of_distributions, double delta) const {
+        VLOG(10) << "Creating gaussian mixture around point...";
 
         std::vector<WeightedGaussian> temp_gaussians;
 
@@ -56,9 +57,14 @@ namespace pclem {
                 1.0 / n_of_distributions);
 
             temp_gaussians.push_back(gaussian);
+            std::cout << temp_gaussians.back();
         }
 
-        return GaussianMixture(temp_gaussians);
+        GaussianMixture resulting_mixture(temp_gaussians);
+        std::cout << "MIXTURE FROM FACTORY" << resulting_mixture;
+
+        VLOG(10) << "Done creating gaussian mixture.";
+        return resulting_mixture;
     }
 
     double GaussianMixtureFactory::random_number(double min, double max) {
