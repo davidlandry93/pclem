@@ -48,6 +48,9 @@ namespace pclem {
     void EmAlgorithm::run(double epsilon) {
         VLOG(10) << "Running expectation maximization...";
 
+        std::cout << "Running em..." << std::endl;
+        std::cout << "Initial mixture: " << std::endl << mixture << std::endl;
+
         double previous_likelihood = 0.0;
         double delta = std::numeric_limits<double>::infinity();
         int n_iterations = 0;
@@ -60,13 +63,15 @@ namespace pclem {
 
             double new_likelihood = log_likelihood();
             delta = std::abs(new_likelihood - previous_likelihood);
-            LOG(INFO) << "Log likelihood: " << new_likelihood;
-            LOG(INFO) << "Delta: " << delta;
+            VLOG(3) << "Log likelihood: " << new_likelihood;
+            VLOG(3) << "Delta: " << delta;
 
             previous_likelihood = new_likelihood;
 
             n_iterations++;
         }
+
+        std::cout << "Result: " << std::endl << mixture;
 
         VLOG(10) << "Done running expectation maximization...";
     }

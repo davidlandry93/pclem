@@ -28,7 +28,7 @@ namespace pclem {
     std::ostream &operator<<(std::ostream &os, WeightedGaussian const &g) {
         os << "MU: " << g.get_mu() <<
             " WEIGHT: " << g.get_weight() <<
-            " SIGMA: " << g.get_sigma() << std::endl;
+            " SIGMA: " << g.get_sigma();
         return os;
     }
 }

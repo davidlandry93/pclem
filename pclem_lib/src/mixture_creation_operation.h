@@ -12,6 +12,8 @@ namespace pclem {
     public:
         GaussianMixture operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
     private:
+        const double DROPOUT_WEIGHT = 0.0001;
+
         WeightedGaussian create_distribution_of_mixture(const DevicePointCloud::PointIterator& begin,
                                                         const DevicePointCloud::PointIterator& end,
                                                         int index_of_distribution, double sum_of_gammas) const;

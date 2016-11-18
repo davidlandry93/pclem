@@ -16,7 +16,7 @@ namespace pclem {
             double likelihood_of_distribution = log_likelihood_of_distribution(begin, end,
                                                                                i, mixture.get_gaussian(i));
 
-            VLOG(2) << likelihood_of_distribution;
+            VLOG(4) << likelihood_of_distribution;
 
             log_likelihood += likelihood_of_distribution;
         }

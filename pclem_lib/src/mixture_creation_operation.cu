@@ -23,7 +23,7 @@ namespace pclem {
     GaussianMixture MixtureCreationOperation::operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const {
         // We store the sum of gammas of every distribution in an empty, meaningless AssociatedPoint.
         AssociatedPoint sums;
-        sums = thrust::reduce(begin, end, AssociatedPoint(), sums_of_gammas_op());
+        sums = thrust::reduce(begin, end, AssociatedPoint(0.0,0.0,0.0), sums_of_gammas_op());
 
         std::vector<WeightedGaussian> gaussians;
 
@@ -73,6 +73,11 @@ namespace pclem {
         CovarianceMatrix new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
 
         double new_weight = sum_of_gammas / (end - begin);
+
+        if(new_weight < DROPOUT_WEIGHT) {
+            new_weight = 0.0;
+            VLOG(1) << "Dropping distribution";
+        }
 
         VLOG(11) << "Done creating distribution " << index_of_distribution << " of mixture.";
 

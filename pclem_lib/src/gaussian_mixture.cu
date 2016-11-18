@@ -32,7 +32,6 @@ namespace pclem {
     }
 
     std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture) {
-        os << "Mixture: ";
         for(auto gaussian : mixture) {
             os << gaussian << std::endl;
         }
