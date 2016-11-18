@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <thrust/device_vector.h>
+#include <iostream>
 
 #include "gaussian_mixture.h"
 #include "device_pointcloud.h"
@@ -16,8 +17,10 @@ namespace pclem {
         void expand_n_levels(int n_levels);
         void run_em();
 
+        friend std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy);
+
     private:
-        const double UNIFORM_DISTRIBUTION_SIZE = 0.5;
+        const double UNIFORM_DISTRIBUTION_SIZE = 2.5;
         const double EM_CONVERGENCE_THRESHOLD = 0.001;
         const double MIN_WEIGHT_TO_PROCREATE = 1e-10;
 
@@ -27,6 +30,8 @@ namespace pclem {
 
         DeviceHierarchicalGaussianMixture create_one_child(const DevicePointCloud& device_pcl,
                                                            const WeightedGaussian& parent_distribution) const;
+
+        void print_with_padding(std::ostream& os, int padding) const;
     };
 }
 

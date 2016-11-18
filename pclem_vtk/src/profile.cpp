@@ -20,7 +20,8 @@ int main(int argc, char** argv) {
 
     VisualizablePointCloud pcl = VtkPointCloudReader::read("res/foret.vtk", N_POINTS_TO_PROFILE);
 
-    auto hgmm = pcl.create_hgmm();
+    HierarchicalGaussianMixture hgmm = pcl.create_hgmm();
+    std::cout << hgmm;
 
     return 0;
 }

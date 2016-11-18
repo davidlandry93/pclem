@@ -10,4 +10,9 @@ namespace pclem {
 
     HierarchicalGaussianMixture::~HierarchicalGaussianMixture() {
     }
+
+    std::ostream& operator<<(std::ostream& os, const HierarchicalGaussianMixture& hierarchy) {
+        os << *(hierarchy.device_mixture);
+        return os;
+    }
 }

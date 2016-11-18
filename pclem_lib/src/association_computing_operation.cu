@@ -12,7 +12,15 @@ namespace pclem {
         VLOG(10) << "Computing point/distribution associations...";
 
         for(int i = 0; i < mixture.n_gaussians(); i++) {
-            compute_associations_of_distribution(begin, end, i, mixture.get_gaussian(i));
+            WeightedGaussian distribution = mixture.get_gaussian(i);
+
+            if(distribution.get_weight() == 0.0) {
+                VLOG(6) << "Found dropped distribution.";
+                execute_no_association_op(begin, end, i);
+            } else {
+                compute_associations_of_distribution(begin, end, i, mixture.get_gaussian(i));
+            }
+
         }
 
         VLOG(10) << "Done computing point/distribution associations.";
@@ -67,5 +75,24 @@ namespace pclem {
         gaussian_op op(index_of_distribution, distribution);
 
         thrust::transform(begin, end, begin, op);
+    }
+
+    struct no_association_op : public thrust::unary_function<AssociatedPoint,AssociatedPoint> {
+        int index_of_distribution;
+
+        no_association_op(int index_of_distribution) :
+            index_of_distribution(index_of_distribution) {}
+
+        __host__ __device__
+        AssociatedPoint operator()(AssociatedPoint p) {
+            p.likelihoods[index_of_distribution] = 0.0;
+            return p;
+        }
+    };
+
+    void AssociationComputingOperation::execute_no_association_op(const DevicePointCloud::PointIterator& begin,
+                                                                  const DevicePointCloud::PointIterator& end,
+                                                                  int index_of_distribution) const {
+        thrust::transform(begin, end, begin, no_association_op(index_of_distribution));
     }
 }

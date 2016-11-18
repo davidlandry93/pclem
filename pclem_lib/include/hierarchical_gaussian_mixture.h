@@ -9,6 +9,8 @@ namespace pclem {
     public:
         HierarchicalGaussianMixture(const std::shared_ptr<DeviceHierarchicalGaussianMixture>& device_mixture);
         ~HierarchicalGaussianMixture();
+
+        friend std::ostream& operator<<(std::ostream& os, const HierarchicalGaussianMixture& hierarchy);
     private:
         std::shared_ptr<DeviceHierarchicalGaussianMixture> device_mixture;
     };

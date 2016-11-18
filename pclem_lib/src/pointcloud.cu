@@ -51,6 +51,10 @@ namespace pclem {
         return device_pcl->getBoundingBox();
     }
 
+    int PointCloud::get_n_points() const {
+        return device_pcl->get_n_points();
+    }
+
     void PointCloud::compute_associations(const GaussianMixture& mixture) {
         device_pcl->compute_associations(mixture);
     }

@@ -13,8 +13,13 @@ namespace pclem {
         double log_likelihood = 0.0;
 
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-            double likelihood_of_distribution = log_likelihood_of_distribution(begin, end,
-                                                                               i, mixture.get_gaussian(i));
+            WeightedGaussian distribution = mixture.get_gaussian(i);
+
+            double likelihood_of_distribution = 0.0;
+            if(distribution.get_weight() != 0.0) {
+                likelihood_of_distribution = log_likelihood_of_distribution(begin, end,
+                                                                            i, distribution);
+            }
 
             VLOG(4) << likelihood_of_distribution;
 

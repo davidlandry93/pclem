@@ -49,6 +49,7 @@ namespace pclem {
         VLOG(10) << "Running expectation maximization...";
 
         std::cout << "Running em..." << std::endl;
+        std::cout << "PCL has " << pcl.get_n_points() << " points" << std::endl;
         std::cout << "Initial mixture: " << std::endl << mixture << std::endl;
 
         double previous_likelihood = 0.0;

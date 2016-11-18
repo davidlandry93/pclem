@@ -17,6 +17,9 @@ namespace pclem {
                                                   const DevicePointCloud::PointIterator& end,
                                                   int index_of_distribution,
                                                   const WeightedGaussian& distribution);
+        void execute_no_association_op(const DevicePointCloud::PointIterator& begin,
+                                       const DevicePointCloud::PointIterator& end,
+                                       int index_of_distribution) const;
     };
 }
 

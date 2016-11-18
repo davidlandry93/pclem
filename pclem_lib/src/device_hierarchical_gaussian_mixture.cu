@@ -91,4 +91,20 @@ namespace pclem {
         VLOG(10) << "Don creating child of hierarchical gaussian mixture.";
         return child;
     }
+
+    std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy) {
+        hierarchy.print_with_padding(os, 0);
+        return os;
+    }
+
+    void DeviceHierarchicalGaussianMixture::print_with_padding(std::ostream& os, int padding) const {
+        for(int i = 0; i < padding; i++) {
+            os << " ";
+        }
+        os << mixture.n_gaussians() << std::endl;
+
+        for(DeviceHierarchicalGaussianMixture child: children) {
+            child.print_with_padding(os, padding+1);
+        }
+    }
 }

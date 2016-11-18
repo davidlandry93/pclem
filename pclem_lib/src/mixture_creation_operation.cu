@@ -31,7 +31,10 @@ namespace pclem {
             gaussians.push_back(create_distribution_of_mixture(begin, end, i, sums.likelihoods[i]));
         }
 
-        return GaussianMixture(gaussians);
+        GaussianMixture mixture(gaussians);
+        std::cout << mixture;
+
+        return mixture;
     }
 
     struct weight_point_op : public thrust::unary_function<AssociatedPoint,DevicePoint> {
@@ -72,10 +75,11 @@ namespace pclem {
 
         CovarianceMatrix new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
 
-        double new_weight = sum_of_gammas / (end - begin);
-
-        if(new_weight < DROPOUT_WEIGHT) {
-            new_weight = 0.0;
+        VLOG(7) << "Sum of gammas: " << sum_of_gammas;
+        double new_weight = 0.0;
+        if(sum_of_gammas > DROPOUT_WEIGHT) {
+            new_weight = sum_of_gammas / (end - begin);
+        } else {
             VLOG(1) << "Dropping distribution";
         }
 
