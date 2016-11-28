@@ -15,6 +15,7 @@ namespace pclem {
         std::vector<WeightedGaussian>::const_iterator begin() const;
         std::vector<WeightedGaussian>::const_iterator end() const;
         int n_gaussians() const;
+        int n_nonzero_gaussians() const;
         WeightedGaussian get_gaussian(int i) const; 
         friend std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture);
 

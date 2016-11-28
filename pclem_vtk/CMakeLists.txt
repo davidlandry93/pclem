@@ -14,6 +14,7 @@ include(${VTK_USE_FILE})
 
 file(GLOB SOURCES src/*.cpp)
 set(SOURCES
+  src/visualizable_weighted_gaussian.cpp
   src/visualizable_gaussian_mixture.cpp
   src/visualizable_point_cloud.cpp
   src/visualization.cpp

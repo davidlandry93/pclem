@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include "gaussian_mixture.h"
 
 
@@ -25,6 +26,10 @@ namespace pclem {
 
     int GaussianMixture::n_gaussians() const {
         return gaussians.size();
+    }
+
+    int GaussianMixture::n_nonzero_gaussians() const {
+        return std::count_if(gaussians.begin(), gaussians.end(), [](WeightedGaussian g){return g.get_weight() != 0.0;});
     }
 
     WeightedGaussian GaussianMixture::get_gaussian(int i) const {

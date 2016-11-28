@@ -15,4 +15,8 @@ namespace pclem {
         os << *(hierarchy.device_mixture);
         return os;
     }
+
+    void HierarchicalGaussianMixture::get_leaves(std::vector<WeightedGaussian>& leaves) const {
+        device_mixture->get_leaves(leaves);
+    }
 }

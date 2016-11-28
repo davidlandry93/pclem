@@ -72,9 +72,11 @@ namespace pclem {
         actor->SetMapper(mapper);
         actor->SetBackfaceProperty(back_property);
         actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
-        //actor->RotateX(rad_2_deg(ellipsoid.rotation.x));
-        //actor->RotateY(rad_2_deg(ellipsoid.rotation.y));
+        actor->RotateX(rad_2_deg(ellipsoid.rotation.x));
+        actor->RotateY(rad_2_deg(ellipsoid.rotation.y));
         actor->RotateZ(rad_2_deg(ellipsoid.rotation.z));
+
+        actor->GetProperty()->SetOpacity(0.5);
 
         renderer->AddActor(actor);
     }
