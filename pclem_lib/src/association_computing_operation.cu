@@ -15,7 +15,7 @@ namespace pclem {
             WeightedGaussian distribution = mixture.get_gaussian(i);
 
             if(distribution.get_weight() == 0.0) {
-                VLOG(6) << "Found dropped distribution.";
+                VLOG(1) << "Found dropped distribution.";
                 execute_no_association_op(begin, end, i);
             } else {
                 compute_associations_of_distribution(begin, end, i, mixture.get_gaussian(i));

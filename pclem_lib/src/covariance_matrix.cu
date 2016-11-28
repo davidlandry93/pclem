@@ -50,7 +50,7 @@ namespace pclem {
         VLOG(11) << "Inverting matrix...";
 
         arma::mat33 arma_cov_mat(values.data());
-        arma::mat33 arma_inv_of_cov = arma::pinv(arma_cov_mat);
+        arma::mat33 arma_inv_of_cov = arma::pinv(arma_cov_mat + arma::eye(3,3));
 
         VLOG(11) << "PseudoInverse error " << arma::norm(arma_cov_mat*arma_inv_of_cov - arma::eye(3,3));
 

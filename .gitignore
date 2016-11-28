@@ -30,3 +30,7 @@
 
 build/
 .idea/
+
+.cproject
+.project
+cmake-build-debug/

@@ -46,23 +46,22 @@ namespace pclem {
     }
 
     void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points) {
-        VLOG(10) << "Setting new data source...";
 
-        ptr_to_points = points;
-        pts_begin = points->begin();
-        pts_end = points->end();
-
-        updateBoundingBox();
-
-        VLOG(10) << "Done setting data source.";
+        set_points(points, points->begin(), points->end());
     }
 
     void DevicePointCloud::set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points,
                                       const PointIterator& begin,
                                       const PointIterator& end) {
+        VLOG(10) << "Setting new data source...";
+
         ptr_to_points = points;
         pts_begin = begin;
         pts_end = end;
+
+        updateBoundingBox();
+
+        VLOG(10) << "Done setting data source.";
     }
 
     void DevicePointCloud::compute_associations(const GaussianMixture& mixture) {

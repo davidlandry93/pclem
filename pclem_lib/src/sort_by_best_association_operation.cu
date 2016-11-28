@@ -36,11 +36,17 @@ namespace pclem {
 
         boundaries.push_back(begin - begin);
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
+            VLOG(11) << "Sorting distribution " << i;
             is_most_associated_op op(i);
 
+            VLOG(11) << "Running vector operations" << i;
+            VLOG(11) << "N of points: " << end - first_unsorted;
+            VLOG(11) << first_unsorted - begin;
+            VLOG(11) << end - begin;
             thrust::partition(first_unsorted, end, op);
             first_unsorted = thrust::find_if_not(first_unsorted, end, op);
 
+            VLOG(11) << "Storing result";
             boundaries.push_back(first_unsorted - begin);
         }
 

@@ -21,6 +21,7 @@ namespace pclem {
     };
 
     GaussianMixture MixtureCreationOperation::operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const {
+
         // We store the sum of gammas of every distribution in an empty, meaningless AssociatedPoint.
         AssociatedPoint sums;
         sums = thrust::reduce(begin, end, AssociatedPoint(0.0,0.0,0.0), sums_of_gammas_op());
@@ -32,7 +33,7 @@ namespace pclem {
         }
 
         GaussianMixture mixture(gaussians);
-        std::cout << mixture;
+        //std::cout << mixture;
 
         return mixture;
     }
