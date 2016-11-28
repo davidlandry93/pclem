@@ -102,7 +102,7 @@ namespace pclem {
         GaussianMixtureFactory gmm_factory;
 
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this), WeightedGaussian()));
-        hierarchical_mixture->expand_n_levels(5);
+        hierarchical_mixture->expand_n_levels(2);
 
         VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(hierarchical_mixture);

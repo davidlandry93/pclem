@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
     hgmm.get_leaves(leaves);
 
     Visualization vis;
+    pcl.insert_in_visualization(vis);
+    std::cout << leaves.size() << " leaves to show." << std::endl;
     for(const WeightedGaussian& leave : leaves) {
         VisualizableWeightedGaussian visualizable_gaussian(leave);
         visualizable_gaussian.insert_into_visualization(vis);
