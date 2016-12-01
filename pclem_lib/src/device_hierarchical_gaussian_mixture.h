@@ -14,10 +14,12 @@
 namespace pclem {
     class DeviceHierarchicalGaussianMixture {
     public:
+        typedef std::shared_ptr<std::vector<std::unique_ptr<DeviceHierarchicalGaussianMixture>>> NodeVector;
+
         DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl,
                                           const GaussianMixture& mixture,
                                           const WeightedGaussian& parent_mixture,
-                                          const std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>>& node_vector);
+                                          const NodeVector& node_vector);
         void create_children();
         void expand_n_levels(int n_levels);
         void run_em();
@@ -26,6 +28,7 @@ namespace pclem {
         void get_leaves(std::vector<WeightedGaussian>& leaves) const;
 
     private:
+
         const double UNIFORM_DISTRIBUTION_SIZE = 2.5;
         const double EM_CONVERGENCE_THRESHOLD = 0.001;
         const double MIN_WEIGHT_TO_PROCREATE = 1e-10;
@@ -35,8 +38,8 @@ namespace pclem {
         GaussianMixture mixture;
         std::vector<std::shared_ptr<DeviceHierarchicalGaussianMixture>> children;
         WeightedGaussian parent_distribution;
-        std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>> node_vector;
-        std::vector<std::vector<DeviceHierarchicalGaussianMixture>::iterator> level_boundaries;
+        NodeVector node_vector;
+        std::vector<int> level_boundaries;
 
         void print_with_padding(std::ostream& os, int padding) const;
         void expand_one_level();

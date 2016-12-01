@@ -29,7 +29,9 @@ namespace pclem {
     }
 
     int GaussianMixture::n_nonzero_gaussians() const {
-        return std::count_if(gaussians.begin(), gaussians.end(), [](WeightedGaussian g){return g.get_weight() != 0.0;});
+        int count = std::count_if(gaussians.begin(), gaussians.end(), [](WeightedGaussian g){return g.get_weight() != 0.0;});
+        std::cout << count;
+        return count;
     }
 
     WeightedGaussian GaussianMixture::get_gaussian(int i) const {

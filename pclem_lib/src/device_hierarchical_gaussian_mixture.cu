@@ -13,7 +13,7 @@
 #include "sort_by_best_association_operation.h"
 
 namespace pclem {
-    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture, const WeightedGaussian& parent, const std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>>& node_vector)
+    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture, const WeightedGaussian& parent, const NodeVector& node_vector)
         : pcl(pcl),
           mixture(mixture),
           children(),
@@ -33,7 +33,7 @@ namespace pclem {
         create_children();
 
         for(auto i = new_level_begin; i < node_vector->size(); i++) {
-            (*node_vector)[i].expand_n_levels(n_levels-1);
+            (*node_vector)[i]->expand_n_levels(n_levels-1);
         }
     }
 
@@ -58,6 +58,8 @@ namespace pclem {
             VLOG(2) << "Not enough gaussians in mixture to create children.";
         }
 
+        std::cout << "TOTOT";
+
         // Sort the points by best association.
         SortByBestAssociationOperation op;
         auto partition_of_points = pcl.execute_pointcloud_operation(op);
@@ -78,11 +80,11 @@ namespace pclem {
                                                                          AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
                                                                          UNIFORM_DISTRIBUTION_SIZE);
 
-                node_vector->push_back(DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector));
+                node_vector->push_back(std::unique_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector)));
             }
         }
 
-        VLOG(10) << "Creating children of mixture...";
+        VLOG(10) << "Done creating children of mixture.";
     }
 
     std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy) {
