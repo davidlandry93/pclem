@@ -43,6 +43,11 @@ namespace pclem {
         __host__ __device__
         AssociatedPoint operator()(AssociatedPoint p) {
             p.likelihoods[index_of_distribution] = likelihood_of_point(p);
+
+            if(p.likelihoods[index_of_distribution] > p.likelihoods[p.best_distribution]) {
+                p.best_distribution = index_of_distribution;
+            }
+
             return p;
         }
 

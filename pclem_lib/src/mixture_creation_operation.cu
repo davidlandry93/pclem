@@ -33,7 +33,6 @@ namespace pclem {
         }
 
         GaussianMixture mixture(gaussians);
-        //std::cout << mixture;
 
         return mixture;
     }

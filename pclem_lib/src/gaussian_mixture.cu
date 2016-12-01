@@ -30,7 +30,6 @@ namespace pclem {
 
     int GaussianMixture::n_nonzero_gaussians() const {
         int count = std::count_if(gaussians.begin(), gaussians.end(), [](WeightedGaussian g){return g.get_weight() != 0.0;});
-        std::cout << count;
         return count;
     }
 

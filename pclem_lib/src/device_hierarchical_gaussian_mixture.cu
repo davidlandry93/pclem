@@ -22,24 +22,28 @@ namespace pclem {
           level_boundaries() {}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
-        VLOG(10) << "Expanding " << n_levels << " level...";
+        VLOG(9) << "Expanding " << n_levels << " level...";
+
+        if(n_levels == 0) {
+            return;
+        }
 
         if(pcl.get_n_points() == 0) {
-            VLOG(10) << "No point in PCL. Done expanding 1 level.";
+            VLOG(9) << "No point in PCL. Done expanding n level.";
             return;
         }
 
         run_em();
 
-        auto new_level_begin = node_vector->end() - node_vector->begin();
-
+        auto size_before_expanding = node_vector->size();
         create_children();
+        auto size_after_expanding = node_vector->size();
 
-        for(auto i = new_level_begin; i < node_vector->size(); i++) {
+        for(auto i = size_before_expanding; i < size_after_expanding; i++) {
             (*node_vector)[i]->expand_n_levels(n_levels-1);
         }
 
-        VLOG(10) << "Done expanding n levels.";
+        VLOG(9) << "Done expanding n levels.";
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
@@ -57,13 +61,11 @@ namespace pclem {
     }
 
     void DeviceHierarchicalGaussianMixture::create_children() {
-        VLOG(10) << "Creating children of mixture...";
+        VLOG(7) << "Creating children of mixture...";
 
         if(mixture.n_nonzero_gaussians() < MIN_DISTRIBUTIONS_TO_PROCREATE) {
             VLOG(2) << "Not enough gaussians in mixture to create children.";
         }
-
-        std::cout << "TOTOT";
 
         // Sort the points by best association.
         SortByBestAssociationOperation op;
@@ -71,12 +73,14 @@ namespace pclem {
 
         // For every pair of boundaries, create a point cloud and the according HGMM.
         for(int i=0; i < partition_of_points.size() - 1; i++) {
+            VLOG(2) << "Creating distribution " << i;
             WeightedGaussian current_gaussian = mixture.get_gaussian(i);
 
             if(current_gaussian.get_weight() < MIN_WEIGHT_TO_PROCREATE) {
                 VLOG(2) << "Parent gaussian has too little weight to create children.";
             } else {
                 DevicePointCloud child_pcl;
+                VLOG(2) << "Points from " << partition_of_points[i] << " to " << partition_of_points[i+1];
                 child_pcl.set_points(pcl.get_data(), pcl.begin() + partition_of_points[i], pcl.begin() + partition_of_points[i+1]);
 
                 GaussianMixtureFactory gmm_factory;
@@ -85,13 +89,11 @@ namespace pclem {
                                                                          AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
                                                                          UNIFORM_DISTRIBUTION_SIZE);
 
-                std::cout << child_mixture;
-
                 node_vector->push_back(std::unique_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector)));
             }
         }
 
-        VLOG(10) << "Done creating children of mixture.";
+        VLOG(7) << "Done creating children of mixture.";
     }
 
     std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy) {
@@ -111,7 +113,6 @@ namespace pclem {
     }
 
     void DeviceHierarchicalGaussianMixture::get_leaves(std::vector<WeightedGaussian>& leaves) const {
-        std::cout << children.size() << std::endl;
         if(children.size() == 0) {
             leaves.push_back(parent_distribution);
         } else {

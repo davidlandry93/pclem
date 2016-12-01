@@ -14,13 +14,7 @@ namespace pclem {
 
         __host__ __device__
         bool operator()(AssociatedPoint p) {
-            bool is_most_associated = true;
-            for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                if(p.likelihoods[i] >= p.likelihoods[index_of_distribution]) {
-                    is_most_associated = false;
-                }
-            }
-            return is_most_associated;
+            return p.best_distribution == index_of_distribution;
         }
     private:
         __const__ int index_of_distribution;
@@ -39,10 +33,6 @@ namespace pclem {
             VLOG(11) << "Sorting distribution " << i;
             is_most_associated_op op(i);
 
-            VLOG(11) << "Running vector operations" << i;
-            VLOG(11) << "N of points: " << end - first_unsorted;
-            VLOG(11) << first_unsorted - begin;
-            VLOG(11) << end - begin;
             thrust::partition(first_unsorted, end, op);
             first_unsorted = thrust::find_if_not(first_unsorted, end, op);
 
