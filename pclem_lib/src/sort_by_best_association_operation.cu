@@ -16,7 +16,7 @@ namespace pclem {
         bool operator()(AssociatedPoint p) {
             bool is_most_associated = true;
             for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                if(p.likelihoods[i] > p.likelihoods[index_of_distribution]) {
+                if(p.likelihoods[i] >= p.likelihoods[index_of_distribution]) {
                     is_most_associated = false;
                 }
             }

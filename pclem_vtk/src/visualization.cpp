@@ -32,7 +32,7 @@ namespace pclem {
     }
 
     void Visualization::insert_point(const Point& point) {
-        VLOG(10) << "Inserting point in visualization...";
+        VLOG(15) << "Inserting point in visualization...";
 
         vtkIdType pointId = points->InsertNextPoint(point.x, point.y, point.z);
         cells->InsertNextCell(1);
@@ -41,7 +41,7 @@ namespace pclem {
         points->Modified();
         cells->Modified();
 
-        VLOG(10) << "Done inserting point in visualization.";
+        VLOG(15) << "Done inserting point in visualization.";
     }
 
     double rad_2_deg(double rad) {

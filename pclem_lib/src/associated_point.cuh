@@ -10,6 +10,7 @@ namespace pclem {
         static const int N_DISTRIBUTIONS_PER_MIXTURE = 8;
 
         double likelihoods[N_DISTRIBUTIONS_PER_MIXTURE];
+        int best_distribution;
 
         __host__ __device__
         AssociatedPoint() : DevicePoint(), likelihoods{0.0} {}
@@ -19,7 +20,7 @@ namespace pclem {
             DevicePoint(_x,_y,_z), likelihoods{0.0} {}
 
         __host__ __device__
-        AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z) {}
+        AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z), best_distribution(0) {}
 
         Point to_host() const {
             return Point(x,y,z);

@@ -22,7 +22,10 @@ namespace pclem {
           level_boundaries() {}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+        VLOG(10) << "Expanding " << n_levels << " level...";
+
         if(pcl.get_n_points() == 0) {
+            VLOG(10) << "No point in PCL. Done expanding 1 level.";
             return;
         }
 
@@ -35,6 +38,8 @@ namespace pclem {
         for(auto i = new_level_begin; i < node_vector->size(); i++) {
             (*node_vector)[i]->expand_n_levels(n_levels-1);
         }
+
+        VLOG(10) << "Done expanding n levels.";
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
@@ -79,6 +84,8 @@ namespace pclem {
                                                                          current_gaussian.get_sigma(),
                                                                          AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
                                                                          UNIFORM_DISTRIBUTION_SIZE);
+
+                std::cout << child_mixture;
 
                 node_vector->push_back(std::unique_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector)));
             }
