@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     Visualization vis;
     pcl.insert_in_visualization(vis);
 
-    em.run(0.00001);
+    em.run(0.1);
 
     std::cout << em;
 

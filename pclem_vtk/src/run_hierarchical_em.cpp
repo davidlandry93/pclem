@@ -6,6 +6,8 @@
 #include <glog/logging.h>
 
 #include "visualizable_point_cloud.h"
+#include "visualizable_gaussian_mixture.h"
+#include "visualizable_weighted_gaussian.h"
 #include "vtk_pointcloud_reader.h"
 
 using namespace pclem;
@@ -16,6 +18,19 @@ int main(int argc, char** argv) {
     VisualizablePointCloud pcl = VtkPointCloudReader::read("res/foret.vtk");
 
     auto hgmm = pcl.create_hgmm();
+
+    std::vector<WeightedGaussian> leaves;
+    hgmm.get_leaves(leaves);
+
+    Visualization vis;
+    pcl.insert_in_visualization(vis);
+    std::cout << leaves.size() << " leaves to show." << std::endl;
+    for(const WeightedGaussian& leave : leaves) {
+        VisualizableWeightedGaussian visualizable_gaussian(leave);
+        visualizable_gaussian.insert_into_visualization(vis);
+    }
+
+    vis.visualize();
 
     return 0;
 }

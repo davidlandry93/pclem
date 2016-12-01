@@ -14,7 +14,7 @@
 namespace pclem {
     class DeviceHierarchicalGaussianMixture {
     public:
-        typedef std::shared_ptr<std::vector<std::unique_ptr<DeviceHierarchicalGaussianMixture>>> NodeVector;
+        typedef std::shared_ptr<std::vector<std::shared_ptr<DeviceHierarchicalGaussianMixture>>> NodeVector;
 
         DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl,
                                           const GaussianMixture& mixture,
@@ -30,7 +30,7 @@ namespace pclem {
     private:
 
         const double UNIFORM_DISTRIBUTION_SIZE = 2.5;
-        const double EM_CONVERGENCE_THRESHOLD = 0.001;
+        const double EM_CONVERGENCE_THRESHOLD = 0.1;
         const double MIN_WEIGHT_TO_PROCREATE = 1e-10;
         const double MIN_DISTRIBUTIONS_TO_PROCREATE = 2;
 

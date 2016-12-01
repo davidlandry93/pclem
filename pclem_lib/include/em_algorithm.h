@@ -21,6 +21,7 @@ namespace pclem {
         friend std::ostream& operator<<(std::ostream& os, const EmAlgorithm& em);
     private:
         const int MIN_N_ITERATIONS = 10;
+        const int MAX_N_ITERATIONS = 500;
 
         PointCloud pcl;
         GaussianMixture mixture;

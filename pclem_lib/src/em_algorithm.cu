@@ -56,9 +56,10 @@ namespace pclem {
         double delta = std::numeric_limits<double>::infinity();
         int n_iterations = 0;
 
-        while(delta > epsilon ||
-              previous_likelihood == -1*std::numeric_limits<double>::infinity() ||
-              n_iterations < MIN_N_ITERATIONS) {
+        while((delta > epsilon ||
+               previous_likelihood == -1*std::numeric_limits<double>::infinity() ||
+               n_iterations < MIN_N_ITERATIONS) &&
+              n_iterations < MAX_N_ITERATIONS) {
             expectation();
             maximization();
 
