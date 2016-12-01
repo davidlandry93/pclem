@@ -37,8 +37,6 @@ namespace pclem {
         WeightedGaussian parent_distribution;
         std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>> node_vector;
         std::vector<std::vector<DeviceHierarchicalGaussianMixture>::iterator> level_boundaries;
-        std::vector<DeviceHierarchicalGaussianMixture>::iterator children_begin;
-        std::vector<DeviceHierarchicalGaussianMixture>::iterator children_end;
 
         void print_with_padding(std::ostream& os, int padding) const;
         void expand_one_level();

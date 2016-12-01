@@ -19,19 +19,21 @@ namespace pclem {
           children(),
           parent_distribution(parent),
           node_vector(node_vector),
-          level_boundaries(),
-          children_begin(node_vector->end()),
-          children_end(node_vector->end()){}
+          level_boundaries() {}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+        if(pcl.get_n_points() == 0) {
+            return;
+        }
+
         run_em();
 
-        auto new_level_begin = node_vector->end();
+        auto new_level_begin = node_vector->end() - node_vector->begin();
 
         create_children();
 
-        for(auto it = new_level_begin; it != node_vector->end(); it++) {
-            it->expand_n_levels(n_levels-1);
+        for(auto i = new_level_begin; i < node_vector->size(); i++) {
+            (*node_vector)[i].expand_n_levels(n_levels-1);
         }
     }
 
@@ -50,10 +52,9 @@ namespace pclem {
     }
 
     void DeviceHierarchicalGaussianMixture::create_children() {
-        children_begin = node_vector->end();
+        VLOG(10) << "Creating children of mixture...";
 
         if(mixture.n_nonzero_gaussians() < MIN_DISTRIBUTIONS_TO_PROCREATE) {
-            children_end = node_vector->end();
             VLOG(2) << "Not enough gaussians in mixture to create children.";
         }
 
@@ -81,8 +82,7 @@ namespace pclem {
             }
         }
 
-        children_end = node_vector->end();
-        VLOG(3) << "Created " << children_end - children_begin << " children.";
+        VLOG(10) << "Creating children of mixture...";
     }
 
     std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy) {
