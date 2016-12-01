@@ -101,7 +101,8 @@ namespace pclem {
         VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
 
-        std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this), WeightedGaussian()));
+        std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>> node_vector(new std::vector<DeviceHierarchicalGaussianMixture>);
+        std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this), WeightedGaussian(), node_vector));
         hierarchical_mixture->expand_n_levels(2);
 
         VLOG(10) << "Done creating hgmm.";

@@ -13,31 +13,26 @@
 #include "sort_by_best_association_operation.h"
 
 namespace pclem {
-    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture, const WeightedGaussian& parent)
-        : pcl(pcl), mixture(mixture), children(), parent_distribution(parent) {}
+    DeviceHierarchicalGaussianMixture::DeviceHierarchicalGaussianMixture(const DevicePointCloud& pcl, const GaussianMixture& mixture, const WeightedGaussian& parent, const std::shared_ptr<std::vector<DeviceHierarchicalGaussianMixture>>& node_vector)
+        : pcl(pcl),
+          mixture(mixture),
+          children(),
+          parent_distribution(parent),
+          node_vector(node_vector),
+          level_boundaries(),
+          children_begin(node_vector->end()),
+          children_end(node_vector->end()){}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
-        VLOG(10) << "Expanding hierarchy of n levels...";
-
         run_em();
 
-        int n_nodes_to_create = std::pow(AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE, n_levels);
-        std::deque<std::shared_ptr<DeviceHierarchicalGaussianMixture>> to_expand;
+        auto new_level_begin = node_vector->end();
 
-        this->create_children(to_expand);
+        create_children();
 
-        while(n_nodes_to_create > 0) {
-            std::shared_ptr<DeviceHierarchicalGaussianMixture> current_node = to_expand.front();
-            to_expand.pop_front();
-
-            current_node->create_children(to_expand);
-
-            n_nodes_to_create -= AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE;
-            VLOG(11) << "Nodes to create: " << n_nodes_to_create;
-            VLOG(11) << "Nodes in queue: " << to_expand.size();
+        for(auto it = new_level_begin; it != node_vector->end(); it++) {
+            it->expand_n_levels(n_levels-1);
         }
-
-        VLOG(10) << "Done expanding hierarchy of n levels.";
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
@@ -54,43 +49,40 @@ namespace pclem {
         VLOG(10) << "Done running em of DeviceHierarchicalGaussianMixture";
     }
 
-    void DeviceHierarchicalGaussianMixture::create_children(std::deque<std::shared_ptr<DeviceHierarchicalGaussianMixture>>& to_expand) {
-        VLOG(10) << "Creating children of hierarchical gaussian mixture...";
+    void DeviceHierarchicalGaussianMixture::create_children() {
+        children_begin = node_vector->end();
 
         if(mixture.n_nonzero_gaussians() < MIN_DISTRIBUTIONS_TO_PROCREATE) {
-            std::cout << "Not enough gaussians in mixture to create children";
-            return;
+            children_end = node_vector->end();
+            VLOG(2) << "Not enough gaussians in mixture to create children.";
         }
 
+        // Sort the points by best association.
         SortByBestAssociationOperation op;
-        auto boundaries = pcl.execute_pointcloud_operation(op);
+        auto partition_of_points = pcl.execute_pointcloud_operation(op);
 
-        for(int i=0; i < boundaries.size() - 1; i++) {
-            DevicePointCloud child_pcl;
-
-            std::cout << "Boundaries found: " << boundaries[i] << " ";
-            std::cout << boundaries[i+1] << std::endl;
-
-            child_pcl.set_points(pcl.get_data(), pcl.begin() + boundaries[i], pcl.begin() + boundaries[i+1]);
-
+        // For every pair of boundaries, create a point cloud and the according HGMM.
+        for(int i=0; i < partition_of_points.size() - 1; i++) {
             WeightedGaussian current_gaussian = mixture.get_gaussian(i);
 
-            if(current_gaussian.get_weight() > MIN_WEIGHT_TO_PROCREATE) {
+            if(current_gaussian.get_weight() < MIN_WEIGHT_TO_PROCREATE) {
+                VLOG(2) << "Parent gaussian has too little weight to create children.";
+            } else {
+                DevicePointCloud child_pcl;
+                child_pcl.set_points(pcl.get_data(), pcl.begin() + partition_of_points[i], pcl.begin() + partition_of_points[i+1]);
+
                 GaussianMixtureFactory gmm_factory;
                 GaussianMixture child_mixture = gmm_factory.around_point(current_gaussian.get_mu(),
                                                                          current_gaussian.get_sigma(),
                                                                          AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
                                                                          UNIFORM_DISTRIBUTION_SIZE);
 
-                auto child = std::shared_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian));
-                child->run_em();
-
-                children.push_back(child);
-                to_expand.push_back(child);
+                node_vector->push_back(DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector));
             }
         }
 
-        VLOG(10) << "Done creating children";
+        children_end = node_vector->end();
+        VLOG(3) << "Created " << children_end - children_begin << " children.";
     }
 
     std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy) {
