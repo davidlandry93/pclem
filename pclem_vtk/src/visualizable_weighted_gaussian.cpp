@@ -1,4 +1,6 @@
 
+#include <cmath>
+
 #include "vector3.h"
 #include "covariance_matrix.h"
 #include "visualizable_weighted_gaussian.h"
