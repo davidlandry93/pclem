@@ -8,7 +8,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-
+#include <vtkInteractorStyleFlight.h>
 #include <vtkParametricFunction.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricEllipsoid.h>
@@ -52,9 +52,6 @@ namespace pclem {
     }
 
     void Visualization::insert_ellipsoid(const Ellipsoid& ellipsoid) {
-        auto back_property = vtkSmartPointer<vtkProperty>::New();
-        back_property->SetColor(1.0,0.0,0.0);
-
         auto vtk_ellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
         vtk_ellipsoid->SetXRadius(ellipsoid.a);
         vtk_ellipsoid->SetYRadius(ellipsoid.b);
@@ -72,7 +69,6 @@ namespace pclem {
 
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
-        actor->SetBackfaceProperty(back_property);
 
         auto rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New(); 
         rotationMatrix->Identity();
@@ -87,7 +83,8 @@ namespace pclem {
 
         actor->SetUserTransform(transform);
         actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
-        actor->GetProperty()->SetOpacity(0.5);
+        actor->GetProperty()->SetColor(1.0, 0.5, 0.0);
+        actor->GetProperty()->SetOpacity(ellipsoid.opacity);
 
         renderer->AddActor(actor);
     }
@@ -112,6 +109,9 @@ namespace pclem {
         auto renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
         renderWindowInteractor->SetRenderWindow(renderWindow);
 
+        auto interactorStyle = vtkSmartPointer<vtkInteractorStyleFlight>::New();
+        renderWindowInteractor->SetInteractorStyle(interactorStyle);
+
         auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
         auto widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
 
@@ -122,7 +122,7 @@ namespace pclem {
 
         renderer->AddActor(actor);
 
-        renderWindow->SetSize(800,600);
+        renderWindow->SetSize(1000,1000);
         renderWindow->Render();
         renderWindowInteractor->Start();
 

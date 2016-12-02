@@ -22,7 +22,7 @@ namespace pclem {
         std::cout << "Eigenvalues: " << eigenvalues[0] << eigenvalues[1] << eigenvalues[2] << std::endl;
 
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
-        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors);
+        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors, get_weight());
 
         std::cout << ellipsoid;
 
