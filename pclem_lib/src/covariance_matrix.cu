@@ -65,7 +65,7 @@ namespace pclem {
         return inverse;
     }
 
-    std::pair<Vector3, std::array<Vector3,3>> CovarianceMatrix::eigenvalues() const {
+    std::pair<Vector3, Matrix33> CovarianceMatrix::svd_decomposition() const {
         VLOG(10) << "Extracting eigenvalues...";
 
         arma::mat33 arma_cov_mat(values.data());
@@ -75,13 +75,12 @@ namespace pclem {
         arma::eig_gen(arma_eigvals, arma_eigvecs, arma_cov_mat);
 
         Vector3 eigvals;
-        std::array<Vector3, 3> eigvecs;
-
+        std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
             eigvals[i] = arma_eigvals[i].real();
 
             for(int j=0; j < 3; j++) {
-                eigvecs[i][j] = arma_eigvecs(j,i).real();
+                eigvecs_values[i*3 + j] = arma_eigvecs(i,j).real();
             }
 
             if(std::abs(arma_eigvals[i].imag()) > 1e-300) {
@@ -89,7 +88,7 @@ namespace pclem {
             }
         }
 
-        return std::make_pair(eigvals, eigvecs);
+        return std::make_pair(eigvals, Matrix33(eigvecs_values));
     }
 
     std::ostream& operator<<(std::ostream& os, const CovarianceMatrix& m) {

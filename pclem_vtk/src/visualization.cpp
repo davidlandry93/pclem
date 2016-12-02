@@ -14,6 +14,8 @@
 #include <vtkParametricEllipsoid.h>
 #include <vtkProperty.h>
 
+#include <vtkTransform.h>
+
 #include <vtkAxesActor.h>
 #include <vtkOrientationMarkerWidget.h>
 
@@ -71,11 +73,20 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
         actor->SetBackfaceProperty(back_property);
-        actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
-        actor->RotateX(rad_2_deg(ellipsoid.rotation.x));
-        actor->RotateY(rad_2_deg(ellipsoid.rotation.y));
-        actor->RotateZ(rad_2_deg(ellipsoid.rotation.z));
 
+        auto rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New(); 
+        rotationMatrix->Identity();
+        for(int i=0; i < 3; i++) {
+            for(int j=0; j<3; j++) {
+                rotationMatrix->SetElement(i,j, ellipsoid.rotation.get_element(i,j));
+            }
+        }
+
+        auto transform = vtkSmartPointer<vtkTransform>::New();
+        transform->SetMatrix(rotationMatrix);
+
+        actor->SetUserTransform(transform);
+        actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
         actor->GetProperty()->SetOpacity(0.5);
 
         renderer->AddActor(actor);

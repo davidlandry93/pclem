@@ -29,6 +29,7 @@ set(PUBLIC_HEADERS
   src/em_algorithm.h
   src/gaussian_mixture.h
   src/hierarchical_gaussian_mixture.h
+  src/matrix33.h
   src/point.h
   src/pointcloud.h
   src/vector3.h

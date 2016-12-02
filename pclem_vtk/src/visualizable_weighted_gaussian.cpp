@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <armadillo>
 
 #include "vector3.h"
 #include "covariance_matrix.h"
@@ -14,22 +15,14 @@ namespace pclem {
     void VisualizableWeightedGaussian::insert_into_visualization(Visualization& vis) const {
         CovarianceMatrix cov = get_sigma();
 
-        auto eigen_result = cov.eigenvalues();
+        auto eigen_result = cov.svd_decomposition();
         Vector3 eigenvalues = eigen_result.first;
-        Vector3 first_eigenvector = eigen_result.second[0];
-        Vector3 second_eigenvector = eigen_result.second[1];
+        Matrix33 eigenvectors = eigen_result.second;
 
         std::cout << "Eigenvalues: " << eigenvalues[0] << eigenvalues[1] << eigenvalues[2] << std::endl;
 
-        Vector3 rotation;
-
-        rotation.x = atan(first_eigenvector[1] / first_eigenvector[2]);
-        rotation.y = atan(first_eigenvector[2] / first_eigenvector[0]);
-        rotation.z = atan(first_eigenvector[1] / first_eigenvector[0]);
-
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
-
-        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, rotation);
+        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors);
 
         std::cout << ellipsoid;
 
