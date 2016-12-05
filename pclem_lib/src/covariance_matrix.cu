@@ -100,4 +100,14 @@ namespace pclem {
 
         return os;
     }
+
+    std::ofstream& operator<<(std::ofstream& ofs, const CovarianceMatrix& m) {
+        std::array<double,9> array_of_matrix = m.as_array();
+        for(int i=0; i < 8; i++) {
+            ofs << array_of_matrix[i] << ",";
+        }
+        ofs << array_of_matrix[8];
+
+        return ofs;
+    }
 }

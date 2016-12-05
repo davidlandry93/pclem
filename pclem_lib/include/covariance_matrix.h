@@ -2,6 +2,7 @@
 #define COVARIANCE_MATRIX_H
 
 #include <iostream>
+#include <fstream>
 #include <array>
 
 #include "vector3.h"
@@ -24,6 +25,7 @@ namespace pclem {
         std::array<double,9> as_array() const;
         std::array<double,9> inverse() const;
         friend std::ostream& operator<<(std::ostream& os, const CovarianceMatrix& m);
+        friend std::ofstream& operator<<(std::ofstream& ofs, const CovarianceMatrix& m);
     private:
         std::array<double,9> values;
     };

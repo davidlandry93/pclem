@@ -46,7 +46,12 @@ namespace pclem {
     }
 
     std::ostream& operator<<(std::ostream& os, const Vector3& v) {
-        os << "[" << v.x << "," << v.y << "," << v.z << "]";
+        os << v.x << "," << v.y << "," << v.z;
         return os;
+    }
+
+    std::ofstream& operator<<(std::ofstream& ofs, const Vector3& v) {
+        ofs << v.x << "," << v.y << "," << v.z;
+        return ofs;
     }
 }

@@ -2,6 +2,7 @@
 #define ELLIPSOID_H
 
 #include <iostream>
+#include <fstream>
 #include "vector3.h"
 #include "matrix33.h"
 
@@ -21,6 +22,13 @@ namespace pclem {
             os << "Axes: [" << e.a << "," << e.b << "," << e.c <<
                 "] Translation: " << e.position << "Rotation: " << e.rotation << "Opacity: " << e.opacity;
             return os;
+        }
+
+        friend std::ofstream& operator<<(std::ofstream& ofs, const Ellipsoid& e) {
+            ofs << e.a << "," << e.b << "," << e.c << "," <<
+                e.position << "," << e.rotation << "," << e.opacity << std::endl;
+
+            return ofs;
         }
     };
 }

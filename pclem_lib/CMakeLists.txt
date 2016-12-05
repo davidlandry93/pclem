@@ -27,6 +27,7 @@ set(PUBLIC_HEADERS
   src/boundingbox.h
   src/covariance_matrix.h
   src/em_algorithm.h
+  src/file_exporter.h
   src/gaussian_mixture.h
   src/hierarchical_gaussian_mixture.h
   src/matrix33.h

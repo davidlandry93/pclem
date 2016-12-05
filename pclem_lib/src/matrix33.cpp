@@ -12,10 +12,18 @@ namespace pclem {
     }
 
     std::ostream& operator<<(std::ostream& os, const Matrix33& v) {
-        os << "[";
         for(int i=0; i < 8; i++) {
             os << v.values[i] << ",";
         }
-        os << v.values[8] << "]";
+        os << v.values[8];
+    }
+
+    std::ofstream& operator<<(std::ofstream& ofs, const Matrix33& v) {
+        for(int i=0; i < 8; i++) {
+            ofs << v.values[i] << ",";
+        }
+        ofs << v.values[8];
+
+        return ofs;
     }
 }

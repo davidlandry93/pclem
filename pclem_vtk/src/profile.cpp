@@ -11,6 +11,7 @@
 #include "vtk_pointcloud_reader.h"
 #include "vtk_visualization.h"
 #include "weighted_gaussian.h"
+#include "file_exporter.h"
 
 using namespace pclem;
 
@@ -26,14 +27,14 @@ int main(int argc, char** argv) {
     std::vector<WeightedGaussian> leaves;
     hgmm.get_leaves(leaves);
 
-    VtkVisualization vis;
-    pcl.insert_into_visualization(vis);
+    FileExporter file_exporter("output.csv");
+    file_exporter.open_file();
+
+    //pcl.insert_into_visualization(file_exporter);
     std::cout << leaves.size() << " leaves to show." << std::endl;
     for(const WeightedGaussian& leave : leaves) {
-        leave.insert_into_visualization(vis);
+        leave.insert_into_visualization(file_exporter);
     }
-
-    vis.visualize();
 
     return 0;
 }

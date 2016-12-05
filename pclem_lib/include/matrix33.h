@@ -2,6 +2,7 @@
 #define MATRIX_33_H
 
 #include <iostream>
+#include <fstream>
 #include <array>
 
 namespace pclem {
@@ -12,6 +13,7 @@ public:
     double get_element(const int& i, const int& j) const;
 
     friend std::ostream& operator<<(std::ostream& os, const Matrix33& v);
+    friend std::ofstream& operator<<(std::ofstream& os, const Matrix33& v);
 private:
     std::array<double,9> values;
 

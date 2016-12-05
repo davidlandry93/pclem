@@ -2,6 +2,7 @@
 #define VECTOR3_H
 
 #include <iostream>
+#include <fstream>
 
 namespace pclem {
 
@@ -19,6 +20,7 @@ namespace pclem {
         double dot(const Vector3& other) const;
 
         friend std::ostream& operator<<(std::ostream& os, const Vector3& v);
+        friend std::ofstream& operator<<(std::ofstream& ofs, const Vector3& v);
     };
 
 }
