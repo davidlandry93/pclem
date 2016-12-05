@@ -45,4 +45,10 @@ namespace pclem {
 
         return os;
     }
+
+    void GaussianMixture::insert_into_visualization(Visualization& vis) const {
+        for(WeightedGaussian gaussian : gaussians) {
+            gaussian.insert_into_visualization(vis);
+        }
+    }
 }

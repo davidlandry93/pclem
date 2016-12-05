@@ -46,6 +46,8 @@ namespace pclem {
             return op(pts_begin, pts_end);
         }
 
+        void insert_into_visualization(Visualization& vis) const;
+
     private:
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
         PointIterator pts_begin;

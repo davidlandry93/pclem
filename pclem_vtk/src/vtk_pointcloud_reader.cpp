@@ -7,16 +7,15 @@
 #include <glog/logging.h>
 
 #include "point.h"
-
 #include "vtk_pointcloud_reader.h"
 
 namespace pclem{
 
-    VisualizablePointCloud VtkPointCloudReader::read(std::string filename) {
+    PointCloud VtkPointCloudReader::read(std::string filename) {
         return read(filename, std::numeric_limits<long>::max());
     }
 
-    VisualizablePointCloud VtkPointCloudReader::read(std::string filename, long max_n_points) {
+    PointCloud VtkPointCloudReader::read(std::string filename, long max_n_points) {
         VLOG(10) << "Building point cloud...";
 
         vtkSmartPointer<vtkGenericDataObjectReader> reader =
@@ -38,7 +37,7 @@ namespace pclem{
         }
 
         VLOG(10) << "Initializing a point cloud.";
-        VisualizablePointCloud pcl;
+        PointCloud pcl;
         pcl.set_points(stl_vec);
 
         VLOG(10) << "Done.";

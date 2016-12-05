@@ -120,4 +120,12 @@ namespace pclem {
     std::shared_ptr<thrust::device_vector<AssociatedPoint>> DevicePointCloud::get_data() const {
         return ptr_to_points;
     }
+
+    void DevicePointCloud::insert_into_visualization(Visualization& vis) const {
+        std::vector<Point> copy = copy_of_points();
+
+        for(Point point : copy) {
+            vis.insert_point(point);
+        }
+    }
 }

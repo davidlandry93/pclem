@@ -5,6 +5,7 @@
 
 #include "point.h"
 #include "covariance_matrix.h"
+#include "visualization.h"
 
 namespace pclem {
     class WeightedGaussian {
@@ -18,6 +19,8 @@ namespace pclem {
         double get_weight() const;
 
         friend std::ostream &operator<<(std::ostream &os, WeightedGaussian const &g);
+
+        void insert_into_visualization(Visualization& vis) const;
 
     private:
         Point mu;

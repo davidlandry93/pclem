@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+#include "visualization.h"
 #include "weighted_gaussian.h"
 
 namespace pclem {
@@ -18,6 +19,7 @@ namespace pclem {
         int n_nonzero_gaussians() const;
         WeightedGaussian get_gaussian(int i) const; 
         friend std::ostream& operator<<(std::ostream& os, const GaussianMixture& mixture);
+        void insert_into_visualization(Visualization& vis) const;
 
     protected:
         std::vector<WeightedGaussian> gaussians;

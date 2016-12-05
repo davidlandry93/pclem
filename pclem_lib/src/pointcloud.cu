@@ -79,4 +79,8 @@ namespace pclem {
         return device_pcl->create_hgmm();
     }
 
+    void PointCloud::insert_into_visualization(Visualization& vis) const {
+        device_pcl->insert_into_visualization(vis);
+    }
+
 }

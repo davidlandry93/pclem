@@ -8,6 +8,7 @@
 #include "boundingbox.h"
 #include "gaussian_mixture.h"
 #include "hierarchical_gaussian_mixture.h"
+#include "visualization.h"
 
 namespace pclem {
     class DevicePointCloud;
@@ -30,6 +31,8 @@ namespace pclem {
         int get_n_points() const;
 
         std::vector<Point> copy_of_points() const;
+
+        void insert_into_visualization(Visualization& vis) const;
 
     private:
         std::shared_ptr<DevicePointCloud> device_pcl;

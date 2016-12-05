@@ -33,6 +33,7 @@ set(PUBLIC_HEADERS
   src/point.h
   src/pointcloud.h
   src/vector3.h
+  src/visualization.h
   src/weighted_gaussian.h)
 INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pclem)
 INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
