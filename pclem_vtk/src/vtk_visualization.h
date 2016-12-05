@@ -1,5 +1,5 @@
-#ifndef VISUALIZATION_H
-#define VISUALIZATION_H
+#ifndef VTK_VISUALIZATION_H
+#define VTK_VISUALIZATION_H
 
 
 #include <vtkPolyData.h>
@@ -8,13 +8,14 @@
 #include <vtkCellArray.h>
 #include <vtkRenderer.h>
 
+#include "visualization.h"
 #include "point.h"
 #include "ellipsoid.h"
 
 namespace pclem {
-    class Visualization {
+    class VtkVisualization : public Visualization {
     public:
-        Visualization();
+        VtkVisualization();
         void insert_point(const Point& point);
         void insert_ellipsoid(const Ellipsoid& ellipsoid);
         void visualize();

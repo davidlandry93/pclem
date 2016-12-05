@@ -19,10 +19,10 @@
 #include <vtkAxesActor.h>
 #include <vtkOrientationMarkerWidget.h>
 
-#include "visualization.h"
+#include "vtk_visualization.h"
 
 namespace pclem {
-    Visualization::Visualization() :
+    VtkVisualization::VtkVisualization() :
         points(vtkSmartPointer<vtkPoints>::New()),
         polydata(vtkSmartPointer<vtkPolyData>::New()),
         cells(vtkSmartPointer<vtkCellArray>::New()),
@@ -33,7 +33,7 @@ namespace pclem {
         renderer->SetViewport(viewport);
     }
 
-    void Visualization::insert_point(const Point& point) {
+    void VtkVisualization::insert_point(const Point& point) {
         VLOG(15) << "Inserting point in visualization...";
 
         vtkIdType pointId = points->InsertNextPoint(point.x, point.y, point.z);
@@ -51,7 +51,7 @@ namespace pclem {
         return rad * ratio;
     }
 
-    void Visualization::insert_ellipsoid(const Ellipsoid& ellipsoid) {
+    void VtkVisualization::insert_ellipsoid(const Ellipsoid& ellipsoid) {
         auto vtk_ellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
         vtk_ellipsoid->SetXRadius(ellipsoid.a);
         vtk_ellipsoid->SetYRadius(ellipsoid.b);
@@ -89,7 +89,7 @@ namespace pclem {
         renderer->AddActor(actor);
     }
 
-    void Visualization::visualize() {
+    void VtkVisualization::visualize() {
         VLOG(10) << "Visualizing...";
 
         polydata->SetPoints(points);

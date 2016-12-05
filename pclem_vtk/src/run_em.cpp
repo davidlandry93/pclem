@@ -9,7 +9,7 @@
 #include "visualizable_point_cloud.h"
 #include "visualizable_gaussian_mixture.h"
 #include "vtk_pointcloud_reader.h"
-#include "visualization.h"
+#include "vtk_visualization.h"
 
 using namespace pclem;
 
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
     std::cout << em;
 
-    Visualization vis;
+    VtkVisualization vis;
     pcl.insert_in_visualization(vis);
 
     em.run(0.1);

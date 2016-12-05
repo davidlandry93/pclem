@@ -9,7 +9,7 @@
 #include "visualizable_point_cloud.h"
 #include "visualizable_gaussian_mixture.h"
 #include "vtk_pointcloud_reader.h"
-#include "visualization.h"
+#include "vtk_visualization.h"
 #include "visualizable_weighted_gaussian.h"
 
 using namespace pclem;
@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     std::vector<WeightedGaussian> leaves;
     hgmm.get_leaves(leaves);
 
-    Visualization vis;
+    VtkVisualization vis;
     pcl.insert_in_visualization(vis);
     std::cout << leaves.size() << " leaves to show." << std::endl;
     for(const WeightedGaussian& leave : leaves) {

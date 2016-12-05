@@ -17,7 +17,7 @@ set(SOURCES
   src/visualizable_weighted_gaussian.cpp
   src/visualizable_gaussian_mixture.cpp
   src/visualizable_point_cloud.cpp
-  src/visualization.cpp
+  src/vtk_visualization.cpp
   src/vtk_pointcloud_reader.cpp)
 
 add_library(pclem_vtk_lib ${SOURCES})
