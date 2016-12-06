@@ -2,6 +2,7 @@
 
 
 import csv
+import time
 import numpy as np
 import paraview.simple as par
 import paraview.servermanager as srv
@@ -49,7 +50,12 @@ with open(PATH_TO_FILE) as csv_file:
     csv_reader.next() # Skip the header
 
     for row in csv_reader:
+        begin = time.time()
         e = Ellipsoid.from_string_array(row)
+        print('From string array took %f' % (time.time() - begin))
+        begin = time.time()
         e.push_to_paraview()
+        print('Push to paraview took %f' % (time.time() - begin))
+
 
 par.Render()

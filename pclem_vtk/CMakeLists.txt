@@ -29,3 +29,6 @@ target_link_libraries(run_hierarchical_em pclem_vtk_lib)
 
 add_executable(profile src/profile.cpp ${SOURCES})
 target_link_libraries(profile pclem pclem_vtk_lib)
+
+add_executable(run_to_vtk src/run_to_vtk.cpp ${SOURCES})
+target_link_libraries(run_to_vtk pclem_vtk_lib)

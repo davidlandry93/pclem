@@ -5,24 +5,20 @@
 
 #include <glog/logging.h>
 
-#include "em_algorithm.h"
 #include "pointcloud.h"
 #include "gaussian_mixture.h"
+#include "weighted_gaussian.h"
 #include "vtk_pointcloud_reader.h"
 #include "vtk_visualization.h"
-#include "weighted_gaussian.h"
-#include "file_exporter.h"
 
 using namespace pclem;
-
-static int N_POINTS_TO_PROFILE = 2000;
 
 int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
 
-    PointCloud pcl = VtkPointCloudReader::read("res/foret.vtk", N_POINTS_TO_PROFILE);
+    PointCloud pcl = VtkPointCloudReader::read("res/foret.vtk");
 
-    HierarchicalGaussianMixture hgmm = pcl.create_hgmm();
+    auto hgmm = pcl.create_hgmm();
 
     std::vector<WeightedGaussian> leaves;
     hgmm.get_leaves(leaves);

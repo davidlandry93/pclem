@@ -8,11 +8,13 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleFlight.h>
+#include <vtkInteractorStyleJoystickCamera.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkParametricFunction.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricEllipsoid.h>
 #include <vtkProperty.h>
+#include <vtkCamera.h>
 
 #include <vtkTransform.h>
 
@@ -28,9 +30,7 @@ namespace pclem {
         cells(vtkSmartPointer<vtkCellArray>::New()),
         renderer(vtkSmartPointer<vtkRenderer>::New())
     {
-        double viewport[4] = {-10.0, -10.0, 10.0, 10.0};
-        renderer->SetBackground(0.4,1,1);
-        renderer->SetViewport(viewport);
+        renderer->SetBackground(0.2,0.2,0.2);
     }
 
     void VtkVisualization::insert_point(const Point& point) {
@@ -59,13 +59,14 @@ namespace pclem {
 
         auto function_source = vtkSmartPointer<vtkParametricFunctionSource>::New();
         function_source->SetParametricFunction(vtk_ellipsoid);
-        function_source->SetUResolution(51);
-        function_source->SetVResolution(51);
-        function_source->SetWResolution(51);
+        function_source->SetUResolution(11);
+        function_source->SetVResolution(11);
+        function_source->SetWResolution(11);
         function_source->Update();
 
         auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         mapper->SetInputConnection(function_source->GetOutputPort());
+        mapper->Update();
 
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
@@ -102,25 +103,31 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
 
-
         auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
         renderWindow->AddRenderer(renderer);
 
         auto renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
         renderWindowInteractor->SetRenderWindow(renderWindow);
 
-        auto interactorStyle = vtkSmartPointer<vtkInteractorStyleFlight>::New();
+        auto interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
         renderWindowInteractor->SetInteractorStyle(interactorStyle);
 
         auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
-        auto widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+        auto axes_widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
 
-        widget->SetOrientationMarker(axes_actor);
-        widget->SetInteractor(renderWindowInteractor);
-        widget->SetEnabled(1);
-        widget->InteractiveOn();
+        axes_widget->SetOrientationMarker(axes_actor);
+        axes_widget->SetInteractor(renderWindowInteractor);
+        axes_widget->SetEnabled(1);
+        axes_widget->InteractiveOn();
 
         renderer->AddActor(actor);
+
+
+
+        auto camera = vtkSmartPointer<vtkCamera>::New();
+        camera->SetPosition(-25, -25, 5);
+        camera->SetFocalPoint(0,0,0);
+        renderer->SetActiveCamera(camera);
 
         renderWindow->SetSize(1000,1000);
         renderWindow->Render();
