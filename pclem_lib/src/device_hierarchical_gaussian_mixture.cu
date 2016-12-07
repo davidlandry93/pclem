@@ -86,7 +86,7 @@ namespace pclem {
                 GaussianMixtureFactory gmm_factory;
                 GaussianMixture child_mixture = gmm_factory.around_point(current_gaussian.get_mu(),
                                                                          current_gaussian.get_sigma(),
-                                                                         AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE,
+                                                                         AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE - 1, // The last distribution is outside the gaussian mixture.
                                                                          UNIFORM_DISTRIBUTION_SIZE);
 
                 auto child = std::shared_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector));
