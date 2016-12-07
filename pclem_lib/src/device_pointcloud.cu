@@ -19,16 +19,16 @@ namespace pclem {
         ptr_to_points(new thrust::device_vector<AssociatedPoint>()),
         pts_begin(ptr_to_points->begin()),
         pts_end(ptr_to_points->end()),
-        boundingBox() {}
+        bounding_box() {}
 
     DevicePointCloud::DevicePointCloud(const DevicePointCloud& other) :
         ptr_to_points(other.ptr_to_points),
         pts_begin(other.pts_begin),
         pts_end(other.pts_end),
-        boundingBox(other.boundingBox){}
+        bounding_box(other.bounding_box){}
 
     BoundingBox DevicePointCloud::getBoundingBox() const {
-        return BoundingBox(boundingBox);
+        return BoundingBox(bounding_box);
     }
 
     void DevicePointCloud::updateBoundingBox(){
@@ -36,7 +36,7 @@ namespace pclem {
 
         BoundingBoxCreationOperation op;
 
-        boundingBox = execute_pointcloud_operation(op);
+        bounding_box = execute_pointcloud_operation(op);
 
         VLOG(10) << "Done updating bounding box.";
     }
@@ -67,7 +67,7 @@ namespace pclem {
     void DevicePointCloud::compute_associations(const GaussianMixture& mixture) {
         VLOG(10) << "Computing point/distribution associations...";
 
-        AssociationComputingOperation op(mixture);
+        AssociationComputingOperation op(mixture, bounding_box.volume());
         execute_pointcloud_operation(op);
 
         VLOG(10) << "Done computing point/distribution associations.";

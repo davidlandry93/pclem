@@ -15,6 +15,7 @@ namespace pclem {
         void setMax(Point max);
         std::vector<Point> corners() const;
         BoundingBox& operator=(const BoundingBox& other);
+        double volume() const;
 
     private:
         Point min;

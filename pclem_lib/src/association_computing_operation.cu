@@ -5,13 +5,13 @@
 
 namespace pclem {
     
-    AssociationComputingOperation::AssociationComputingOperation(const GaussianMixture& mixture) :
-        mixture(mixture) {}
+    AssociationComputingOperation::AssociationComputingOperation(const GaussianMixture& mixture, const double& volume) :
+        mixture(mixture), volume(volume) {}
 
     void AssociationComputingOperation::operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) {
         VLOG(10) << "Computing point/distribution associations...";
 
-        for(int i = 0; i < mixture.n_gaussians(); i++) {
+        for(int i = 0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             WeightedGaussian distribution = mixture.get_gaussian(i);
 
             if(distribution.get_weight() == 0.0) {
@@ -20,7 +20,6 @@ namespace pclem {
             } else {
                 compute_associations_of_distribution(begin, end, i, mixture.get_gaussian(i));
             }
-
         }
 
         VLOG(10) << "Done computing point/distribution associations.";
@@ -42,9 +41,9 @@ namespace pclem {
 
         __host__ __device__
         AssociatedPoint operator()(AssociatedPoint p) {
-            p.likelihoods[index_of_distribution] = likelihood_of_point(p);
+            p.associations[index_of_distribution] = likelihood_of_point(p);
 
-            if(p.likelihoods[index_of_distribution] > p.likelihoods[p.best_distribution]) {
+            if(p.associations[index_of_distribution] > p.associations[p.best_distribution]) {
                 p.best_distribution = index_of_distribution;
             }
 
@@ -90,7 +89,7 @@ namespace pclem {
 
         __host__ __device__
         AssociatedPoint operator()(AssociatedPoint p) {
-            p.likelihoods[index_of_distribution] = 0.0;
+            p.associations[index_of_distribution] = 0.0;
             return p;
         }
     };

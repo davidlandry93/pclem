@@ -43,4 +43,12 @@ namespace pclem {
 
         return *this;
     }
+
+    double BoundingBox::volume() const {
+        double deltax = max.x - min.x;
+        double deltay = max.y - min.y;
+        double deltaz = max.z - min.z;
+
+        return deltax * deltay * deltaz;
+    }
 }

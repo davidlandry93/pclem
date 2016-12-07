@@ -7,11 +7,11 @@ namespace pclem {
         AssociatedPoint operator()(AssociatedPoint p) {
             double sum_of_associations = 0.0;
             for(int i = 0; i < p.N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                sum_of_associations += p.likelihoods[i];
+                sum_of_associations += p.associations[i];
             }
 
             for(int i = 0; i < p.N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                p.likelihoods[i] = p.likelihoods[i] / sum_of_associations;
+                p.associations[i] = p.associations[i] / sum_of_associations;
             }
 
             return p;

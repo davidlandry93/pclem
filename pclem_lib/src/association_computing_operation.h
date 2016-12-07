@@ -8,10 +8,11 @@
 namespace pclem {
     class AssociationComputingOperation : public DevicePointCloud::PointCloudOperation<void> {
     public:
-        AssociationComputingOperation(const GaussianMixture& mixture);
+        AssociationComputingOperation(const GaussianMixture& mixture, const double& volume);
         void operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end);
     private:
         GaussianMixture mixture;
+        double volume;
 
         void compute_associations_of_distribution(const DevicePointCloud::PointIterator& begin,
                                                   const DevicePointCloud::PointIterator& end,

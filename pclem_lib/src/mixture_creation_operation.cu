@@ -14,7 +14,7 @@ namespace pclem {
         AssociatedPoint operator()(AssociatedPoint lhs, AssociatedPoint rhs) {
             AssociatedPoint sum;
             for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                sum.likelihoods[i] = lhs.likelihoods[i] + rhs.likelihoods[i];
+                sum.associations[i] = lhs.associations[i] + rhs.associations[i];
             }
             return sum;
         }
@@ -29,7 +29,7 @@ namespace pclem {
         std::vector<WeightedGaussian> gaussians;
 
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-            gaussians.push_back(create_distribution_of_mixture(begin, end, i, sums.likelihoods[i]));
+            gaussians.push_back(create_distribution_of_mixture(begin, end, i, sums.associations[i]));
         }
 
         GaussianMixture mixture(gaussians);
@@ -44,9 +44,9 @@ namespace pclem {
 
         __host__ __device__
         DevicePoint operator()(AssociatedPoint p) {
-            return DevicePoint(p.x * p.likelihoods[index_of_distribution],
-                               p.y * p.likelihoods[index_of_distribution],
-                               p.z * p.likelihoods[index_of_distribution]);
+            return DevicePoint(p.x * p.associations[index_of_distribution],
+                               p.y * p.associations[index_of_distribution],
+                               p.z * p.associations[index_of_distribution]);
         }
     };
 
@@ -99,7 +99,7 @@ namespace pclem {
         __host__ __device__
         RawCovarianceMatrix operator()(AssociatedPoint p) {
             RawCovarianceMatrix r;
-            double gamma = p.likelihoods[index_of_distribution];
+            double gamma = p.associations[index_of_distribution];
 
             r.v00 = p.x * p.x * gamma;
             r.v11 = p.y * p.y * gamma;

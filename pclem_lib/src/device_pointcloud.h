@@ -52,7 +52,7 @@ namespace pclem {
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
         PointIterator pts_begin;
         PointIterator pts_end;
-        BoundingBox boundingBox;
+        BoundingBox bounding_box;
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
         void updateBoundingBox();

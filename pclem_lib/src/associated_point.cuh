@@ -7,17 +7,17 @@
 namespace pclem {
 
     struct AssociatedPoint : public DevicePoint {
-        static const int N_DISTRIBUTIONS_PER_MIXTURE = 8;
+        static const int N_DISTRIBUTIONS_PER_MIXTURE = 9;
 
-        double likelihoods[N_DISTRIBUTIONS_PER_MIXTURE];
+        double associations[N_DISTRIBUTIONS_PER_MIXTURE];
         int best_distribution;
 
         __host__ __device__
-        AssociatedPoint() : DevicePoint(), likelihoods{0.0} {}
+        AssociatedPoint() : DevicePoint(), associations{0.0} {}
 
         __host__ __device__
         AssociatedPoint(double _x, double _y, double _z) :
-            DevicePoint(_x,_y,_z), likelihoods{0.0} {}
+            DevicePoint(_x,_y,_z), associations{0.0} {}
 
         __host__ __device__
         AssociatedPoint(const Point& other) : DevicePoint(other.x,other.y,other.z), best_distribution(0) {}
@@ -29,7 +29,7 @@ namespace pclem {
         friend std::ostream& operator<<(std::ostream& os, const AssociatedPoint& p) {
             os << "(" << p.x << p.y << p.z << "). Associations: [";
             for(int i = 0; i < N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-                os << p.likelihoods[i] << ",";
+                os << p.associations[i] << ",";
             }
             os << "]";
 

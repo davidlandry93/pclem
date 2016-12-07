@@ -53,10 +53,10 @@ namespace pclem {
 
         __host__ __device__
         double operator()(AssociatedPoint p) {
-            if(p.likelihoods[index_of_distribution] < 1e-30) {
+            if(p.associations[index_of_distribution] < 1e-30) {
                 return 0.0;
             } else {
-                return p.likelihoods[index_of_distribution] * (log_pi_ij + log(likelihood_of_point(p)));
+                return p.associations[index_of_distribution] * (log_pi_ij + log(likelihood_of_point(p)));
             }
         }
 
