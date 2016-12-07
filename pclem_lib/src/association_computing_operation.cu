@@ -84,7 +84,7 @@ namespace pclem {
 
     void AssociationComputingOperation::select_and_execute_op(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end, const int& i) {
         if(i == UNIFORM_DISTRIBUTION_ID) {
-            thrust::transform(begin, end, begin, fixed_association_op(i, 1.0 / volume_of_pcl));
+            thrust::transform(begin, end, begin, fixed_association_op(i, 0.001));
         } else if(mixture.get_gaussian(i).get_weight() == 0.0) {
             thrust::transform(begin, end, begin, fixed_association_op(i, 0.0));
         } else {
