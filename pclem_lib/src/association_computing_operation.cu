@@ -1,25 +1,20 @@
 
 #include <glog/logging.h>
 
+#include <thrust/transform.h>
+
 #include "association_computing_operation.h"
 
 namespace pclem {
     
     AssociationComputingOperation::AssociationComputingOperation(const GaussianMixture& mixture, const double& volume) :
-        mixture(mixture), volume(volume) {}
+        mixture(mixture), volume_of_pcl(volume) {}
 
     void AssociationComputingOperation::operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) {
         VLOG(10) << "Computing point/distribution associations...";
 
         for(int i = 0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-            WeightedGaussian distribution = mixture.get_gaussian(i);
-
-            if(distribution.get_weight() == 0.0) {
-                VLOG(1) << "Found dropped distribution.";
-                execute_no_association_op(begin, end, i);
-            } else {
-                compute_associations_of_distribution(begin, end, i, mixture.get_gaussian(i));
-            }
+            select_and_execute_op(begin, end, i);
         }
 
         VLOG(10) << "Done computing point/distribution associations.";
@@ -72,31 +67,28 @@ namespace pclem {
         }
     };
 
-    void AssociationComputingOperation::compute_associations_of_distribution(const DevicePointCloud::PointIterator& begin,
-                                                                             const DevicePointCloud::PointIterator& end,
-                                                                             int index_of_distribution,
-                                                                             const WeightedGaussian& distribution) {
-        gaussian_op op(index_of_distribution, distribution);
-
-        thrust::transform(begin, end, begin, op);
-    }
-
-    struct no_association_op : public thrust::unary_function<AssociatedPoint,AssociatedPoint> {
+    struct fixed_association_op : public thrust::unary_function<AssociatedPoint,AssociatedPoint> {
         int index_of_distribution;
+        double association_value;
 
-        no_association_op(int index_of_distribution) :
-            index_of_distribution(index_of_distribution) {}
+        fixed_association_op(int index_of_distribution, double association_value) :
+            index_of_distribution(index_of_distribution),
+            association_value(association_value) {}
 
         __host__ __device__
         AssociatedPoint operator()(AssociatedPoint p) {
-            p.associations[index_of_distribution] = 0.0;
+            p.associations[index_of_distribution] = association_value;
             return p;
         }
     };
 
-    void AssociationComputingOperation::execute_no_association_op(const DevicePointCloud::PointIterator& begin,
-                                                                  const DevicePointCloud::PointIterator& end,
-                                                                  int index_of_distribution) const {
-        thrust::transform(begin, end, begin, no_association_op(index_of_distribution));
+    void AssociationComputingOperation::select_and_execute_op(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end, const int& i) {
+        if(i == UNIFORM_DISTRIBUTION_ID) {
+            thrust::transform(begin, end, begin, fixed_association_op(i, 1.0 / volume_of_pcl));
+        } else if(mixture.get_gaussian(i).get_weight() == 0.0) {
+            thrust::transform(begin, end, begin, fixed_association_op(i, 0.0));
+        } else {
+            thrust::transform(begin, end, begin, gaussian_op(i, mixture.get_gaussian(i)));
+        }
     }
 }
