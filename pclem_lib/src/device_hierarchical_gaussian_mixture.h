@@ -10,6 +10,7 @@
 #include "associated_point.cuh"
 #include "gaussian_mixture.h"
 #include "device_pointcloud.h"
+#include "visualization.h"
 
 namespace pclem {
     class DeviceHierarchicalGaussianMixture {
@@ -25,7 +26,7 @@ namespace pclem {
         void run_em();
 
         friend std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy);
-        void get_leaves(std::vector<WeightedGaussian>& leaves) const;
+        void insert_into_visualization(Visualization& vis) const;
 
     private:
 
@@ -43,6 +44,7 @@ namespace pclem {
 
         void print_with_padding(std::ostream& os, int padding) const;
         void expand_one_level();
+        void get_leaves(std::vector<WeightedGaussian>& leaves) const;
     };
 }
 

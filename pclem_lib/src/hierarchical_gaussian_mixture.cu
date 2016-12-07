@@ -16,7 +16,7 @@ namespace pclem {
         return os;
     }
 
-    void HierarchicalGaussianMixture::get_leaves(std::vector<WeightedGaussian>& leaves) const {
-        device_mixture->get_leaves(leaves);
+    void HierarchicalGaussianMixture::insert_into_visualization(Visualization& vis) const {
+        device_mixture->insert_into_visualization(vis);
     }
 }

@@ -25,4 +25,8 @@ namespace pclem  {
     void FileExporter::insert_ellipsoid(const Ellipsoid& ellipsoid) {
         filestream << ellipsoid;
     }
+
+    void FileExporter::close() {
+        filestream.close();
+    }
 }

@@ -14,6 +14,7 @@ namespace pclem {
         void open_file();
         void insert_point(const Point& point);
         void insert_ellipsoid(const Ellipsoid& ellipsoid);
+        void close();
 
     private:
         const std::string CSV_HEADER;

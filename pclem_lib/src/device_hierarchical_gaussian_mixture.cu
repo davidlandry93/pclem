@@ -123,4 +123,13 @@ namespace pclem {
             }
         }
     }
+
+    void DeviceHierarchicalGaussianMixture::insert_into_visualization(Visualization& vis) const {
+        std::vector<WeightedGaussian> leaves;
+        get_leaves(leaves);
+
+        for(auto leaf : leaves) {
+            leaf.insert_into_visualization(vis);
+        }
+    }
 }

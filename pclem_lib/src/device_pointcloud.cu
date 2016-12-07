@@ -97,13 +97,13 @@ namespace pclem {
         return copy;
     }
 
-    HierarchicalGaussianMixture DevicePointCloud::create_hgmm() {
+    HierarchicalGaussianMixture DevicePointCloud::create_hgmm(int n_levels) {
         VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
 
         DeviceHierarchicalGaussianMixture::NodeVector node_vector(new std::vector<std::shared_ptr<DeviceHierarchicalGaussianMixture>>);
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this), WeightedGaussian(), node_vector));
-        hierarchical_mixture->expand_n_levels(3);
+        hierarchical_mixture->expand_n_levels(n_levels);
 
         VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(hierarchical_mixture);

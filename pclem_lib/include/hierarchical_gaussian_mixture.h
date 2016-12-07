@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "weighted_gaussian.h"
+#include "visualization.h"
 
 namespace pclem {
     class DeviceHierarchicalGaussianMixture;
@@ -12,10 +13,9 @@ namespace pclem {
     public:
         HierarchicalGaussianMixture(const std::shared_ptr<DeviceHierarchicalGaussianMixture>& device_mixture);
         ~HierarchicalGaussianMixture();
-        void get_leaves(std::vector<WeightedGaussian>& leaves) const;
-
+        void insert_into_visualization(Visualization& vis) const;
         friend std::ostream& operator<<(std::ostream& os, const HierarchicalGaussianMixture& hierarchy);
-    protected:
+    private:
         std::shared_ptr<DeviceHierarchicalGaussianMixture> device_mixture;
     };
 }

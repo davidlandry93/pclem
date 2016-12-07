@@ -27,7 +27,7 @@ namespace pclem {
         void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
-        HierarchicalGaussianMixture create_hgmm() const;
+        HierarchicalGaussianMixture create_hgmm(int n_levels) const;
         int get_n_points() const;
 
         std::vector<Point> copy_of_points() const;

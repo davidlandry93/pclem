@@ -1,35 +1,59 @@
 
+#include <string>
 #include <iostream>
 #include <limits>
 #include <cmath>
 
+#include <gflags/gflags.h>
 #include <glog/logging.h>
 
 #include "pointcloud.h"
 #include "gaussian_mixture.h"
 #include "weighted_gaussian.h"
 #include "vtk_pointcloud_reader.h"
+#include "vtk_visualization.h"
 #include "file_exporter.h"
+
+DEFINE_bool(vtk, false, "Display the hierarchy using vtk.");
+DEFINE_string(input, "", "Path to the vtk file to load.");
+DEFINE_string(output, "", "Where to store the output csv file");
+DEFINE_uint32(n_points, std::numeric_limits<uint32_t>::max(), "Take the first n points from the point cloud.");
 
 using namespace pclem;
 
 int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    PointCloud pcl = VtkPointCloudReader::read("res/foret.vtk");
+    std::string usage("Run hierarchical expectation-maximization on a point cloud.\n");
+    usage += argv[0];
+    usage +=  + " -input pcl.vtk -output out.csv -vtk";
 
-    auto hgmm = pcl.create_hgmm();
+    if(FLAGS_input.empty()) {
+        std::cout << "No input pointcloud provided." << std::endl;
+        return 0;
+    }
 
-    std::vector<WeightedGaussian> leaves;
-    hgmm.get_leaves(leaves);
+    PointCloud pcl = VtkPointCloudReader::read(FLAGS_input, FLAGS_n_points);
 
-    FileExporter file_exporter("output.csv");
-    file_exporter.open_file();
+    auto hgmm = pcl.create_hgmm(3);
 
-    //pcl.insert_into_visualization(file_exporter);
-    std::cout << leaves.size() << " leaves to show." << std::endl;
-    for(const WeightedGaussian& leave : leaves) {
-        leave.insert_into_visualization(file_exporter);
+    if(!FLAGS_output.empty()) {
+        FileExporter file_exporter(FLAGS_output);
+        file_exporter.open_file();
+
+        hgmm.insert_into_visualization(file_exporter);
+
+        file_exporter.close();
+    }
+
+    if(FLAGS_vtk) {
+        VtkVisualization vis;
+
+        pcl.insert_into_visualization(vis);
+        hgmm.insert_into_visualization(vis);
+
+        vis.visualize();
     }
 
     return 0;

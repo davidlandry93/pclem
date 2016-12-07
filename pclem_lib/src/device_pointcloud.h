@@ -36,7 +36,7 @@ namespace pclem {
                         const thrust::device_vector<AssociatedPoint>::iterator& begin,
                         const thrust::device_vector<AssociatedPoint>::iterator& end);
         std::vector<Point> copy_of_points() const;
-        HierarchicalGaussianMixture create_hgmm();
+        HierarchicalGaussianMixture create_hgmm(int n_levels);
         PointIterator begin();
         PointIterator end();
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
