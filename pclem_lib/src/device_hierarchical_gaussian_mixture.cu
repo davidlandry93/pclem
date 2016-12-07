@@ -79,7 +79,7 @@ namespace pclem {
             if(current_gaussian.get_weight() < MIN_WEIGHT_TO_PROCREATE) {
                 VLOG(2) << "Parent gaussian has too little weight to create children.";
             } else {
-                DevicePointCloud child_pcl;
+                DevicePointCloud child_pcl(current_gaussian.weight_in_hierarchy());
                 VLOG(2) << "Points from " << partition_of_points[i] << " to " << partition_of_points[i+1];
                 child_pcl.set_points(pcl.get_data(), pcl.begin() + partition_of_points[i], pcl.begin() + partition_of_points[i+1]);
 
@@ -87,7 +87,8 @@ namespace pclem {
                 GaussianMixture child_mixture = gmm_factory.around_point(current_gaussian.get_mu(),
                                                                          current_gaussian.get_sigma(),
                                                                          AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE - 1, // The last distribution is outside the gaussian mixture.
-                                                                         UNIFORM_DISTRIBUTION_SIZE);
+                                                                         UNIFORM_DISTRIBUTION_SIZE,
+                                                                         current_gaussian.weight_in_hierarchy());
 
                 auto child = std::shared_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector));
                 node_vector->push_back(child);

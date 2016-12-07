@@ -15,17 +15,21 @@
 #include "bounding_box_creation_operation.h"
 
 namespace pclem {
-    DevicePointCloud::DevicePointCloud() :
+    DevicePointCloud::DevicePointCloud() : DevicePointCloud(1.0) {}
+
+    DevicePointCloud::DevicePointCloud(double weight_of_parent_in_hierarchy) :
         ptr_to_points(new thrust::device_vector<AssociatedPoint>()),
         pts_begin(ptr_to_points->begin()),
         pts_end(ptr_to_points->end()),
-        bounding_box() {}
+        bounding_box(),
+        weight_of_parent_in_hierarchy(weight_of_parent_in_hierarchy) {}
 
     DevicePointCloud::DevicePointCloud(const DevicePointCloud& other) :
         ptr_to_points(other.ptr_to_points),
         pts_begin(other.pts_begin),
         pts_end(other.pts_end),
-        bounding_box(other.bounding_box){}
+        bounding_box(other.bounding_box),
+        weight_of_parent_in_hierarchy(other.weight_of_parent_in_hierarchy){}
 
     BoundingBox DevicePointCloud::getBoundingBox() const {
         return BoundingBox(bounding_box);
@@ -78,7 +82,7 @@ namespace pclem {
     }
 
     GaussianMixture DevicePointCloud::create_mixture() const {
-        return execute_pointcloud_operation(MixtureCreationOperation());
+        return execute_pointcloud_operation(MixtureCreationOperation(weight_of_parent_in_hierarchy));
     }
 
     double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
@@ -102,7 +106,7 @@ namespace pclem {
         GaussianMixtureFactory gmm_factory;
 
         DeviceHierarchicalGaussianMixture::NodeVector node_vector(new std::vector<std::shared_ptr<DeviceHierarchicalGaussianMixture>>);
-        std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this), WeightedGaussian(), node_vector));
+        std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this, 1.0), WeightedGaussian(), node_vector));
         hierarchical_mixture->expand_n_levels(n_levels);
 
         VLOG(10) << "Done creating hgmm.";

@@ -10,9 +10,12 @@ namespace pclem {
 
     class MixtureCreationOperation : public DevicePointCloud::PointCloudOperation<GaussianMixture> {
     public:
+        MixtureCreationOperation(double weight_of_parent_in_hierarchy);
         GaussianMixture operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const;
     private:
         const double DROPOUT_WEIGHT = 0.1;
+
+        double weight_of_parent_in_hierarchy;
 
         WeightedGaussian create_distribution_of_mixture(const DevicePointCloud::PointIterator& begin,
                                                         const DevicePointCloud::PointIterator& end,

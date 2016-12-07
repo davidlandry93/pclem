@@ -5,13 +5,14 @@
 #include "weighted_gaussian.h"
 
 namespace pclem {
-    WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight(0) {}
+    WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight_in_mixture(0.0), weight_in_hierarchy_of_parent(0.0) {}
 
-    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight) :
-        mu(mu), sigma(sigma), weight(weight) {}
+    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight_in_mixture, double weight_in_hierarchy_of_parent) :
+        mu(mu), sigma(sigma), weight_in_mixture(weight_in_mixture), weight_in_hierarchy_of_parent(weight_in_hierarchy_of_parent) {}
 
     WeightedGaussian::WeightedGaussian(const WeightedGaussian& other) :
-        mu(other.mu), sigma(other.sigma), weight(other.weight) {}
+        mu(other.mu), sigma(other.sigma), weight_in_mixture(other.weight_in_mixture),
+        weight_in_hierarchy_of_parent(other.weight_in_hierarchy_of_parent) {}
 
     CovarianceMatrix WeightedGaussian::get_sigma() const {
         CovarianceMatrix m(sigma);
@@ -24,7 +25,11 @@ namespace pclem {
     }
 
     double WeightedGaussian::get_weight() const {
-        return weight;
+        return weight_in_mixture;
+    }
+
+    double WeightedGaussian::weight_in_hierarchy() const {
+        return weight_in_mixture * weight_in_hierarchy_of_parent;
     }
 
     void WeightedGaussian::insert_into_visualization(Visualization& vis) const {
@@ -37,7 +42,7 @@ namespace pclem {
         std::cout << "Eigenvalues: " << eigenvalues[0] << eigenvalues[1] << eigenvalues[2] << std::endl;
 
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
-        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors, get_weight());
+        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors, weight_in_hierarchy());
 
         std::cout << ellipsoid;
 
@@ -45,8 +50,9 @@ namespace pclem {
     }
 
     std::ostream &operator<<(std::ostream &os, WeightedGaussian const &g) {
-        os << "MU: " << g.get_mu() <<
-            " WEIGHT: " << g.get_weight() <<
+        os << " WEIGHT: " << g.get_weight() <<
+            " W IN HIERARCHY: " << g.weight_in_hierarchy() <<
+            " MU: " << g.get_mu() <<
             " SIGMA: " << g.get_sigma();
         return os;
     }

@@ -24,6 +24,7 @@ namespace pclem {
         using PointCloudOperation = std::function<T(const PointIterator&, const PointIterator&)>;
 
         DevicePointCloud();
+        DevicePointCloud(double weight_of_parent_in_hierarchy);
         DevicePointCloud(const DevicePointCloud& other);
         BoundingBox getBoundingBox() const;
         int get_n_points() const;
@@ -53,6 +54,7 @@ namespace pclem {
         PointIterator pts_begin;
         PointIterator pts_end;
         BoundingBox bounding_box;
+        double weight_of_parent_in_hierarchy;
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
         void updateBoundingBox();

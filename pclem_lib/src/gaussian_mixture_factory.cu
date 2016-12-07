@@ -15,15 +15,15 @@ namespace pclem {
         }
     }
 
-    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const PointCloud& pcl) const {
-        return from_pcl_corners(pcl.getBoundingBox());
+    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const PointCloud& pcl, double weight_of_parent_in_hierarchy) const {
+        return from_pcl_corners(pcl.getBoundingBox(), weight_of_parent_in_hierarchy);
     }
 
-    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const DevicePointCloud& pcl) const {
-        return from_pcl_corners(pcl.getBoundingBox());
+    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const DevicePointCloud& pcl, double weight_of_parent_in_hierarchy) const {
+        return from_pcl_corners(pcl.getBoundingBox(), weight_of_parent_in_hierarchy);
     }
 
-    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const BoundingBox& bounding_box) const {
+    GaussianMixture GaussianMixtureFactory::from_pcl_corners(const BoundingBox& bounding_box, double weight_of_parent_in_hierarchy) const {
         auto corners = bounding_box.corners();
         double initial_weight_of_gaussian = 1.0 / corners.size();
 
@@ -34,7 +34,7 @@ namespace pclem {
             sigma.set(1,1,10.0);
             sigma.set(2,2,10.0);
 
-            WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian);
+            WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian, weight_of_parent_in_hierarchy);
             VLOG(4) << "Adding gaussian: " << gaussian;
             temp_gaussians.push_back(gaussian);
         }
@@ -43,7 +43,8 @@ namespace pclem {
         return mixture;
     }
 
-    GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const CovarianceMatrix& cov, int n_of_distributions, double delta) const {
+    GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const CovarianceMatrix& cov,
+                                                         int n_of_distributions, double delta, double weight_of_parent_in_hierarchy) const {
         VLOG(10) << "Creating gaussian mixture around point...";
 
         CovarianceMatrix sigma;
@@ -59,7 +60,8 @@ namespace pclem {
                       point.y + random_number(-delta, delta),
                       point.z + random_number(-delta, delta)),
                 sigma,
-                1.0 / n_of_distributions);
+                1.0 / n_of_distributions,
+                weight_of_parent_in_hierarchy);
 
             temp_gaussians.push_back(gaussian);
         }

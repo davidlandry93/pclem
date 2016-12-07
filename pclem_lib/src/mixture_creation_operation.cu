@@ -7,6 +7,8 @@
 
 namespace pclem {
 
+    MixtureCreationOperation::MixtureCreationOperation(double weight_of_parent_in_hierarchy) :
+        weight_of_parent_in_hierarchy(weight_of_parent_in_hierarchy) {}
     // This functor stores the sums of gammas in an AssociatedPoint.
     struct sums_of_gammas_op : public thrust::binary_function<AssociatedPoint, AssociatedPoint, AssociatedPoint> {
 
@@ -86,7 +88,7 @@ namespace pclem {
         VLOG(11) << "Done creating distribution " << index_of_distribution << " of mixture.";
 
         Point pub_new_mu = new_mu.to_host();
-        WeightedGaussian to_return = WeightedGaussian(pub_new_mu, new_sigma, new_weight);
+        WeightedGaussian to_return = WeightedGaussian(pub_new_mu, new_sigma, new_weight, weight_of_parent_in_hierarchy);
 
         return to_return;
     }

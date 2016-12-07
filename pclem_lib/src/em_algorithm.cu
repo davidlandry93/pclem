@@ -17,7 +17,7 @@ namespace pclem {
 
     EmAlgorithm EmAlgorithm::from_pcl(PointCloud& pcl) {
         GaussianMixtureFactory gm_factory;
-        GaussianMixture mixture = gm_factory.from_pcl_corners(pcl);
+        GaussianMixture mixture = gm_factory.from_pcl_corners(pcl, 1.0);
 
         EmAlgorithm temp_em(pcl, mixture);
 
