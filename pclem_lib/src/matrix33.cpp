@@ -11,6 +11,10 @@ namespace pclem {
         return values[i*3 + j];
     }
 
+    Matrix33 Matrix33::identity() {
+        return Matrix33({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
+    }
+
     std::ostream& operator<<(std::ostream& os, const Matrix33& v) {
         for(int i=0; i < 8; i++) {
             os << v.values[i] << ",";

@@ -24,3 +24,14 @@ target_link_libraries(pclem_vtk_lib pclem glog::glog ${VTK_LIBRARIES})
 
 add_executable(run_hierarchical_em src/run_hierarchical_em.cpp ${SOURCES})
 target_link_libraries(run_hierarchical_em pclem_vtk_lib gflags)
+
+option(tests "Build tests." ON)
+
+if(tests)
+  enable_testing()
+  find_package(GTest)
+
+  file(GLOB TEST_FILES test/*.cpp)
+  add_executable(tests_vtk ${TEST_FILES})
+  target_link_libraries(tests_vtk pclem_vtk_lib ${GTEST_BOTH_LIBRARIES})
+endif(tests)

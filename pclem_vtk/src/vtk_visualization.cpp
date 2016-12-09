@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 
 #include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkRenderer.h>
@@ -28,8 +29,13 @@ namespace pclem {
         points(vtkSmartPointer<vtkPoints>::New()),
         polydata(vtkSmartPointer<vtkPolyData>::New()),
         cells(vtkSmartPointer<vtkCellArray>::New()),
-        renderer(vtkSmartPointer<vtkRenderer>::New())
+        renderer(vtkSmartPointer<vtkRenderer>::New()),
+        interactor(vtkSmartPointer<vtkRenderWindowInteractor>::New()),
+        axes_widget(vtkSmartPointer<vtkOrientationMarkerWidget>::New())
     {
+        auto interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+        interactor->SetInteractorStyle(interactorStyle);
+
         renderer->SetBackground(0.2,0.2,0.2);
     }
 
@@ -59,9 +65,9 @@ namespace pclem {
 
         auto function_source = vtkSmartPointer<vtkParametricFunctionSource>::New();
         function_source->SetParametricFunction(vtk_ellipsoid);
-        function_source->SetUResolution(11);
-        function_source->SetVResolution(11);
-        function_source->SetWResolution(11);
+        function_source->SetUResolution(16);
+        function_source->SetVResolution(16);
+        function_source->SetWResolution(16);
         function_source->Update();
 
         auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -90,9 +96,8 @@ namespace pclem {
         renderer->AddActor(actor);
     }
 
-    void VtkVisualization::visualize() {
-        VLOG(10) << "Visualizing...";
-
+    void VtkVisualization::insert_pointcloud() const {
+        auto polydata = vtkSmartPointer<vtkPolyData>::New();
         polydata->SetPoints(points);
         polydata->SetVerts(cells);
 
@@ -103,26 +108,28 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
 
+        renderer->AddActor(actor);
+    }
+
+    void VtkVisualization::insert_axes_widget() const {
+        auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
+
+        axes_widget->SetOrientationMarker(axes_actor);
+        axes_widget->SetInteractor(interactor);
+        axes_widget->SetEnabled(1);
+        axes_widget->InteractiveOn();
+    }
+
+    void VtkVisualization::visualize() {
+        VLOG(10) << "Visualizing...";
+
         auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
         renderWindow->AddRenderer(renderer);
 
-        auto renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-        renderWindowInteractor->SetRenderWindow(renderWindow);
+        interactor->SetRenderWindow(renderWindow);
 
-        auto interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-        renderWindowInteractor->SetInteractorStyle(interactorStyle);
-
-        auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
-        auto axes_widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
-
-        axes_widget->SetOrientationMarker(axes_actor);
-        axes_widget->SetInteractor(renderWindowInteractor);
-        axes_widget->SetEnabled(1);
-        axes_widget->InteractiveOn();
-
-        renderer->AddActor(actor);
-
-
+        insert_pointcloud();
+        insert_axes_widget();
 
         auto camera = vtkSmartPointer<vtkCamera>::New();
         camera->SetPosition(-25, -25, 5);
@@ -131,7 +138,7 @@ namespace pclem {
 
         renderWindow->SetSize(1000,1000);
         renderWindow->Render();
-        renderWindowInteractor->Start();
+        interactor->Start();
 
         VLOG(10) << "Done visualizing.";
     }

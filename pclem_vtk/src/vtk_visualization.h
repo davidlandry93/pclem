@@ -2,11 +2,12 @@
 #define VTK_VISUALIZATION_H
 
 
-#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkOrientationMarkerWidget.h>
 
 #include "visualization.h"
 #include "point.h"
@@ -21,10 +22,14 @@ namespace pclem {
         void visualize();
     private:
         vtkSmartPointer<vtkPoints> points;
-        vtkSmartPointer<vtkPolyData> polydata;
         vtkSmartPointer<vtkCellArray> cells;
-
         vtkSmartPointer<vtkRenderer> renderer;
+        vtkSmartPointer<vtkRenderWindowInteractor> interactor;
+        vtkSmartPointer<vtkOrientationMarkerWidget> axes_widget;
+
+        void insert_axes_widget() const;
+        void insert_pointcloud() const;
+        void insert_axes() const;
     };
 }
 
