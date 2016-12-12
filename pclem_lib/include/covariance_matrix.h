@@ -22,7 +22,7 @@ namespace pclem {
         double get(int i, int j) const;
         void set(int i, int j, double value);
         double det() const;
-        std::pair< Vector3, Matrix33> svd_decomposition() const;
+        std::pair< Vector3, Matrix33> eigen_decomposition() const;
         std::array<double,9> as_array() const;
         std::array<double,9> inverse() const;
         friend std::ostream& operator<<(std::ostream& os, const CovarianceMatrix& m);

@@ -65,26 +65,27 @@ namespace pclem {
         return inverse;
     }
 
-    std::pair<Vector3, Matrix33> CovarianceMatrix::svd_decomposition() const {
+    std::pair<Vector3, Matrix33> CovarianceMatrix::eigen_decomposition() const {
         VLOG(10) << "Extracting eigenvalues...";
 
         arma::mat33 arma_cov_mat(values.data());
-        arma::cx_vec arma_eigvals;
-        arma::cx_mat arma_eigvecs;
+        arma::vec arma_eigvals;
+        arma::mat arma_eigvecs;
 
-        arma::eig_gen(arma_eigvals, arma_eigvecs, arma_cov_mat);
+        if(!arma::eig_sym(arma_eigvals, arma_eigvecs, arma_cov_mat)) {
+            std::cout << "DECOMPOTISION FAILDE";
+            LOG(WARNING) << "Eigenvalues decomposition failed.";
+        }
 
         Vector3 eigvals;
         std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
-            eigvals[i] = arma_eigvals[i].real();
+            eigvals[i] = arma_eigvals[i];
+            std::cout << "Eigval " << eigvals[i] << std::endl;
 
             for(int j=0; j < 3; j++) {
-                eigvecs_values[i*3 + j] = arma_eigvecs(i,j).real();
-            }
-
-            if(std::abs(arma_eigvals[i].imag()) > 1e-300) {
-                LOG(WARNING) << "Imaginary part was found during eigenvalue extraction";
+                std::cout << arma_eigvecs(i,j);
+                eigvecs_values[i*3 + j] = arma_eigvecs(i,j);
             }
         }
 
