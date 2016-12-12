@@ -27,7 +27,6 @@
 namespace pclem {
     VtkVisualization::VtkVisualization() :
         points(vtkSmartPointer<vtkPoints>::New()),
-        polydata(vtkSmartPointer<vtkPolyData>::New()),
         cells(vtkSmartPointer<vtkCellArray>::New()),
         renderer(vtkSmartPointer<vtkRenderer>::New()),
         interactor(vtkSmartPointer<vtkRenderWindowInteractor>::New()),
@@ -80,7 +79,7 @@ namespace pclem {
         auto rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New(); 
         rotationMatrix->Identity();
         for(int i=0; i < 3; i++) {
-            for(int j=0; j<3; j++) {
+            for(int j=0; j < 3; j++) {
                 rotationMatrix->SetElement(i,j, ellipsoid.rotation.get_element(i,j));
             }
         }
@@ -111,6 +110,13 @@ namespace pclem {
         renderer->AddActor(actor);
     }
 
+    void VtkVisualization::insert_axes() const {
+        auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
+        axes_actor->SetAxisLabels(0);
+
+        renderer->AddActor(axes_actor);
+    }
+
     void VtkVisualization::insert_axes_widget() const {
         auto axes_actor = vtkSmartPointer<vtkAxesActor>::New();
 
@@ -130,6 +136,7 @@ namespace pclem {
 
         insert_pointcloud();
         insert_axes_widget();
+        insert_axes();
 
         auto camera = vtkSmartPointer<vtkCamera>::New();
         camera->SetPosition(-25, -25, 5);

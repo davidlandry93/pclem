@@ -16,12 +16,10 @@ namespace pclem{
         std::array<double,9> cov_data = {{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}};
         CovarianceMatrix sigma(cov_data);
 
-        WeightedGaussian gaussian(mu, sigma, 1.0, 1.0);
-
-        Ellipsoid e(1.0, 1.0, 1.0, Vector3(0.0, 0.0, 0.0), Matrix3::)
+        Ellipsoid e(1.0, 1.0, 1.0, Vector3(0.0, 0.0, 0.0), Matrix33::identity(), 0.8);
 
         VtkVisualization vis;
-        gaussian.insert_into_visualization(vis);
+        vis.insert_ellipsoid(e);
 
         vis.visualize();
     }

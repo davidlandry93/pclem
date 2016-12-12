@@ -47,8 +47,9 @@ option(tests "Build tests." ON) # Turn off with -Dtests=OFF
 if(tests)
   enable_testing()
   find_package(GTest)
+  find_package(GMock)
 
   file(GLOB TEST_FILES test/*.cpp test/*.cu)
   cuda_add_executable(tests ${TEST_FILES})
-  target_link_libraries(tests pclem ${GTEST_BOTH_LIBRARIES})
+  target_link_libraries(tests pclem ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 endif(tests)
