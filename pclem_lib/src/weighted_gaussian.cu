@@ -7,6 +7,9 @@
 namespace pclem {
     WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight_in_mixture(0.0), weight_in_hierarchy_of_parent(0.0) {}
 
+    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight_in_mixture) :
+        WeightedGaussian(mu, sigma, weight_in_mixture, 1.0) {}
+
     WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight_in_mixture, double weight_in_hierarchy_of_parent) :
         mu(mu), sigma(sigma), weight_in_mixture(weight_in_mixture), weight_in_hierarchy_of_parent(weight_in_hierarchy_of_parent) {}
 

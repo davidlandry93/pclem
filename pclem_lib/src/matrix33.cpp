@@ -1,4 +1,6 @@
 
+#include "pclem_math.h"
+
 #include "matrix33.h"
 
 namespace pclem {
@@ -13,6 +15,15 @@ namespace pclem {
 
     Matrix33 Matrix33::identity() {
         return Matrix33({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
+    }
+
+    bool Matrix33::operator==(const Matrix33& other) const {
+        for(int i=0; i < 9; i++) {
+            if(!approximatelyEqual(values[i], other.values[i], 1e-10)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     std::ostream& operator<<(std::ostream& os, const Matrix33& v) {

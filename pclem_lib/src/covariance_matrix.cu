@@ -110,4 +110,8 @@ namespace pclem {
 
         return ofs;
     }
+
+    CovarianceMatrix CovarianceMatrix::identity() {
+        return CovarianceMatrix({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
+    }
 }

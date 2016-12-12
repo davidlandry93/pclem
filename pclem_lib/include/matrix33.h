@@ -11,6 +11,7 @@ public:
     Matrix33();
     Matrix33(const std::array<double,9>& values);
     double get_element(const int& i, const int& j) const;
+    bool operator==(const Matrix33& other) const;
 
     static Matrix33 identity();
 

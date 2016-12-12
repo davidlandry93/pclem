@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <cmath>
 
+#include "pclem_math.h"
 #include "vector3.h"
 
 namespace pclem {
@@ -53,5 +54,11 @@ namespace pclem {
     std::ofstream& operator<<(std::ofstream& ofs, const Vector3& v) {
         ofs << v.x << "," << v.y << "," << v.z;
         return ofs;
+    }
+
+    bool Vector3::operator==(const Vector3& other) const {
+        return approximatelyEqual(x, other.x, 1e-10) &&
+            approximatelyEqual(y, other.y, 1e-10) &&
+            approximatelyEqual(z, other.z, 1e-10);
     }
 }

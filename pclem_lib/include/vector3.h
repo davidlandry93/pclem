@@ -17,6 +17,7 @@ namespace pclem {
         double length();
         double& operator[](int index);
         void operator=(const Vector3& other);
+        bool operator==(const Vector3& other) const;
         double dot(const Vector3& other) const;
 
         friend std::ostream& operator<<(std::ostream& os, const Vector3& v);

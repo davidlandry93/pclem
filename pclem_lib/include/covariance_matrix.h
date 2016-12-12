@@ -15,6 +15,7 @@ namespace pclem {
         CovarianceMatrix(const CovarianceMatrix& other);
         CovarianceMatrix(std::array<double,9> _values);
         static CovarianceMatrix zeros();
+        static CovarianceMatrix identity();
         void operator+=(const CovarianceMatrix& rhs);
 
 
