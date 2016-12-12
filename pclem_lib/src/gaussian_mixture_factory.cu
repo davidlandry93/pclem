@@ -29,10 +29,10 @@ namespace pclem {
 
         std::vector<WeightedGaussian> temp_gaussians;
         for(Point corner : corners) {
-            CovarianceMatrix sigma = CovarianceMatrix();
-            sigma.set(0,0,10.0);
-            sigma.set(1,1,10.0);
-            sigma.set(2,2,10.0);
+            Matrix33 sigma = Matrix33();
+            sigma.set_element(0,0,10.0);
+            sigma.set_element(1,1,10.0);
+            sigma.set_element(2,2,10.0);
 
             WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian, weight_of_parent_in_hierarchy);
             VLOG(4) << "Adding gaussian: " << gaussian;
@@ -43,14 +43,14 @@ namespace pclem {
         return mixture;
     }
 
-    GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const CovarianceMatrix& cov,
+    GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const Matrix33& cov,
                                                          int n_of_distributions, double delta, double weight_of_parent_in_hierarchy) const {
         VLOG(10) << "Creating gaussian mixture around point...";
 
-        CovarianceMatrix sigma;
-        sigma.set(0,0,1.0);
-        sigma.set(1,1,1.0);
-        sigma.set(2,2,1.0);
+        Matrix33 sigma;
+        sigma.set_element(0,0,1.0);
+        sigma.set_element(1,1,1.0);
+        sigma.set_element(2,2,1.0);
 
         std::vector<WeightedGaussian> temp_gaussians;
 

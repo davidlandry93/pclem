@@ -75,7 +75,7 @@ namespace pclem {
 
         VLOG(11) << "New mu: " << new_mu;
 
-        CovarianceMatrix new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
+        Matrix33 new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
 
         VLOG(7) << "Sum of gammas: " << sum_of_gammas;
         double new_weight = 0.0;
@@ -122,9 +122,9 @@ namespace pclem {
         }
     };
 
-    CovarianceMatrix MixtureCreationOperation::compute_sigma(const DevicePointCloud::PointIterator& begin,
-                                                             const DevicePointCloud::PointIterator& end,
-                                                             int index_of_distribution, const Point& mu, double sum_of_gammas) const {
+    Matrix33 MixtureCreationOperation::compute_sigma(const DevicePointCloud::PointIterator& begin,
+                                                     const DevicePointCloud::PointIterator& end,
+                                                     int index_of_distribution, const Point& mu, double sum_of_gammas) const {
         RawCovarianceMatrix init = RawCovarianceMatrix::zeros();
 
         RawCovarianceMatrix sigma = thrust::transform_reduce(begin, end,

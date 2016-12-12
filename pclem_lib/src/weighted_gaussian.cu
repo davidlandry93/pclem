@@ -7,18 +7,18 @@
 namespace pclem {
     WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight_in_mixture(0.0), weight_in_hierarchy_of_parent(0.0) {}
 
-    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight_in_mixture) :
+    WeightedGaussian::WeightedGaussian(const Point& mu, const Matrix33& sigma, double weight_in_mixture) :
         WeightedGaussian(mu, sigma, weight_in_mixture, 1.0) {}
 
-    WeightedGaussian::WeightedGaussian(const Point& mu, const CovarianceMatrix& sigma, double weight_in_mixture, double weight_in_hierarchy_of_parent) :
+    WeightedGaussian::WeightedGaussian(const Point& mu, const Matrix33& sigma, double weight_in_mixture, double weight_in_hierarchy_of_parent) :
         mu(mu), sigma(sigma), weight_in_mixture(weight_in_mixture), weight_in_hierarchy_of_parent(weight_in_hierarchy_of_parent) {}
 
     WeightedGaussian::WeightedGaussian(const WeightedGaussian& other) :
         mu(other.mu), sigma(other.sigma), weight_in_mixture(other.weight_in_mixture),
         weight_in_hierarchy_of_parent(other.weight_in_hierarchy_of_parent) {}
 
-    CovarianceMatrix WeightedGaussian::get_sigma() const {
-        CovarianceMatrix m(sigma);
+    Matrix33 WeightedGaussian::get_sigma() const {
+        Matrix33 m(sigma);
         return m;
     }
 
@@ -36,7 +36,7 @@ namespace pclem {
     }
 
     void WeightedGaussian::insert_into_visualization(Visualization& vis) const {
-        CovarianceMatrix cov = get_sigma();
+        Matrix33 cov = get_sigma();
 
         auto eigen_result = cov.eigen_decomposition();
         Vector3 eigenvalues = eigen_result.first;

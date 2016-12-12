@@ -21,9 +21,9 @@ namespace pclem {
                                                         const DevicePointCloud::PointIterator& end,
                                                         int index_of_distribution, double sum_of_gammas) const;
 
-        CovarianceMatrix compute_sigma(const DevicePointCloud::PointIterator& begin,
-                                       const DevicePointCloud::PointIterator& end,
-                                       int index_of_distribution, const Point& mu, double sum_of_gammas) const;
+        Matrix33 compute_sigma(const DevicePointCloud::PointIterator& begin,
+                               const DevicePointCloud::PointIterator& end,
+                               int index_of_distribution, const Point& mu, double sum_of_gammas) const;
 };
 
 }
