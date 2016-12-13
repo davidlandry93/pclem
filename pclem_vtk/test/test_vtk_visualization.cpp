@@ -46,11 +46,22 @@ namespace pclem{
     }
 
     TEST(VtkVisualizerTest, TranslationThenRotationTest) {
-        Ellipsoid e(10.0, 5.0, 1.0, Vector3(10.0, 0.0, 0.0), Rotation::around_x(PI), 0.8);
+        Ellipsoid e(10.0, 5.0, 1.0, Vector3(10.0, 0.0, 0.0), Rotation::around_x(PI/2.0), 0.8);
 
         VtkVisualization vis;
         vis.insert_ellipsoid(e);
 
+        vis.visualize();
+    }
+
+    TEST(VtkVisualizerTest, RotationOnlyTest) {
+        Ellipsoid e(10.0, 5.0, 1.0,
+                    Vector3(0.0, 0.0, 0.0),
+                    Rotation::around_x(3.8 * PI / 2.0),
+                    0.8);
+
+        VtkVisualization vis;
+        vis.insert_ellipsoid(e);
         vis.visualize();
     }
 
