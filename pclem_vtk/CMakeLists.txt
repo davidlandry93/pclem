@@ -15,7 +15,6 @@ include(${VTK_USE_FILE})
 
 file(GLOB SOURCES src/*.cpp)
 set(SOURCES
-  src/visualizable_point_cloud.cpp
   src/vtk_visualization.cpp
   src/vtk_pointcloud_reader.cpp)
 

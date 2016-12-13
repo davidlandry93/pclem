@@ -76,16 +76,11 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
 
-        auto rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New(); 
-        rotationMatrix->Identity();
-        for(int i=0; i < 3; i++) {
-            for(int j=0; j < 3; j++) {
-                rotationMatrix->SetElement(i,2-j, ellipsoid.rotation.get_element(i,j));
-            }
-        }
+        auto rotation = ellipsoid.rotation.as_axis_angle();
 
         auto transform = vtkSmartPointer<vtkTransform>::New();
-        transform->SetMatrix(rotationMatrix);
+        transform->RotateWXYZ(rotation.second, rotation.first.x, rotation.first.y, rotation.first.z);
+        transform->Translate(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
 
         actor->SetUserTransform(transform);
         actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);

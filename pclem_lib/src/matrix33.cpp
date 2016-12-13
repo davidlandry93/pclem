@@ -29,10 +29,27 @@ namespace pclem {
         return true;
     }
 
+    Vector3 Matrix33::get_column(int i) const {
+        return Vector3(values[i], values[3+i], values[6+i]);
+    }
+
+    double Matrix33::trace() const {
+        return values[0] + values[4] + values[8];
+    }
+
     std::pair<Vector3, Matrix33> Matrix33::eigen_decomposition() const {
 
         VLOG(10) << "Extracting eigenvalues...";
 
+        if(symetric(1e-10)) {
+            return symetrical_eigen_decomposition();
+        } else {
+            return general_eigen_decomposition();
+        }
+    }
+
+
+    std::pair<Vector3, Matrix33> Matrix33::symetrical_eigen_decomposition() const {
         arma::mat33 arma_cov_mat(values.data());
         arma::vec arma_eigvals;
         arma::mat arma_eigvecs;
@@ -56,6 +73,29 @@ namespace pclem {
         return std::make_pair(eigvals, Matrix33(eigvecs_values));
     }
 
+    std::pair<Vector3, Matrix33> Matrix33::general_eigen_decomposition() const {
+        arma::mat33 arma_cov_mat(values.data());
+        arma::cx_vec arma_eigvals;
+        arma::cx_mat arma_eigvecs;
+
+        if(!arma::eig_gen(arma_eigvals, arma_eigvecs, arma_cov_mat)) {
+            LOG(WARNING) << "Eigenvalues decomposition failed.";
+        }
+
+        Vector3 eigvals;
+        std::array<double,9> eigvecs_values;
+        for(int i=0; i < 3; i++) {
+            eigvals[i] = arma_eigvals[i].real();
+            std::cout << "Eigval " << eigvals[i] << std::endl;
+
+            for(int j=0; j < 3; j++) {
+                std::cout << arma_eigvecs(i,j);
+                eigvecs_values[i*3 + j] = arma_eigvecs(i,j).real();
+            }
+        }
+
+        return std::make_pair(eigvals, Matrix33(eigvecs_values));
+    }
     std::array<double,9> Matrix33::inverse() const {
         VLOG(11) << "Inverting matrix...";
 
@@ -99,5 +139,17 @@ namespace pclem {
         ofs << v.values[8];
 
         return ofs;
+    }
+
+    bool Matrix33::symetric(double epsilon) const {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(!approximatelyEqual(get_element(i, j), get_element(i, j), epsilon)) {
+                        return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

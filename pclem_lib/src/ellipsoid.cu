@@ -6,7 +6,7 @@ namespace pclem {
     Ellipsoid::Ellipsoid() :
         a(0), b(0), c(0), position(0,0,0), rotation(), opacity(1.0) {}
 
-    Ellipsoid::Ellipsoid(double a, double b, double c, const Vector3& position, const Matrix33& rotation, const double& opacity) :
+    Ellipsoid::Ellipsoid(double a, double b, double c, const Vector3& position, const Rotation& rotation, const double& opacity) :
         a(a), b(b), c(c), position(position), rotation(rotation), opacity(opacity) {}
 
     std::ostream& operator<<(std::ostream& os, const Ellipsoid& e) {

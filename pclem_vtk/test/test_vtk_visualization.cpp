@@ -45,8 +45,8 @@ namespace pclem{
         vis.visualize();
     }
 
-    TEST(VtkVisializerTest, TranslationThenRotationTest) {
-        Ellipsoid e(10.0, 5.0, 1.0, Vector3(10.0, 0.0, 0.0), Matrix33({1.0, 0.0, 0.0, 0.0, cos(PI/2), -1*sin(PI/2), 0.0, sin(PI/2), cos(PI/2)}), 0.8);
+    TEST(VtkVisualizerTest, TranslationThenRotationTest) {
+        Ellipsoid e(10.0, 5.0, 1.0, Vector3(10.0, 0.0, 0.0), Rotation::around_x(PI), 0.8);
 
         VtkVisualization vis;
         vis.insert_ellipsoid(e);

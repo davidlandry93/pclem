@@ -1,7 +1,7 @@
 
 #include <string>
 
-#include "visualizable_point_cloud.h"
+#include "pointcloud.h"
 
 namespace pclem {
     class VtkPointCloudReader {

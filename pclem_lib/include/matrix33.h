@@ -18,6 +18,9 @@ public:
     std::pair<Vector3, Matrix33> eigen_decomposition() const;
     std::array<double,9> inverse() const;
     double det() const;
+    double trace() const;
+    bool symetric(double epsilon) const;
+    Vector3 get_column(int i) const;
 
     static Matrix33 identity();
 
@@ -25,6 +28,9 @@ public:
     friend std::ofstream& operator<<(std::ofstream& os, const Matrix33& v);
 private:
     std::array<double,9> values;
+
+    std::pair<Vector3,Matrix33> symetrical_eigen_decomposition() const;
+    std::pair<Vector3,Matrix33> general_eigen_decomposition() const;
 
 };
 }
