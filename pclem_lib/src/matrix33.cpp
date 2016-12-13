@@ -62,10 +62,8 @@ namespace pclem {
         std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
             eigvals[i] = arma_eigvals[i];
-            std::cout << "Eigval " << eigvals[i] << std::endl;
 
             for(int j=0; j < 3; j++) {
-                std::cout << arma_eigvecs(i,j);
                 eigvecs_values[i*3 + j] = arma_eigvecs(i,j);
             }
         }
@@ -96,6 +94,7 @@ namespace pclem {
 
         return std::make_pair(eigvals, Matrix33(eigvecs_values));
     }
+
     std::array<double,9> Matrix33::inverse() const {
         VLOG(11) << "Inverting matrix...";
 

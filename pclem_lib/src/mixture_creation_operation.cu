@@ -73,7 +73,7 @@ namespace pclem {
                              new_mu.y / sum_of_gammas,
                              new_mu.z / sum_of_gammas);
 
-        VLOG(11) << "New mu: " << new_mu;
+        VLOG(5) << "New mu: " << new_mu;
 
         Matrix33 new_sigma = compute_sigma(begin, end, index_of_distribution, new_mu.to_host(), sum_of_gammas);
 

@@ -78,8 +78,6 @@ namespace pclem {
 
         auto rotation = ellipsoid.rotation.as_axis_angle();
 
-        std::cout << "ANGLE OF ROTATION" << rotation.second;
-
         auto transform = vtkSmartPointer<vtkTransform>::New();
         transform->PostMultiply();
         transform->RotateWXYZ(rad_2_deg(rotation.second), rotation.first.x, rotation.first.y, rotation.first.z);

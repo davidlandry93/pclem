@@ -43,9 +43,7 @@ namespace pclem {
         Matrix33 eigenvectors = eigen_result.second;
 
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
-        Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors, weight_in_hierarchy());
-
-        std::cout << ellipsoid;
+        Ellipsoid ellipsoid(std::sqrt(eigenvalues[2]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[0]), position, eigenvectors, weight_in_hierarchy());
 
         vis.insert_ellipsoid(ellipsoid);
     }

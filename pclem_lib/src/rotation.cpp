@@ -29,8 +29,6 @@ namespace pclem {
 
         angle = acos((matrix.trace() - 1) / 2.0);
 
-        std::cout << "Eigenvalues: " << decomposition.first.x  << " " << decomposition.first.y << " " <<decomposition.first.z;
-
         return std::make_pair(axis,angle);
     }
 
