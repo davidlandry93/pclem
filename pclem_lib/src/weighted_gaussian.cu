@@ -40,8 +40,7 @@ namespace pclem {
 
         auto eigen_result = cov.eigen_decomposition();
         Vector3 eigenvalues = eigen_result.first;
-        // Matrix33 eigenvectors = eigen_result.second;
-        Matrix33 eigenvectors = Matrix33::identity();
+        Matrix33 eigenvectors = eigen_result.second;
 
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
         Ellipsoid ellipsoid(std::sqrt(eigenvalues[0]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[2]), position, eigenvectors, weight_in_hierarchy());

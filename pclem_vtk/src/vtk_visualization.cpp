@@ -80,7 +80,7 @@ namespace pclem {
         rotationMatrix->Identity();
         for(int i=0; i < 3; i++) {
             for(int j=0; j < 3; j++) {
-                rotationMatrix->SetElement(i,j, ellipsoid.rotation.get_element(i,j));
+                rotationMatrix->SetElement(i,2-j, ellipsoid.rotation.get_element(i,j));
             }
         }
 
