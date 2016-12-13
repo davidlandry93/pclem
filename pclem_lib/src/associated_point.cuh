@@ -7,7 +7,7 @@
 namespace pclem {
 
     struct AssociatedPoint : public DevicePoint {
-        static const int N_DISTRIBUTIONS_PER_MIXTURE = 9;
+        static const int N_DISTRIBUTIONS_PER_MIXTURE = 8;
 
         double associations[N_DISTRIBUTIONS_PER_MIXTURE];
         int best_distribution;

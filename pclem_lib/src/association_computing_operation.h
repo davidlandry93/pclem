@@ -11,8 +11,6 @@ namespace pclem {
         AssociationComputingOperation(const GaussianMixture& mixture, const double& volume);
         void operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end);
     private:
-        const int UNIFORM_DISTRIBUTION_ID = 8; // In the associated points, the 9th association is a uniform distribution.
-
         GaussianMixture mixture;
         double volume_of_pcl;
 
