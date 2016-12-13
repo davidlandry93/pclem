@@ -22,7 +22,7 @@ namespace pclem {
         MockVisualization vis;
 
         Point mu(0.0, 0.0, 0.0);
-        WeightedGaussian g(mu, CovarianceMatrix({1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}), 1.0);
+        WeightedGaussian g(mu, Matrix33({1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}), 1.0);
 
         Ellipsoid expected(1.0, 1.0, 1.0, Vector3(0.0, 0.0, 0.0), Matrix33({1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0}), 0.9);
 

@@ -1,20 +1,22 @@
 
+#include <cmath>
 #include <array>
 
 #include "gtest/gtest.h"
 
 #include "point.h"
-#include "covariance_matrix.h"
+#include "matrix33.h"
 #include "weighted_gaussian.h"
 #include "pointcloud.h"
 #include "vtk_visualization.h"
+
+#define PI 3.1416
 
 namespace pclem{
 
     TEST(VtkVisualizerTest, WeightedGaussianPositionTest) {
         Point mu(0.0, 0.0, 0.0);
-        std::array<double,9> cov_data = {{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}};
-        CovarianceMatrix sigma(cov_data);
+        Matrix33 sigma({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
 
         Ellipsoid e(1.0, 1.0, 1.0, Vector3(0.0, 0.0, 0.0), Matrix33::identity(), 0.8);
 
@@ -40,6 +42,15 @@ namespace pclem{
 
         VtkVisualization vis;
         pointcloud.insert_into_visualization(vis);
+        vis.visualize();
+    }
+
+    TEST(VtkVisializerTest, TranslationThenRotationTest) {
+        Ellipsoid e(10.0, 5.0, 1.0, Vector3(10.0, 0.0, 0.0), Matrix33({1.0, 0.0, 0.0, 0.0, cos(PI/2), -1*sin(PI/2), 0.0, sin(PI/2), cos(PI/2)}), 0.8);
+
+        VtkVisualization vis;
+        vis.insert_ellipsoid(e);
+
         vis.visualize();
     }
 

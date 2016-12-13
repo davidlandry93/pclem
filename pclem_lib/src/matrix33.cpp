@@ -76,9 +76,9 @@ namespace pclem {
     }
 
     double Matrix33::det() const {
-        return get(0,0) * (get(1,1) * get(2,2) - get(2, 1) * get(1,2)) -
-            get(0,1) * (get(1,0) * get(2,2) - get(1,2) * get(2,0)) +
-            get(0,2) * (get(1,0) * get(2,1) + get(2,0) * get(1,1));
+        return get_element(0,0) * (get_element(1,1) * get_element(2,2) - get_element(2, 1) * get_element(1,2)) -
+            get_element(0,1) * (get_element(1,0) * get_element(2,2) - get_element(1,2) * get_element(2,0)) +
+            get_element(0,2) * (get_element(1,0) * get_element(2,1) + get_element(2,0) * get_element(1,1));
     }
 
     std::ostream& operator<<(std::ostream& os, const Matrix33& v) {
