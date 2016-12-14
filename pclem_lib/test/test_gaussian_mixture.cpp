@@ -15,6 +15,7 @@ namespace pclem {
 
         b = a;
 
-        ASSERT_EQ(1, b.n_gaussians());
+        EXPECT_EQ(1, b.n_gaussians());
+        EXPECT_DOUBLE_EQ(b.get_gaussian(0).get_mu().x, 1.0);
     }
 }

@@ -25,6 +25,9 @@ namespace pclem {
             axis = decomposition.second.get_column(2);
         } else {
             LOG(ERROR) << "Matrix is not a rotation matrix";
+
+            std::cout << decomposition.first << std::endl;
+            std::cout << decomposition.second << std::endl;
         }
 
         angle = acos((matrix.trace() - 1) / 2.0);

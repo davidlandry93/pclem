@@ -84,7 +84,6 @@ namespace pclem {
         transform->Translate(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
 
         actor->SetUserTransform(transform);
-        actor->SetPosition(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
         actor->GetProperty()->SetColor(1.0, 0.5, 0.0);
         actor->GetProperty()->SetOpacity(ellipsoid.opacity);
 
