@@ -64,7 +64,7 @@ namespace pclem {
             eigvals[i] = arma_eigvals[i];
 
             for(int j=0; j < 3; j++) {
-                eigvecs_values[i*3 + j] = arma_eigvecs(i,j);
+                eigvecs_values[i*3 + j] = arma_eigvecs(i,2-j);
             }
         }
 

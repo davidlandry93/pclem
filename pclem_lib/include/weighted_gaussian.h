@@ -21,8 +21,6 @@ namespace pclem {
         double get_weight() const;
         double weight_in_hierarchy() const;
 
-        std::pair<Vector3, Matrix33> eigen_decomposition() const;
-
         friend std::ostream &operator<<(std::ostream &os, WeightedGaussian const &g);
 
         void insert_into_visualization(Visualization& vis) const;

@@ -42,6 +42,13 @@ namespace pclem {
         Vector3 eigenvalues = eigen_result.first;
         Matrix33 eigenvectors = eigen_result.second;
 
+        for(int i = 0; i < 3; i++) {
+            Vector3 length_of_column = eigenvectors.get_column(i);
+            std::cout << "Length of column: " << length_of_column.length() << std::endl;
+
+            std::cout << "Det of rotation: " << eigenvectors.det() << std::endl;
+        }
+
         Vector3 position(get_mu().x, get_mu().y, get_mu().z);
         Ellipsoid ellipsoid(std::sqrt(eigenvalues[2]), std::sqrt(eigenvalues[1]), std::sqrt(eigenvalues[0]), position, eigenvectors, weight_in_hierarchy());
 

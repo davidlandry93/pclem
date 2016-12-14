@@ -11,6 +11,10 @@ namespace pclem {
 
     Rotation::Rotation(const Matrix33& rotation) : matrix(rotation) {}
 
+    Matrix33 Rotation::as_matrix() const {
+        return matrix;
+    }
+
     std::pair<Vector3, double> Rotation::as_axis_angle() const {
         Vector3 axis;
         double angle;

@@ -8,6 +8,7 @@ namespace pclem {
     public:
         Rotation();
         Rotation(const Matrix33& matrix);
+        Matrix33 as_matrix() const;
         std::pair<Vector3,double> as_axis_angle() const;
         bool operator==(const Rotation& other) const;
 

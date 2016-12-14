@@ -16,6 +16,7 @@
 #include <vtkParametricEllipsoid.h>
 #include <vtkProperty.h>
 #include <vtkCamera.h>
+#include <vtkMatrix4x4.h>
 
 #include <vtkTransform.h>
 
@@ -76,11 +77,21 @@ namespace pclem {
         auto actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
 
-        auto rotation = ellipsoid.rotation.as_axis_angle();
 
         auto transform = vtkSmartPointer<vtkTransform>::New();
         transform->PostMultiply();
-        transform->RotateWXYZ(rad_2_deg(rotation.second), rotation.first.x, rotation.first.y, rotation.first.z);
+
+        auto vtkRotation = vtkSmartPointer<vtkMatrix4x4>::New();
+        vtkRotation->Identity();
+
+        auto rotation = ellipsoid.rotation.as_matrix();
+        for(int i=0; i < 3; i++) {
+            for (int j=0; j < 3; j++) {
+                vtkRotation->SetElement(i, j, rotation.get_element(i,j));
+            }
+        }
+
+        transform->Concatenate(vtkRotation);
         transform->Translate(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
 
         actor->SetUserTransform(transform);
