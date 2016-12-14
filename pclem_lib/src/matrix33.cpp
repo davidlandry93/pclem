@@ -37,6 +37,9 @@ namespace pclem {
         return values[0] + values[4] + values[8];
     }
 
+    // Returns the eigenvalues in descending order. The first column
+    // of the matrix is the eigenvector of the largest eigenvalue, and
+    // so on.
     std::pair<Vector3, Matrix33> Matrix33::eigen_decomposition() const {
 
         VLOG(10) << "Extracting eigenvalues...";
@@ -61,7 +64,7 @@ namespace pclem {
         Vector3 eigvals;
         std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
-            eigvals[i] = arma_eigvals[i];
+            eigvals[i] = arma_eigvals[2-i];
 
             for(int j=0; j < 3; j++) {
                 eigvecs_values[i*3 + j] = arma_eigvecs(i,2-j);
@@ -83,12 +86,12 @@ namespace pclem {
         Vector3 eigvals;
         std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
-            eigvals[i] = arma_eigvals[i].real();
+            eigvals[i] = arma_eigvals[2-i].real();
             std::cout << "Eigval " << eigvals[i] << std::endl;
 
             for(int j=0; j < 3; j++) {
                 std::cout << arma_eigvecs(i,j);
-                eigvecs_values[i*3 + j] = arma_eigvecs(i,j).real();
+                eigvecs_values[i*3 + j] = arma_eigvecs(j,i).real();
             }
         }
 

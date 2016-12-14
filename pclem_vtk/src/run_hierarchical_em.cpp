@@ -18,7 +18,7 @@ DEFINE_bool(vtk, false, "Display the hierarchy using vtk.");
 DEFINE_string(input, "", "Path to the vtk file to load.");
 DEFINE_string(output, "", "Where to store the output csv file");
 DEFINE_uint32(n_points, std::numeric_limits<uint32_t>::max(), "Take the first n points from the point cloud.");
-DEFINE_uint32(n_layers, 2, "The number of layers to expand in the hierarchy.");
+DEFINE_uint32(n_levels, 2, "The number of levels to expand in the hierarchy.");
 
 using namespace pclem;
 
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
     PointCloud pcl = VtkPointCloudReader::read(FLAGS_input, FLAGS_n_points);
 
-    auto hgmm = pcl.create_hgmm(FLAGS_n_layers);
+    auto hgmm = pcl.create_hgmm(FLAGS_n_levels);
 
     if(!FLAGS_output.empty()) {
         FileExporter file_exporter(FLAGS_output);
