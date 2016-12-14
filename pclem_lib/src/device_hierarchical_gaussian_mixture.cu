@@ -22,11 +22,7 @@ namespace pclem {
           level_boundaries() {}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
-        VLOG(9) << "Expanding " << n_levels << " level...";
-
-        if(n_levels == 0) {
-            return;
-        }
+        VLOG(2) << "Expanding " << n_levels << " level...";
 
         if(pcl.get_n_points() == 0) {
             VLOG(9) << "No point in PCL. Done expanding n level.";
@@ -34,6 +30,10 @@ namespace pclem {
         }
 
         run_em();
+
+        if(n_levels == 0) {
+            return;
+        }
 
         auto size_before_expanding = node_vector->size();
         create_children();
@@ -43,7 +43,7 @@ namespace pclem {
             (*node_vector)[i]->expand_n_levels(n_levels-1);
         }
 
-        VLOG(9) << "Done expanding n levels.";
+        VLOG(2) << "Done expanding n levels.";
     }
 
     void DeviceHierarchicalGaussianMixture::run_em() {
@@ -84,11 +84,7 @@ namespace pclem {
                 child_pcl.set_points(pcl.get_data(), pcl.begin() + partition_of_points[i], pcl.begin() + partition_of_points[i+1]);
 
                 GaussianMixtureFactory gmm_factory;
-                GaussianMixture child_mixture = gmm_factory.around_point(current_gaussian.get_mu(),
-                                                                         current_gaussian.get_sigma(),
-                                                                         AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE - 1, // The last distribution is outside the gaussian mixture.
-                                                                         UNIFORM_DISTRIBUTION_SIZE,
-                                                                         current_gaussian.weight_in_hierarchy());
+                GaussianMixture child_mixture = gmm_factory.from_pcl_corners(child_pcl, current_gaussian.weight_in_hierarchy());
 
                 auto child = std::shared_ptr<DeviceHierarchicalGaussianMixture>(new DeviceHierarchicalGaussianMixture(child_pcl, child_mixture, current_gaussian, node_vector));
                 node_vector->push_back(child);
