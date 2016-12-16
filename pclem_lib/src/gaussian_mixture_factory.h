@@ -18,6 +18,7 @@ namespace pclem {
         static bool random_seeded;
 
         GaussianMixture from_pcl_corners(const BoundingBox& bounding_box, double weight_of_parent_in_hierarchy) const;
+        Matrix33 covariance_from_pcl_corners(const BoundingBox& bounding_box) const;
         static double random_number(double min, double max);
     };
 }

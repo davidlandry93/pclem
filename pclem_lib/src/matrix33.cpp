@@ -154,4 +154,9 @@ namespace pclem {
 
         return true;
     }
+
+
+    Matrix33 Matrix33::zeros() {
+        return Matrix33({0.0});
+    }
 }
