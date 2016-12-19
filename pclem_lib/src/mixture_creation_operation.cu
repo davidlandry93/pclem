@@ -51,7 +51,7 @@ namespace pclem {
     }
 
     struct weight_point_op : public thrust::unary_function<AssociatedPoint,DevicePoint> {
-        int index_of_distribution;
+        __const__ int index_of_distribution;
 
         weight_point_op(int index_of_distribution) : index_of_distribution(index_of_distribution) {}
 
@@ -105,7 +105,7 @@ namespace pclem {
     }
 
     struct point_to_cov_op : public thrust::unary_function<AssociatedPoint, RawCovarianceMatrix> {
-        int index_of_distribution;
+        __const__ int index_of_distribution;
 
         point_to_cov_op(int index_of_distribution) : index_of_distribution(index_of_distribution) {}
 

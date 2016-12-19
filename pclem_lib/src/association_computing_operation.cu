@@ -68,8 +68,8 @@ namespace pclem {
     };
 
     struct fixed_association_op : public thrust::unary_function<AssociatedPoint,AssociatedPoint> {
-        int index_of_distribution;
-        double association_value;
+        __const__ int index_of_distribution;
+        __const__ double association_value;
 
         fixed_association_op(int index_of_distribution, double association_value) :
             index_of_distribution(index_of_distribution),
