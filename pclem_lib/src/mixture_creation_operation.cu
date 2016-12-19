@@ -1,7 +1,4 @@
 
-#include <future>
-#include <thread>
-
 #include <glog/logging.h>
 #include <thrust/transform_reduce.h>
 
@@ -31,18 +28,10 @@ namespace pclem {
         AssociatedPoint sums;
         sums = thrust::reduce(begin, end, AssociatedPoint(0.0,0.0,0.0), sums_of_gammas_op());
 
-        std::vector<std::future<WeightedGaussian>> future_gaussians;
-        for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
-            std::packaged_task<WeightedGaussian()> task([this,begin,end,i,sums](){
-                    return create_distribution_of_mixture(begin, end, i, sums.associations[i]);
-                });
-            future_gaussians.push_back(task.get_future());
-            std::thread(std::move(task)).detach();
-        }
-
         std::vector<WeightedGaussian> gaussians;
-        for(auto &future_gaussian : future_gaussians) {
-            gaussians.push_back(future_gaussian.get());
+
+        for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
+            gaussians.push_back(create_distribution_of_mixture(begin, end, i, sums.associations[i]));
         }
 
         GaussianMixture mixture(gaussians);
