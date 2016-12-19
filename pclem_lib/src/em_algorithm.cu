@@ -2,7 +2,6 @@
 #include <glog/logging.h>
 
 #include "device_pointcloud.h"
-#include "covariance_matrix.h"
 #include "em_algorithm.h"
 #include "gaussian_mixture_factory.h"
 
