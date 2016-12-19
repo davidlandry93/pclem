@@ -1,7 +1,4 @@
 
-#include <future>
-#include <thread>
-
 #include <glog/logging.h>
 #include <thrust/transform_reduce.h>
 
@@ -13,22 +10,20 @@ namespace pclem {
         mixture(mixture) {}
 
     double LogLikelihoodOperation::operator()(const DevicePointCloud::PointIterator& begin, const DevicePointCloud::PointIterator& end) const {
-        std::vector<std::future<double>> likelihoods;
+        double log_likelihood = 0.0;
+
         for(int i=0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
             WeightedGaussian distribution = mixture.get_gaussian(i);
 
+            double likelihood_of_distribution = 0.0;
             if(distribution.get_weight() != 0.0) {
-                std::packaged_task<double()> task([this,begin,end,distribution,i](){
-                        return log_likelihood_of_distribution(begin,end,i,distribution);
-                    });
-                likelihoods.push_back(task.get_future());
-                std::thread(std::move(task)).detach();
+                likelihood_of_distribution = log_likelihood_of_distribution(begin, end,
+                                                                            i, distribution);
             }
-        }
 
-        double log_likelihood = 0.0;
-        for(auto &likelihood : likelihoods) {
-            log_likelihood += likelihood.get();
+            VLOG(4) << likelihood_of_distribution;
+
+            log_likelihood += likelihood_of_distribution;
         }
 
         return log_likelihood;
