@@ -7,7 +7,8 @@ import numpy as np
 import paraview.simple as par
 import paraview.servermanager as srv
 
-PATH_TO_FILE = '/home/dlandry/repos/pclem/build/output.csv'
+PATH_TO_FILE = '/home/dlandry/download/out.csv'
+
 
 class Ellipsoid:
     def __init__(self, axes=(0.,0.,0.), center=(0.,0.,0.), rotation=np.zeros((3,3)), opacity=1.0):

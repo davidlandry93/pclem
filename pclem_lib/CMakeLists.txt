@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project (pclem)
 find_package(CUDA REQUIRED)
 find_package(Armadillo REQUIRED)
-find_package(glog REQUIRED)
 
 include_directories(src include "${ARMADILLO_INCLUDE_DIRS}")
 
@@ -17,30 +16,35 @@ SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 file(GLOB SOURCES src/*.cpp src/*.cu src/*.h)
 
 cuda_add_library(pclem ${SOURCES})
-target_link_libraries(pclem
-  ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES} glog::glog)
+target_link_libraries(pclem glog::glog ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES})
 
 set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
   CACHE INTERNAL  "${PROJECT_NAME}: Include Directories" FORCE)
 
-set(PUBLIC_HEADERS
-  src/boundingbox.h
-  src/covariance_matrix.h
-  src/em_algorithm.h
-  src/file_exporter.h
-  src/gaussian_mixture.h
-  src/hierarchical_gaussian_mixture.h
-  src/matrix33.h
-  src/point.h
-  src/pointcloud.h
-  src/vector3.h
-  src/visualization.h
-  src/weighted_gaussian.h)
-INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION include/pclem)
-INSTALL(TARGETS pclem DESTINATION lib/pclem EXPORT pclem-targets)
-INSTALL(EXPORT pclem-targets DESTINATION lib/pclem)
-INSTALL(FILES pclem-config.cmake DESTINATION lib/pclem)
+file(GLOB PUBLIC_HEADERS include/*.h)
+
+set(INSTALL_LIB_DIR lib/pclem)
+set(INSTALL_INCLUDE_DIR include/pclem)
+set(INSTALL_CMAKE_DIR lib/cmake/pclem)
+
+
+INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
+INSTALL(TARGETS pclem DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-targets)
+INSTALL(EXPORT pclem-targets DESTINATION ${INSTALL_LIB_DIR})
+INSTALL(FILES ${PROJECT_BINARY_DIR}/pclem-config.cmake DESTINATION lib/pclem)
 export(PACKAGE pclem)
+
+foreach(p LIB INCLUDE CMAKE)
+  set(var INSTALL_${p}_DIR)
+  if(NOT IS_ABSOLUTE "${${var}}")
+    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+  endif()
+endforeach()
+
+file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
+
+set(CONF_INCLUDE_DIRS "\${PCLEM_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+configure_file(pclem-config.cmake.in ${PROJECT_BINARY_DIR}/pclem-config.cmake @ONLY)
 
 option(tests "Build tests." ON) # Turn off with -Dtests=OFF
 
