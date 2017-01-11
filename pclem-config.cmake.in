@@ -9,5 +9,9 @@ if(NOT TARGET pclem AND NOT pclem_BINARY_DIR)
   include("${PCLEM_CMAKE_DIR}/pclem-targets.cmake")
 endif()
 
-set(pclem_LIBRARIES pclem)
+if(NOT TARGET pclem_vtk AND NOT pclem_vtk_BINARY_DIR)
+  include("${PCLEM_CMAKE_DIR}/pclem-vtk-targets.cmake")
+endif()
+
+set(pclem_LIBRARIES pclem pclem_vtk)
 set(pclem_EXECUTABLE)

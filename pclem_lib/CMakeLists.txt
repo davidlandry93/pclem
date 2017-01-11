@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project (pclem)
+find_package(glog REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(Armadillo REQUIRED)
 
@@ -23,28 +24,9 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
 
 file(GLOB PUBLIC_HEADERS include/*.h)
 
-set(INSTALL_LIB_DIR lib/pclem)
-set(INSTALL_INCLUDE_DIR include/pclem)
-set(INSTALL_CMAKE_DIR lib/cmake/pclem)
-
-
 INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
 INSTALL(TARGETS pclem DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-targets)
 INSTALL(EXPORT pclem-targets DESTINATION ${INSTALL_LIB_DIR})
-INSTALL(FILES ${PROJECT_BINARY_DIR}/pclem-config.cmake DESTINATION lib/pclem)
-export(PACKAGE pclem)
-
-foreach(p LIB INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
-
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
-
-set(CONF_INCLUDE_DIRS "\${PCLEM_CMAKE_DIR}/${REL_INCLUDE_DIR}")
-configure_file(pclem-config.cmake.in ${PROJECT_BINARY_DIR}/pclem-config.cmake @ONLY)
 
 option(tests "Build tests." ON) # Turn off with -Dtests=OFF
 
