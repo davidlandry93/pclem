@@ -19,4 +19,8 @@ namespace pclem {
     void HierarchicalGaussianMixture::insert_into_visualization(Visualization& vis) const {
         device_mixture->insert_into_visualization(vis);
     }
+
+    double HierarchicalGaussianMixture::log_likelihood_of_pointcloud(const PointCloud& pointcloud) const {
+        return device_mixture->log_likelihood_of_pointcloud(pointcloud);
+    }
 }

@@ -79,6 +79,10 @@ namespace pclem {
         return device_pcl->create_hgmm(n_levels);
     }
 
+    HierarchicalGaussianMixture PointCloud::create_hgmm(int n_levels, double em_convergence_threshold) const {
+        return device_pcl->create_hgmm(n_levels, em_convergence_threshold);
+    }
+
     void PointCloud::insert_into_visualization(Visualization& vis) const {
         device_pcl->insert_into_visualization(vis);
     }

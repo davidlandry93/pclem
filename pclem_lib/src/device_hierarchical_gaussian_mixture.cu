@@ -21,7 +21,7 @@ namespace pclem {
           node_vector(node_vector),
           level_boundaries() {}
 
-    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels, double em_convergence_threshold) {
         VLOG(2) << "Expanding " << n_levels << " level...";
 
         if(pcl.get_n_points() == 0) {
@@ -29,7 +29,7 @@ namespace pclem {
             return;
         }
 
-        run_em();
+        run_em(em_convergence_threshold);
 
         if(n_levels == 0) {
             return;
@@ -46,14 +46,18 @@ namespace pclem {
         VLOG(2) << "Done expanding n levels.";
     }
 
-    void DeviceHierarchicalGaussianMixture::run_em() {
+    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+        expand_n_levels(n_levels, DEFAULT_EM_CONVERGENCE_THRESHOLD);
+    }
+
+    void DeviceHierarchicalGaussianMixture::run_em(double em_convergence_threshold) {
         VLOG(10) << "Running em of DeviceHierarchicalGaussianMixture...";
 
         auto ptr = std::shared_ptr<DevicePointCloud>(new DevicePointCloud(pcl));
         PointCloud vanilla_pcl(ptr);
 
         EmAlgorithm em(vanilla_pcl, mixture);
-        em.run(EM_CONVERGENCE_THRESHOLD);
+        em.run(em_convergence_threshold);
 
         mixture = em.get_mixture();
 
@@ -118,6 +122,20 @@ namespace pclem {
             for(std::shared_ptr<DeviceHierarchicalGaussianMixture> child : children) {
                 child->get_leaves(leaves);
             }
+        }
+    }
+
+    double DeviceHierarchicalGaussianMixture::log_likelihood_of_pointcloud(const PointCloud& pointcloud) const {
+        if(!children.empty()) {
+            double log_likelihood = 0.0;
+
+            for(auto const& child : children) {
+                log_likelihood = parent_distribution.get_weight() * child->log_likelihood_of_pointcloud(pointcloud);
+            }
+
+            return log_likelihood;
+        } else {
+            return pointcloud.log_likelihood_of_mixture(mixture);
         }
     }
 

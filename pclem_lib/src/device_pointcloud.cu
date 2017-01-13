@@ -102,12 +102,16 @@ namespace pclem {
     }
 
     HierarchicalGaussianMixture DevicePointCloud::create_hgmm(int n_levels) {
+        return create_hgmm(n_levels, DEFAULT_EM_CONVERGENCE_THRESHOLD);
+    }
+
+    HierarchicalGaussianMixture DevicePointCloud::create_hgmm(int n_levels, double em_convergence_threshold) {
         VLOG(10) << "Creating hgmm...";
         GaussianMixtureFactory gmm_factory;
 
         DeviceHierarchicalGaussianMixture::NodeVector node_vector(new std::vector<std::shared_ptr<DeviceHierarchicalGaussianMixture>>);
         std::shared_ptr<DeviceHierarchicalGaussianMixture> hierarchical_mixture(new DeviceHierarchicalGaussianMixture(*this, gmm_factory.from_pcl_corners(*this, 1.0), WeightedGaussian(), node_vector));
-        hierarchical_mixture->expand_n_levels(n_levels);
+        hierarchical_mixture->expand_n_levels(n_levels, em_convergence_threshold);
 
         VLOG(10) << "Done creating hgmm.";
         return HierarchicalGaussianMixture(hierarchical_mixture);

@@ -38,6 +38,7 @@ namespace pclem {
                         const thrust::device_vector<AssociatedPoint>::iterator& end);
         std::vector<Point> copy_of_points() const;
         HierarchicalGaussianMixture create_hgmm(int n_levels);
+        HierarchicalGaussianMixture create_hgmm(int n_levels, double em_convergence_threshold);
         PointIterator begin();
         PointIterator end();
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
@@ -50,6 +51,8 @@ namespace pclem {
         void insert_into_visualization(Visualization& vis) const;
 
     private:
+        const double DEFAULT_EM_CONVERGENCE_THRESHOLD = 0.01;
+
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
         PointIterator pts_begin;
         PointIterator pts_end;
