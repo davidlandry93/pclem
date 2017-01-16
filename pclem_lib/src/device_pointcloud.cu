@@ -74,6 +74,8 @@ namespace pclem {
         AssociationComputingOperation op(mixture, bounding_box.volume());
         execute_pointcloud_operation(op);
 
+        normalize_associations();
+
         VLOG(10) << "Done computing point/distribution associations.";
     }
 
@@ -87,7 +89,9 @@ namespace pclem {
 
     double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         LogLikelihoodOperation op(mixture);
-        return execute_pointcloud_operation<double>(op);
+        double result = execute_pointcloud_operation<double>(op);
+        std::cout << "Resulting likelihood" << result << std::endl;
+        return result;
     }
 
     std::vector<Point> DevicePointCloud::copy_of_points() const {

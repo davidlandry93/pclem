@@ -24,7 +24,6 @@ namespace pclem {
         void set_points(const std::vector<Point>& points);
         BoundingBox getBoundingBox() const;
         void compute_associations(const GaussianMixture& mixture);
-        void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
         HierarchicalGaussianMixture create_hgmm(int n_levels) const;

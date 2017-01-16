@@ -21,6 +21,10 @@ namespace pclem {
           node_vector(node_vector),
           level_boundaries() {}
 
+    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+        expand_n_levels(n_levels, DEFAULT_EM_CONVERGENCE_THRESHOLD);
+    }
+
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels, double em_convergence_threshold) {
         VLOG(2) << "Expanding " << n_levels << " level...";
 
@@ -40,14 +44,10 @@ namespace pclem {
         auto size_after_expanding = node_vector->size();
 
         for(auto i = size_before_expanding; i < size_after_expanding; i++) {
-            (*node_vector)[i]->expand_n_levels(n_levels-1);
+            (*node_vector)[i]->expand_n_levels(n_levels-1, em_convergence_threshold);
         }
 
         VLOG(2) << "Done expanding n levels.";
-    }
-
-    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
-        expand_n_levels(n_levels, DEFAULT_EM_CONVERGENCE_THRESHOLD);
     }
 
     void DeviceHierarchicalGaussianMixture::run_em(double em_convergence_threshold) {
@@ -108,7 +108,7 @@ namespace pclem {
         for(int i = 0; i < padding; i++) {
             os << " ";
         }
-        os << mixture.n_nonzero_gaussians() << std::endl;
+        os << "(" << parent_distribution.get_weight() << ")" << mixture.n_nonzero_gaussians() << std::endl;
 
         for(std::shared_ptr<DeviceHierarchicalGaussianMixture> child: children) {
             child->print_with_padding(os, padding+1);
@@ -125,17 +125,22 @@ namespace pclem {
         }
     }
 
-    double DeviceHierarchicalGaussianMixture::log_likelihood_of_pointcloud(const PointCloud& pointcloud) const {
+    double DeviceHierarchicalGaussianMixture::log_likelihood_of_pointcloud(PointCloud& pointcloud) const {
         if(!children.empty()) {
             double log_likelihood = 0.0;
 
             for(auto const& child : children) {
-                log_likelihood = parent_distribution.get_weight() * child->log_likelihood_of_pointcloud(pointcloud);
+                double weight_of_parent = parent_distribution.get_weight();
+                double log_likelihood_of_child = child->log_likelihood_of_pointcloud(pointcloud);
+
+                log_likelihood = weight_of_parent * log_likelihood_of_child;
             }
 
             return log_likelihood;
         } else {
-            return pointcloud.log_likelihood_of_mixture(mixture);
+            pointcloud.compute_associations(mixture);
+            double log_of_mixture = pointcloud.log_likelihood_of_mixture(mixture);
+            return log_of_mixture;
         }
     }
 

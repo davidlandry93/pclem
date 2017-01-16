@@ -29,7 +29,6 @@ namespace pclem {
         BoundingBox getBoundingBox() const;
         int get_n_points() const;
         void compute_associations(const GaussianMixture& mixture);
-        void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
         void set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points);
@@ -61,6 +60,7 @@ namespace pclem {
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
         void updateBoundingBox();
+        void normalize_associations();
     };
 
 }

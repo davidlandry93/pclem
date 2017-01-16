@@ -59,10 +59,6 @@ namespace pclem {
         device_pcl->compute_associations(mixture);
     }
 
-    void PointCloud::normalize_associations() {
-        device_pcl->normalize_associations();
-    }
-
     GaussianMixture PointCloud::create_mixture() const {
         return device_pcl->create_mixture();
     }

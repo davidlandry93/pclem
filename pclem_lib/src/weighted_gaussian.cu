@@ -5,7 +5,7 @@
 #include "weighted_gaussian.h"
 
 namespace pclem {
-    WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight_in_mixture(0.0), weight_in_hierarchy_of_parent(0.0) {}
+    WeightedGaussian::WeightedGaussian() :mu(), sigma(), weight_in_mixture(1.0), weight_in_hierarchy_of_parent(0.0) {}
 
     WeightedGaussian::WeightedGaussian(const Point& mu, const Matrix33& sigma, double weight_in_mixture) :
         WeightedGaussian(mu, sigma, weight_in_mixture, 1.0) {}

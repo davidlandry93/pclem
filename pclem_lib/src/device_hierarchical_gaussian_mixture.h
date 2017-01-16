@@ -26,7 +26,7 @@ namespace pclem {
         void expand_n_levels(int n_levels, double em_convergence_threshold);
         void run_em(double em_convergence_threshold);
         void get_leaves(std::vector<WeightedGaussian>& leaves) const;
-        double log_likelihood_of_pointcloud(const PointCloud& pointcloud) const;
+        double log_likelihood_of_pointcloud(PointCloud& pointcloud) const;
 
         friend std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy);
         void insert_into_visualization(Visualization& vis) const;

@@ -6,7 +6,7 @@
 #include "association_computing_operation.h"
 
 namespace pclem {
-    
+ 
     AssociationComputingOperation::AssociationComputingOperation(const GaussianMixture& mixture, const double& volume) :
         mixture(mixture), volume_of_pcl(volume) {}
 
@@ -51,6 +51,8 @@ namespace pclem {
         __const__ double base;
         double inv_of_covariance[9];
 
+        // This is a computation of the density function of a 3d gaussian at point p.
+        // https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Density_function
         __host__ __device__
         double likelihood_of_point(DevicePoint p) {
             DevicePoint x_minus_mu = p - mu;

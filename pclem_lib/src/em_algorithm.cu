@@ -33,7 +33,6 @@ namespace pclem {
         VLOG(10) << "Computing expectation...";
 
         pcl.compute_associations(mixture);
-        pcl.normalize_associations();
 
         VLOG(10) << "Done.";
     }
