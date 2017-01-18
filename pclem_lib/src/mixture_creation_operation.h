@@ -2,7 +2,6 @@
 #define MIXTURE_CREATION_OPERATION_H
 
 #include "gaussian_mixture.h"
-#include "covariance_matrix.h"
 #include "weighted_gaussian.h"
 #include "device_pointcloud.h"
 

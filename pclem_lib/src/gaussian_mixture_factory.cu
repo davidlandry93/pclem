@@ -27,13 +27,10 @@ namespace pclem {
         auto corners = bounding_box.corners();
         double initial_weight_of_gaussian = 1.0 / corners.size();
 
+        Matrix33 sigma = covariance_from_pcl_corners(bounding_box);
+
         std::vector<WeightedGaussian> temp_gaussians;
         for(Point corner : corners) {
-            Matrix33 sigma = Matrix33();
-            sigma.set_element(0,0,10.0);
-            sigma.set_element(1,1,10.0);
-            sigma.set_element(2,2,10.0);
-
             WeightedGaussian gaussian(corner, sigma, initial_weight_of_gaussian, weight_of_parent_in_hierarchy);
             VLOG(4) << "Adding gaussian: " << gaussian;
             temp_gaussians.push_back(gaussian);
@@ -41,6 +38,27 @@ namespace pclem {
 
         GaussianMixture mixture(temp_gaussians);
         return mixture;
+    }
+
+    // A heuristic to make the initial covariance matrix proportional to the size
+    // of the bounding box of the point cloud.
+    Matrix33 GaussianMixtureFactory::covariance_from_pcl_corners(const BoundingBox& bounding_box) const {
+        Matrix33 m = Matrix33::zeros();
+
+        Point min = bounding_box.getMin();
+        Point max = bounding_box.getMax();
+
+        double dx = max.x - min.x;
+        double dy = max.y - min.y;
+        double dz = max.z - min.z;
+
+        m.set_element(0,0, (dx*dx/16));
+        m.set_element(1,1, (dy*dy/16));
+        m.set_element(2,2, (dz*dz/16));
+
+        VLOG(1) << "Initial variances. X: " << m.get_element(0,0) << "Y: " << m.get_element(1,1) << "Z: " << m.get_element(2,2);
+
+        return m;
     }
 
     GaussianMixture GaussianMixtureFactory::around_point(const Point& point, const Matrix33& cov,

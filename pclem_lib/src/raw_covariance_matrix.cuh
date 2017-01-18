@@ -1,8 +1,6 @@
 #ifndef RAW_COVARIANCE_MATRIX_H
 #define RAW_COVARIANCE_MATRIX_H
 
-#include "covariance_matrix.h"
-
 namespace pclem{
 
 

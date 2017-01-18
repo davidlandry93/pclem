@@ -153,6 +153,7 @@ namespace pclem {
         auto camera = vtkSmartPointer<vtkCamera>::New();
         camera->SetPosition(-25, -25, 5);
         camera->SetFocalPoint(0,0,0);
+        camera->Roll(45.0);
         renderer->SetActiveCamera(camera);
 
         renderWindow->SetSize(1000,1000);

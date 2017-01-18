@@ -23,6 +23,7 @@ public:
     Vector3 get_column(int i) const;
 
     static Matrix33 identity();
+    static Matrix33 zeros();
 
     friend std::ostream& operator<<(std::ostream& os, const Matrix33& v);
     friend std::ofstream& operator<<(std::ofstream& os, const Matrix33& v);

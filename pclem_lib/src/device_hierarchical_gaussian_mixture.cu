@@ -22,6 +22,10 @@ namespace pclem {
           level_boundaries() {}
 
     void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels) {
+        expand_n_levels(n_levels, DEFAULT_EM_CONVERGENCE_THRESHOLD);
+    }
+
+    void DeviceHierarchicalGaussianMixture::expand_n_levels(int n_levels, double em_convergence_threshold) {
         VLOG(2) << "Expanding " << n_levels << " level...";
 
         if(pcl.get_n_points() == 0) {
@@ -29,7 +33,7 @@ namespace pclem {
             return;
         }
 
-        run_em();
+        run_em(em_convergence_threshold);
 
         if(n_levels == 0) {
             return;
@@ -40,20 +44,20 @@ namespace pclem {
         auto size_after_expanding = node_vector->size();
 
         for(auto i = size_before_expanding; i < size_after_expanding; i++) {
-            (*node_vector)[i]->expand_n_levels(n_levels-1);
+            (*node_vector)[i]->expand_n_levels(n_levels-1, em_convergence_threshold);
         }
 
         VLOG(2) << "Done expanding n levels.";
     }
 
-    void DeviceHierarchicalGaussianMixture::run_em() {
+    void DeviceHierarchicalGaussianMixture::run_em(double em_convergence_threshold) {
         VLOG(10) << "Running em of DeviceHierarchicalGaussianMixture...";
 
         auto ptr = std::shared_ptr<DevicePointCloud>(new DevicePointCloud(pcl));
         PointCloud vanilla_pcl(ptr);
 
         EmAlgorithm em(vanilla_pcl, mixture);
-        em.run(EM_CONVERGENCE_THRESHOLD);
+        em.run(em_convergence_threshold);
 
         mixture = em.get_mixture();
 
@@ -104,7 +108,7 @@ namespace pclem {
         for(int i = 0; i < padding; i++) {
             os << " ";
         }
-        os << mixture.n_nonzero_gaussians() << std::endl;
+        os << "(" << parent_distribution.get_weight() << ")" << mixture.n_nonzero_gaussians() << std::endl;
 
         for(std::shared_ptr<DeviceHierarchicalGaussianMixture> child: children) {
             child->print_with_padding(os, padding+1);
@@ -118,6 +122,25 @@ namespace pclem {
             for(std::shared_ptr<DeviceHierarchicalGaussianMixture> child : children) {
                 child->get_leaves(leaves);
             }
+        }
+    }
+
+    double DeviceHierarchicalGaussianMixture::log_likelihood_of_pointcloud(PointCloud& pointcloud) const {
+        if(!children.empty()) {
+            double log_likelihood = 0.0;
+
+            for(auto const& child : children) {
+                double weight_of_parent = parent_distribution.get_weight();
+                double log_likelihood_of_child = child->log_likelihood_of_pointcloud(pointcloud);
+
+                log_likelihood = weight_of_parent * log_likelihood_of_child;
+            }
+
+            return log_likelihood;
+        } else {
+            pointcloud.compute_associations(mixture);
+            double log_of_mixture = pointcloud.log_likelihood_of_mixture(mixture);
+            return log_of_mixture;
         }
     }
 

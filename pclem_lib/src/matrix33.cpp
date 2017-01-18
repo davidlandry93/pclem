@@ -87,10 +87,8 @@ namespace pclem {
         std::array<double,9> eigvecs_values;
         for(int i=0; i < 3; i++) {
             eigvals[i] = arma_eigvals[2-i].real();
-            std::cout << "Eigval " << eigvals[i] << std::endl;
 
             for(int j=0; j < 3; j++) {
-                std::cout << arma_eigvecs(i,j);
                 eigvecs_values[i*3 + j] = arma_eigvecs(j,i).real();
             }
         }
@@ -153,5 +151,10 @@ namespace pclem {
         }
 
         return true;
+    }
+
+
+    Matrix33 Matrix33::zeros() {
+        return Matrix33({0.0});
     }
 }

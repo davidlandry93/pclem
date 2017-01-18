@@ -2,7 +2,6 @@
 #include <glog/logging.h>
 
 #include "device_pointcloud.h"
-#include "covariance_matrix.h"
 #include "em_algorithm.h"
 #include "gaussian_mixture_factory.h"
 
@@ -34,7 +33,6 @@ namespace pclem {
         VLOG(10) << "Computing expectation...";
 
         pcl.compute_associations(mixture);
-        pcl.normalize_associations();
 
         VLOG(10) << "Done.";
     }
@@ -48,9 +46,9 @@ namespace pclem {
     void EmAlgorithm::run(double epsilon) {
         VLOG(10) << "Running expectation maximization...";
 
-        std::cout << "Running em..." << std::endl;
-        std::cout << "PCL has " << pcl.get_n_points() << " points" << std::endl;
-        std::cout << "Initial mixture: " << std::endl << mixture << std::endl;
+        VLOG(3) << "Running em..." << std::endl;
+        VLOG(3) << "PCL has " << pcl.get_n_points() << " points" << std::endl;
+        VLOG(3) << "Initial mixture: " << std::endl << mixture << std::endl;
 
         double previous_likelihood = 0.0;
         double delta = std::numeric_limits<double>::infinity();
@@ -73,7 +71,7 @@ namespace pclem {
             n_iterations++;
         }
 
-        std::cout << "Result: " << std::endl << mixture;
+        VLOG(3) << "Result: " << std::endl << mixture;
 
         VLOG(10) << "Done running expectation maximization...";
     }

@@ -29,7 +29,6 @@ namespace pclem {
         BoundingBox getBoundingBox() const;
         int get_n_points() const;
         void compute_associations(const GaussianMixture& mixture);
-        void normalize_associations();
         GaussianMixture create_mixture() const;
         double log_likelihood_of_mixture(const GaussianMixture& mixture) const;
         void set_points(const std::shared_ptr<thrust::device_vector<AssociatedPoint>>& points);
@@ -38,6 +37,7 @@ namespace pclem {
                         const thrust::device_vector<AssociatedPoint>::iterator& end);
         std::vector<Point> copy_of_points() const;
         HierarchicalGaussianMixture create_hgmm(int n_levels);
+        HierarchicalGaussianMixture create_hgmm(int n_levels, double em_convergence_threshold);
         PointIterator begin();
         PointIterator end();
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> get_data() const;
@@ -50,6 +50,8 @@ namespace pclem {
         void insert_into_visualization(Visualization& vis) const;
 
     private:
+        const double DEFAULT_EM_CONVERGENCE_THRESHOLD = 0.01;
+
         std::shared_ptr<thrust::device_vector<AssociatedPoint>> ptr_to_points;
         PointIterator pts_begin;
         PointIterator pts_end;
@@ -58,6 +60,7 @@ namespace pclem {
 
         DevicePointCloud(std::vector<AssociatedPoint> data);
         void updateBoundingBox();
+        void normalize_associations();
     };
 
 }

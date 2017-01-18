@@ -23,7 +23,10 @@ namespace pclem {
                                           const NodeVector& node_vector);
         void create_children();
         void expand_n_levels(int n_levels);
-        void run_em();
+        void expand_n_levels(int n_levels, double em_convergence_threshold);
+        void run_em(double em_convergence_threshold);
+        void get_leaves(std::vector<WeightedGaussian>& leaves) const;
+        double log_likelihood_of_pointcloud(PointCloud& pointcloud) const;
 
         friend std::ostream& operator<<(std::ostream& os, const DeviceHierarchicalGaussianMixture& hierarchy);
         void insert_into_visualization(Visualization& vis) const;
@@ -31,7 +34,7 @@ namespace pclem {
     private:
 
         const double UNIFORM_DISTRIBUTION_SIZE = 2.5;
-        const double EM_CONVERGENCE_THRESHOLD = 0.00001;
+        const double DEFAULT_EM_CONVERGENCE_THRESHOLD = 0.01;
         const double MIN_WEIGHT_TO_PROCREATE = 1e-15;
         const double MIN_DISTRIBUTIONS_TO_PROCREATE = 2;
 
@@ -44,7 +47,6 @@ namespace pclem {
 
         void print_with_padding(std::ostream& os, int padding) const;
         void expand_one_level();
-        void get_leaves(std::vector<WeightedGaussian>& leaves) const;
     };
 }
 

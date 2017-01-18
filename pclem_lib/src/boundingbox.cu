@@ -51,4 +51,11 @@ namespace pclem {
 
         return deltax * deltay * deltaz;
     }
+
+    Point BoundingBox::getMin() const {
+        return min;
+    }
+    Point BoundingBox::getMax() const {
+        return max;
+    }
 }

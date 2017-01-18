@@ -59,10 +59,6 @@ namespace pclem {
         device_pcl->compute_associations(mixture);
     }
 
-    void PointCloud::normalize_associations() {
-        device_pcl->normalize_associations();
-    }
-
     GaussianMixture PointCloud::create_mixture() const {
         return device_pcl->create_mixture();
     }
@@ -77,6 +73,10 @@ namespace pclem {
 
     HierarchicalGaussianMixture PointCloud::create_hgmm(int n_levels) const {
         return device_pcl->create_hgmm(n_levels);
+    }
+
+    HierarchicalGaussianMixture PointCloud::create_hgmm(int n_levels, double em_convergence_threshold) const {
+        return device_pcl->create_hgmm(n_levels, em_convergence_threshold);
     }
 
     void PointCloud::insert_into_visualization(Visualization& vis) const {
