@@ -143,6 +143,7 @@ namespace pclem {
             pointcloud.compute_associations(mixture);
             double log_of_mixture = pointcloud.log_likelihood_of_mixture(mixture);
 
+            std::cout << "Mixture: " << std::endl << mixture;
             std::cout << "Log of mixture. " << log_of_mixture << std::endl;
 
             return log_of_mixture;

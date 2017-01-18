@@ -4,11 +4,11 @@ find_dependency(glog)
 set(PCLEM_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
 
 if(NOT TARGET pclem AND NOT pclem_BINARY_DIR)
-  include("${CMAKE_CURRENT_LIST_DIR}/pclem-targets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/pclem_lib/pclem-targets.cmake")
 endif()
 
 if(NOT TARGET pclem_vtk AND NOT pclem_vtk_BINARY_DIR)
-  include("${CMAKE_CURRENT_LIST_DIR}/pclem-vtk-targets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/pclem_vtk/pclem-vtk-targets.cmake")
 endif()
 
 set(pclem_LIBRARIES pclem pclem_vtk)

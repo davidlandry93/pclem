@@ -25,7 +25,14 @@ set(PUBLIC_HEADERS src/vtk_pointcloud_reader.h src/vtk_visualization.h)
 
 install(TARGETS pclem_vtk DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-vtk-targets)
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
-install(EXPORT pclem-vtk-targets DESTINATION ${INSTALL_LIB_DIR})
+export(EXPORT pclem-vtk-targets
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/pclem-vtk-targets.cmake)
+
+SET(CMAKE_INSTALL_DIR lib/cmake/pclem} CACHE PATH "The location of the package files.")
+
+install(EXPORT pclem-vtk-targets
+  FILE pclem-vtk-targets.cmake
+  DESTINATION ${INSTALL_CMAKE_DIR})
 
 option(tests "Build tests." ON)
 
