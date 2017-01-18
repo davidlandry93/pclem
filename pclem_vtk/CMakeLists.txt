@@ -21,6 +21,8 @@ target_link_libraries(pclem_vtk pclem glog::glog ${VTK_LIBRARIES})
 add_executable(run_hierarchical_em ${SOURCES})
 target_link_libraries(run_hierarchical_em pclem_vtk gflags)
 
+set(PUBLIC_HEADERS src/vtk_pointcloud_reader.h src/vtk_visualization.h)
+
 install(TARGETS pclem_vtk DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-vtk-targets)
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
 install(EXPORT pclem-vtk-targets DESTINATION ${INSTALL_LIB_DIR})

@@ -22,6 +22,6 @@ file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR
 
 set(CONF_INCLUDE_DIRS "\${PCLEM_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(pclem-config.cmake.in ${PROJECT_BINARY_DIR}/pclem-config.cmake @ONLY)
-INSTALL(FILES ${PROJECT_BINARY_DIR}/pclem-config.cmake DESTINATION lib/pclem)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/pclem-config.cmake DESTINATION ${INSTALL_LIB_DIR})
 
 export(PACKAGE pclem)

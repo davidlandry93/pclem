@@ -88,7 +88,6 @@ namespace pclem {
                 DevicePointCloud child_pcl(current_gaussian.weight_in_hierarchy());
                 VLOG(2) << "Points from " << partition_of_points[i] << " to " << partition_of_points[i+1];
                 child_pcl.set_points(pcl.get_data(), pcl.begin() + partition_of_points[i], pcl.begin() + partition_of_points[i+1]);
-                std::cout << "N POINTS IN CHILD PCL" << child_pcl.get_n_points() << std::endl;
 
                 GaussianMixtureFactory gmm_factory;
                 GaussianMixture child_mixture = gmm_factory.from_pcl_corners(child_pcl, current_gaussian.weight_in_hierarchy());
@@ -130,7 +129,6 @@ namespace pclem {
 
     double DeviceHierarchicalGaussianMixture::log_likelihood_of_pointcloud(PointCloud& pointcloud) const {
         if(!children.empty()) {
-            std::cout << "Inner node. " << mixture << std::endl;
             double log_likelihood = 0.0;
 
             for(auto const& child : children) {
@@ -142,12 +140,10 @@ namespace pclem {
 
             return log_likelihood;
         } else {
-            std::cout << "Leaf." << mixture << std::endl;
-            // std::cout << "Log likelihood of mixture: " << std::endl << mixture << std::endl;
             pointcloud.compute_associations(mixture);
             double log_of_mixture = pointcloud.log_likelihood_of_mixture(mixture);
 
-            // std::cout << log_of_mixture << std::endl;
+            std::cout << "Log of mixture. " << log_of_mixture << std::endl;
 
             return log_of_mixture;
         }
