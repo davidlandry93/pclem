@@ -12,6 +12,7 @@
 #include "visualization.h"
 #include "point.h"
 #include "ellipsoid.h"
+#include "parula_lookup_table.h"
 
 namespace pclem {
     class VtkVisualization : public Visualization {
@@ -26,6 +27,7 @@ namespace pclem {
         vtkSmartPointer<vtkRenderer> renderer;
         vtkSmartPointer<vtkRenderWindowInteractor> interactor;
         vtkSmartPointer<vtkOrientationMarkerWidget> axes_widget;
+        ParulaLookupTable color_table;
 
         void insert_axes_widget() const;
         void insert_pointcloud() const;

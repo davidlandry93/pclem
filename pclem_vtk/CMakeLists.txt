@@ -14,9 +14,6 @@ include_directories(src ${VTK_INCLUDE_DIRS} ${pclem_INCLUDE_DIRS})
 include(${VTK_USE_FILE})
 
 file(GLOB SOURCES src/*.cpp)
-set(SOURCES
-  src/vtk_visualization.cpp
-  src/vtk_pointcloud_reader.cpp)
 
 add_library(pclem_vtk_lib ${SOURCES})
 target_link_libraries(pclem_vtk_lib pclem glog::glog ${VTK_LIBRARIES})

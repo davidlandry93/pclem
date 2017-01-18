@@ -17,12 +17,14 @@
 #include <vtkProperty.h>
 #include <vtkCamera.h>
 #include <vtkMatrix4x4.h>
+#include <vtkLookupTable.h>
 
 #include <vtkTransform.h>
 
 #include <vtkAxesActor.h>
 #include <vtkOrientationMarkerWidget.h>
 
+#include "parula_lookup_table.h"
 #include "vtk_visualization.h"
 
 namespace pclem {
@@ -31,7 +33,8 @@ namespace pclem {
         cells(vtkSmartPointer<vtkCellArray>::New()),
         renderer(vtkSmartPointer<vtkRenderer>::New()),
         interactor(vtkSmartPointer<vtkRenderWindowInteractor>::New()),
-        axes_widget(vtkSmartPointer<vtkOrientationMarkerWidget>::New())
+        axes_widget(vtkSmartPointer<vtkOrientationMarkerWidget>::New()),
+        color_table(0.0, 1.0)
     {
         auto interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
         interactor->SetInteractorStyle(interactorStyle);
@@ -95,8 +98,11 @@ namespace pclem {
         transform->Translate(ellipsoid.position.x, ellipsoid.position.y, ellipsoid.position.z);
 
         actor->SetUserTransform(transform);
-        actor->GetProperty()->SetColor(1.0, 0.5, 0.0);
-        actor->GetProperty()->SetOpacity(ellipsoid.opacity);
+
+        double color[3];
+        color_table.get_color(ellipsoid.opacity, color);
+        actor->GetProperty()->SetColor(color);
+        // actor->GetProperty()->SetOpacity(ellipsoid.opacity);
 
         renderer->AddActor(actor);
     }
