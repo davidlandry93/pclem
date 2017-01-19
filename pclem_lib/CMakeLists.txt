@@ -35,7 +35,12 @@ if(tests)
   find_package(GTest)
   find_package(GMock)
 
-  file(GLOB TEST_FILES test/*.cpp test/*.cu)
-  cuda_add_executable(tests ${TEST_FILES})
+  set(SHORT_TESTS
+    test/test_gaussian_in_visualization.cpp
+    test/test_gaussian_mixture.cpp
+    test/test_gaussian_mixture_factory.cpp
+    test/test_rotation.cpp)
+
+  cuda_add_executable(tests test/run_tests.cpp ${SHORT_TESTS})
   target_link_libraries(tests pclem ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
 endif(tests)

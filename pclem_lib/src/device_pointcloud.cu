@@ -90,7 +90,6 @@ namespace pclem {
     double DevicePointCloud::log_likelihood_of_mixture(const GaussianMixture& mixture) const {
         LogLikelihoodOperation op(mixture);
         double result = execute_pointcloud_operation<double>(op);
-        std::cout << "Resulting likelihood" << result << std::endl;
         return result;
     }
 

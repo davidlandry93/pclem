@@ -32,7 +32,18 @@ if(tests)
   enable_testing()
   find_package(GTest)
 
+  set(SHORT_TESTS
+    test/test_vtk_visualization.cpp)
+
+  set(LONG_TESTS
+    test/test_one_hierarchy.cpp)
+
   file(GLOB TEST_FILES test/*.cpp)
-  add_executable(tests_vtk ${TEST_FILES})
+  add_executable(tests_vtk test/run_tests.cpp ${SHORT_TESTS})
   target_link_libraries(tests_vtk pclem_vtk ${GTEST_BOTH_LIBRARIES})
+
+  cuda_add_executable(long_tests_vtk test/run_tests.cpp ${LONG_TESTS})
+  target_link_libraries(long_tests_vtk pclem_vtk ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES})
+
+  configure_file(res/26.vtk ${CMAKE_BINARY_DIR}/example.vtk)
 endif(tests)

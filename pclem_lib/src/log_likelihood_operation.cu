@@ -21,7 +21,8 @@ namespace pclem {
                                                                             i, distribution);
             }
 
-            VLOG(4) << likelihood_of_distribution;
+            VLOG(4) << "Mixture was: " << mixture;
+            VLOG(4) << "Likelihood was: " << likelihood_of_distribution;
 
             log_likelihood += likelihood_of_distribution;
         }
@@ -30,14 +31,14 @@ namespace pclem {
     }
 
     struct log_likelihood_op : public thrust::unary_function<AssociatedPoint,double> {
-        __const__ double log_pi_ij;
+        __const__ double log_pi_j;
         __const__ double base;
         __const__ DevicePoint mu;
         __const__ int index_of_distribution;
         double inv_of_cov[9];
 
         log_likelihood_op(int index_of_distribution, const WeightedGaussian& distribution) :
-            log_pi_ij(distribution.get_weight()),
+            log_pi_j(distribution.get_weight()),
             base(1.0 / sqrt(pow(2*M_PI, 3) * distribution.get_sigma().det())),
             mu(distribution.get_mu()),
             index_of_distribution(index_of_distribution),
@@ -56,7 +57,7 @@ namespace pclem {
             if(p.associations[index_of_distribution] < 1e-30) {
                 return 0.0;
             } else {
-                return p.associations[index_of_distribution] * (log_pi_ij + log(likelihood_of_point(p)));
+                return p.associations[index_of_distribution] * (log_pi_j + log(likelihood_of_point(p)));
             }
         }
 
