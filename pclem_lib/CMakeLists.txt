@@ -19,10 +19,15 @@ file(GLOB SOURCES src/*.cpp src/*.cu src/*.h)
 cuda_add_library(pclem ${SOURCES})
 target_link_libraries(pclem glog::glog ${CUDA_LIBRARIES} ${ARMADILLO_LIBRARIES})
 
+target_include_directories(pclem PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+  $<INSTALL_INTERFACE:include/pclem>)
+
 set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
   CACHE INTERNAL  "${PROJECT_NAME}: Include Directories" FORCE)
 
 file(GLOB PUBLIC_HEADERS include/*.h)
+file(COPY ${PUBLIC_HEADERS} DESTINATION ${CMAKE_BINARY_DIR}/include/pclem/)
 
 INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
 INSTALL(TARGETS pclem DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-targets)

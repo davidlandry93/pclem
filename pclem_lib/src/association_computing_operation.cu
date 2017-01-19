@@ -1,4 +1,5 @@
 
+#include <limits>
 #include <glog/logging.h>
 
 #include <thrust/transform.h>
@@ -26,7 +27,8 @@ namespace pclem {
             index_of_distribution(index_of_distribution),
             mu(distribution.get_mu()),
             base(distribution.get_weight() / sqrt(pow(2*M_PI,3) * distribution.get_sigma().det())),
-            inv_of_covariance {0.0} {
+            inv_of_covariance {0.0},
+            minimum_double(std::numeric_limits<double>::min()) {
             std::array<double,9> computed_inv = distribution.get_sigma().inverse();
 
             for (int i = 0; i < 9; i++) {
@@ -49,6 +51,7 @@ namespace pclem {
         __const__ int index_of_distribution;
         __const__ DevicePoint mu;
         __const__ double base;
+        __const__ double minimum_double;
         double inv_of_covariance[9];
 
         // This is a computation of the density function of a 3d gaussian at point p.
@@ -65,7 +68,7 @@ namespace pclem {
                 x_minus_mu.y * temp_product[1] +
                 x_minus_mu.z * temp_product[2];
 
-            return base * exp(-0.5 * scale_product);
+            return base * exp(-0.5 * scale_product) + minimum_double;
         }
     };
 

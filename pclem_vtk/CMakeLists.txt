@@ -23,6 +23,7 @@ target_link_libraries(run_hierarchical_em pclem_vtk gflags)
 
 set(PUBLIC_HEADERS src/vtk_pointcloud_reader.h src/vtk_visualization.h)
 
+file(COPY ${PUBLIC_HEADERS} DESTINATION ${CMAKE_BINARY_DIR}/include/pclem/)
 install(TARGETS pclem_vtk DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-vtk-targets)
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
 export(EXPORT pclem-vtk-targets
