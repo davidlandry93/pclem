@@ -82,6 +82,8 @@ namespace pclem {
 
             if(current_gaussian.get_weight() < MIN_WEIGHT_TO_PROCREATE) {
                 VLOG(2) << "Parent gaussian has too little weight to create children.";
+            } else if (partition_of_points[i] == partition_of_points[i+1]){
+                VLOG(2) << "Parent gaussian had no point assigned to it.";
             } else {
                 DevicePointCloud child_pcl(current_gaussian.weight_in_hierarchy());
                 VLOG(2) << "Points from " << partition_of_points[i] << " to " << partition_of_points[i+1];
@@ -140,6 +142,10 @@ namespace pclem {
         } else {
             pointcloud.compute_associations(mixture);
             double log_of_mixture = pointcloud.log_likelihood_of_mixture(mixture);
+
+            std::cout << "Mixture: " << std::endl << mixture;
+            std::cout << "Log of mixture. " << log_of_mixture << std::endl;
+
             return log_of_mixture;
         }
     }

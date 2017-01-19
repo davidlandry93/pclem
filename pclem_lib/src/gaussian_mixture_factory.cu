@@ -25,6 +25,7 @@ namespace pclem {
 
     GaussianMixture GaussianMixtureFactory::from_pcl_corners(const BoundingBox& bounding_box, double weight_of_parent_in_hierarchy) const {
         auto corners = bounding_box.corners();
+
         double initial_weight_of_gaussian = 1.0 / corners.size();
 
         Matrix33 sigma = covariance_from_pcl_corners(bounding_box);

@@ -26,7 +26,12 @@ file(GLOB PUBLIC_HEADERS include/*.h)
 
 INSTALL(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR})
 INSTALL(TARGETS pclem DESTINATION ${INSTALL_LIB_DIR} EXPORT pclem-targets)
-INSTALL(EXPORT pclem-targets DESTINATION ${INSTALL_LIB_DIR})
+export(EXPORT pclem-targets
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/pclem-targets.cmake)
+
+set(CMAKE_INSTALL_DIR lib/cmake/pclem CACHE PATH "The location of the package files.")
+
+INSTALL(EXPORT pclem-targets DESTINATION ${CMAKE_INSTALL_DIR})
 
 option(tests "Build tests." ON) # Turn off with -Dtests=OFF
 
