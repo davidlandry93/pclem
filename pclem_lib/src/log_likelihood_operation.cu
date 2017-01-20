@@ -30,6 +30,13 @@ namespace pclem {
             log_likelihood += likelihood_of_distribution;
         }
 
+        if(log_likelihood == 0.0) {
+            for(int i = 0; i < AssociatedPoint::N_DISTRIBUTIONS_PER_MIXTURE; i++) {
+                std::cout << mixture.get_gaussian(i).get_weight() << " ";
+            }
+            std::cout << std::endl;
+        }
+
         return log_likelihood;
     }
 
@@ -59,7 +66,12 @@ namespace pclem {
 
         __host__ __device__
         double operator()(AssociatedPoint p) {
-            double to_return = p.associations[index_of_distribution] * (log_pi_j + log(likelihood_of_point(p)));
+            double likelihood= log(likelihood_of_point(p));
+            double to_return = p.associations[index_of_distribution] * (log_pi_j + likelihood);
+
+            if(to_return == 0.0) {
+                printf("LogPiJ %e Assoc %e LogOfLik %e", log_pi_j, p.associations[index_of_distribution], likelihood);
+            }
 
             return to_return;
         }
